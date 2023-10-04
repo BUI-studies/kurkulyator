@@ -1,7 +1,3 @@
-export default function Login() {
-  
-}
+export default function Login() {}
 
-Login.prototype.render(parent) {
-  
-}
+Login.prototype.render = (parent) => {};

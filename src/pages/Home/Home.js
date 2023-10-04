@@ -1,7 +1,5 @@
-export default function Home() {
+export default function Home() {}
 
-}
-
-Home.prototype.render(parent) {
-  console.log('Home.prototype.render');
-}
+Home.prototype.render = (parent) => {
+  console.log("Home.prototype.render");
+};
