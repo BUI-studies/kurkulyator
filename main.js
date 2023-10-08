@@ -6,6 +6,7 @@ import { getTransactions } from './src/API';
 getTransactions().then((res) => console.log(res));
 
 onAuthStateChanged(auth, (user) => {
+  console.log(user);
   Router.setCurrentUser(user);
   if (!user) {
     Router.navigate(ROUTES_NAMES.LOGIN);
