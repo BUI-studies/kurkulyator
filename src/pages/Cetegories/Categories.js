@@ -1,4 +1,4 @@
-import getCategories from "@/API";
+import { getCategories } from "@/API";
 
 export default function Categories() {
   this.pageWrapper = document.createElement("div");
