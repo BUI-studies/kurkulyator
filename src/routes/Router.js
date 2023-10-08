@@ -1,3 +1,6 @@
+
+import Page from "../template/index.js";
+
 import { ROUTES_NAMES, ROUTES, createPages } from "./Router.helper.js";
 
 let pages = createPages();
@@ -10,6 +13,10 @@ let currentUser = null;
 export const getCurrentUser = () => currentUser;
 export const setCurrentUser = (u) => (currentUser = u);
 
+const TEMPLATE = new Page();
+TEMPLATE.render();
+
+
 export const navigate = (route) => {
   if (!Object.values(ROUTES_NAMES).includes(route))
     throw new Error(`There is no such route: ${route}!`);
@@ -19,8 +26,9 @@ export const navigate = (route) => {
 
   currentPage = pages[route];
 
-  currentPage.render();
-};
+
+  TEMPLATE.updateChildren(currentPage);
+
 
 export const clearRoutes = () => {
   pages = createPages();

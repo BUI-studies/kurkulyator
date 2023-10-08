@@ -1,3 +1,4 @@
+
 import { googleAuthProvider, auth } from "../../../firebase";
 import { signInWithPopup } from "firebase/auth";
 
@@ -23,3 +24,4 @@ Login.prototype.handleSignInButtonClick = (e) => {
   e.preventDefault();
   signInWithPopup(auth, googleAuthProvider);
 };
+
