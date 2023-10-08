@@ -18,5 +18,3 @@ Page.prototype.updateChildren = function (currentPage) {
   this.childrenWrapper.replaceChildren();
   currentPage.render(this.childrenWrapper);
 };
-
-//some changes to create a pull request
