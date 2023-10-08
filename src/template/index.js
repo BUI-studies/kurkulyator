@@ -17,4 +17,5 @@ Page.prototype.render = function () {
 Page.prototype.updateChildren = function (currentPage) {
   this.childrenWrapper.replaceChildren();
   currentPage.render();
+
 };
