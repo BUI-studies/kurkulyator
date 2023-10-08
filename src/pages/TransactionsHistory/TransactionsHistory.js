@@ -1,11 +1,16 @@
+import { getTransactions } from "@/API";
+
 export default function TransactionsHistory() {
   this.pageWrapper = document.createElement("div");
 
   this.addButton = document.createElement("button");
 }
 
-TransactionsHistory.prototype.render = (parent) => {
+TransactionsHistory.prototype.render = async function (parent) {
   console.log("TransactionsHistory page");
+
+  this.transactions = await getTransactions();
+  console.log(this.transactions);
 
   this.addButton.textContent = "New transaction";
   this.addButton.addEventListener("click", (e) =>
