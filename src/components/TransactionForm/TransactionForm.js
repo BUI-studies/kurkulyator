@@ -78,6 +78,18 @@ TransactionForm.prototype.handleCreateForm = function (event) {
   console.log('new transaction');
 };
 
+TransactionForm.prototype.modal = function () {
+  const modal = document.createElement('div');
+  modal.classList.add('newForm__modal');
+
+  modal.append(this.elements.form);
+  modal.addEventListener('click', (event) => {
+    if (event.target === this.modal) {
+      this.modal.remove();
+    }
+  });
+};
+
 TransactionForm.prototype.categoryOptions = function (optionSet) {
   const options = optionsSet;
   return [
