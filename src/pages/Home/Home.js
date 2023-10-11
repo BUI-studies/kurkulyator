@@ -1,4 +1,5 @@
-import { TransactionForm } from '@/components';
+import { TransactionForm, ModalWindow } from '@/components';
+
 export default function Home() {
   this.elements = {
     self: document.createElement('div'),
@@ -18,6 +19,7 @@ Home.prototype.render = function (parent) {
   this.elements.self.append(this.elements.button);
 
   console.log('Home.prototype.render');
+  parent.append(this.elements.self);
 };
 
 Home.prototype.handleCreateForm = function (event) {
@@ -25,6 +27,8 @@ Home.prototype.handleCreateForm = function (event) {
   //тут буде викликатись рендер форми нової транзакції хто створює форму, якщо я , то що у формі повинно бути?
   const newTransactionForm = new TransactionForm();
 
-  newTransactionForm.render(this.elements.self);
+  const newModalWindow = new ModalWindow();
+  newModalWindow.render(document.getElementById('app'), newTransactionForm);
+  // newTransactionForm.render(document.querySelector('.modal__content'));
   console.log('new transaction');
 };
