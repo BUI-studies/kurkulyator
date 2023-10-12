@@ -87,5 +87,5 @@ Header.prototype.updateHeader = function () {
 Header.prototype.handleLogoutClick = function (e) {
   e.preventDefault();
   auth.signOut();
-  this.headerWrapper.replaceChildren(this.logoWrapper, this.headerText);
+  this.loggedInUserSection.replaceChildren();
 };

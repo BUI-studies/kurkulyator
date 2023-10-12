@@ -16,6 +16,6 @@ Page.prototype.render = function () {
 
 Page.prototype.updateChildren = function (currentPage) {
   this.childrenWrapper.replaceChildren();
-  this.header.updateHeader();
   currentPage.render(this.childrenWrapper);
+  this.header.updateHeader();
 };

@@ -12,9 +12,7 @@ export default function Login() {
 Login.prototype.render = function (parent) {
   this.parent = parent;
   this.googleButton.textContent = "Log in with Google";
-  this.googleButton.addEventListener("click", (e) =>
-    this.handleSignInButtonClick(e)
-  );
+  this.googleButton.onclick = (e) => this.handleSignInButtonClick(e);
 
   this.pageWrapper.append(this.placeholderText, this.googleButton);
   this.parent.append(this.pageWrapper);
