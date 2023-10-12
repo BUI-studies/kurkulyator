@@ -28,3 +28,7 @@ export const navigate = (route) => {
 export const clearRoutes = () => {
   pages = createPages();
 };
+
+export const updateHeader = () => {
+  TEMPLATE.updateHeader();
+};

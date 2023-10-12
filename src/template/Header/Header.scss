@@ -1,8 +1,8 @@
 header {
-  display: flex;
-  background-color: blanchedalmond;
-  justify-content: left;
+  display: grid;
+  grid-template-columns: 1fr 3fr 8fr;
   align-items: center;
+  justify-content: space-between;
   gap: 2em;
   padding: 0 1em;
 }
@@ -28,9 +28,8 @@ menu > li:hover {
 }
 
 .header--logged-in {
+  justify-self: end;
   display: flex;
   gap: 2em;
   align-items: center;
-  position: absolute;
-  right: 2em;
 }

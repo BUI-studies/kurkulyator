@@ -76,7 +76,7 @@ Header.prototype.render = function (parent) {
   parent.append(this.headerWrapper);
 };
 
-Header.prototype.updateHeader = function () {
+Header.prototype.update = function () {
   this.user = Router.getCurrentUser();
   this.loggedInUserSection.replaceChildren();
   if (this.user !== null) {

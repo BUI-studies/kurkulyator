@@ -1,6 +1,8 @@
 import Footer from "./Footer/Footer";
 import Header from "./Header/Header";
 
+import "./index.scss";
+
 export default function Page() {
   this.parent = document.querySelector("#app");
   this.childrenWrapper = document.createElement("section");
@@ -10,6 +12,7 @@ export default function Page() {
 
 Page.prototype.render = function () {
   this.header.render(this.parent);
+  this.childrenWrapper.id = "pageContent";
   this.parent.append(this.childrenWrapper);
   this.footer.render(this.parent);
 };
@@ -17,5 +20,8 @@ Page.prototype.render = function () {
 Page.prototype.updateChildren = function (currentPage) {
   this.childrenWrapper.replaceChildren();
   currentPage.render(this.childrenWrapper);
-  this.header.updateHeader();
+};
+
+Page.prototype.updateHeader = function () {
+  this.header.update();
 };
