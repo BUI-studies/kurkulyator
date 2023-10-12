@@ -1,0 +1,36 @@
+header {
+  display: flex;
+  background-color: blanchedalmond;
+  justify-content: left;
+  align-items: center;
+  gap: 2em;
+  padding: 0 1em;
+}
+
+.logo {
+  width: 100px;
+  text-align: center;
+}
+
+menu {
+  display: flex;
+  gap: 2em;
+  list-style-type: none;
+}
+
+menu > li {
+  font-weight: 700;
+}
+
+menu > li:hover {
+  color: blueviolet;
+  cursor: pointer;
+}
+
+.header--logged-in {
+  display: flex;
+  gap: 2em;
+  align-items: center;
+  position: absolute;
+  right: 2em;
+}

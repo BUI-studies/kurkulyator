@@ -1,5 +1,10 @@
-export default function Home() {}
+export default function Home() {
+  this.pageWrapper = document.createElement("div");
+  this.placeholderText = document.createElement("h2"); // temp placeholder
+  this.placeholderText.textContent = "Home page";
+}
 
-Home.prototype.render = (parent) => {
-  console.log("Home.prototype.render");
+Home.prototype.render = function (parent) {
+  this.pageWrapper.append(this.placeholderText);
+  parent.append(this.pageWrapper);
 };
