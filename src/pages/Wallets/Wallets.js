@@ -8,9 +8,9 @@ export default function Wallets() {
   this.placeholderText.textContent = "Wallets page";
 }
 
-Wallets.prototype.render = function (parent) {
-  // this.wallets = await getWallets();
-  // console.log(this.wallets);
+Wallets.prototype.render = async function (parent) {
+  this.wallets = await getWallets();
+  console.log(this.wallets);
 
   this.addButton.textContent = "New wallet";
   this.addButton.onclick = (e) => this.handleNewWalletClick(e);

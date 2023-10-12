@@ -9,9 +9,9 @@ export default function TransactionsHistory() {
   this.placeholderText.textContent = "Transactions History page";
 }
 
-TransactionsHistory.prototype.render = function (parent) {
-  // this.transactions = await getTransactions();
-  // console.log(this.transactions);
+TransactionsHistory.prototype.render = async function (parent) {
+  this.transactions = await getTransactions();
+  console.log(this.transactions);
 
   this.addButton.textContent = "New transaction";
   this.addButton.onclick = (e) => this.handleNewTransactionClick(e);

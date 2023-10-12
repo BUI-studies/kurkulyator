@@ -7,9 +7,9 @@ export default function Categories() {
   this.placeholderText.textContent = "Categories page";
 }
 
-Categories.prototype.render = function (parent) {
-  // this.categories = await getCategories();
-  // console.log(this.categories);
+Categories.prototype.render = async function (parent) {
+  this.categories = await getCategories();
+  console.log(this.categories);
 
   this.addButton.textContent = "New category";
   this.addButton.onclick = (e) => this.handleNewCategotyClick(e);
