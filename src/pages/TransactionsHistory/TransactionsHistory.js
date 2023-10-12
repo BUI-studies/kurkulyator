@@ -14,9 +14,7 @@ TransactionsHistory.prototype.render = function (parent) {
   // console.log(this.transactions);
 
   this.addButton.textContent = "New transaction";
-  this.addButton.addEventListener("click", (e) =>
-    this.handleNewTransactionClick(e)
-  );
+  this.addButton.onclick = (e) => this.handleNewTransactionClick(e);
   this.pageWrapper.append(this.placeholderText, this.addButton);
 
   parent.append(this.pageWrapper);

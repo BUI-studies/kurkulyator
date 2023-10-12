@@ -12,9 +12,7 @@ Categories.prototype.render = function (parent) {
   // console.log(this.categories);
 
   this.addButton.textContent = "New category";
-  this.addButton.addEventListener("click", (e) =>
-    this.handleNewCategotyClick(e)
-  );
+  this.addButton.onclick = (e) => this.handleNewCategotyClick(e);
   this.pageWrapper.append(this.placeholderText, this.addButton);
 
   parent.append(this.pageWrapper);

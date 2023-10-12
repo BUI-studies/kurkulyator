@@ -13,7 +13,7 @@ Wallets.prototype.render = function (parent) {
   // console.log(this.wallets);
 
   this.addButton.textContent = "New wallet";
-  this.addButton.addEventListener("click", (e) => this.handleNewWalletClick(e));
+  this.addButton.onclick = (e) => this.handleNewWalletClick(e);
   this.pageWrapper.append(this.placeholderText, this.addButton);
 
   parent.append(this.pageWrapper);
