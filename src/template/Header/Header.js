@@ -89,5 +89,3 @@ Header.prototype.handleLogoutClick = function (e) {
   auth.signOut();
   this.headerWrapper.replaceChildren(this.logoWrapper, this.headerText);
 };
-
-Header.prototype.navigate = function (e) {};
