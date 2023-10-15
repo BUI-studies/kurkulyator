@@ -1,23 +1,36 @@
-import "./UniversalTable.css";
+import "./UniversalTable.scss";
 
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick;
   this.collection = collection;
   this.parent = options.parent;
-  this.headerCells = options.header;
+  this.headerCells = options.headers;
 }
 
 UniversalTable.prototype.render = function () {
-  const tableHeader = document.createElement("ul");
+  //############################### tableHeader START####################################
 
+  const tableHeader = document.createElement("ul");
   const tableHeaderRow = document.createElement("li");
 
-  tableHeaderRow.innerHTML = this.headerCells.reduce((acc, currentValue) => {
-    return acc + `<span>${currentValue}</span>`;
-  }, "");
+  // tableHeaderRow.innerHTML = this.headerCells.reduce((acc, currentValue) => {
+  //   return acc + `<span>${currentValue}</span>`;
+  // }, "");
 
-  tableHeader.append(tableHeaderRow);
+  // tableHeader.append(tableHeaderRow);
+  this.headerCells.forEach((row, index) => {
+    tableHeaderRow.innerHTML = Object.values(row).reduce(
+      (acc, propertyValue) => {
+        return acc + `<span>${propertyValue}</span>`;
+      },
+      ""
+    );
 
+    tableHeader.append(tableHeaderRow);
+  });
+  //############################### tableHeader END####################################
+
+  //############################### tableBody START####################################
   const tableBody = document.createElement("ul");
 
   if (!this.rowClick) {
@@ -39,17 +52,17 @@ UniversalTable.prototype.render = function () {
 
     tableBody.append(tableRow);
   });
+  //############################### tableBody END####################################
   this.parent.append(tableHeader, tableBody);
 };
 
 UniversalTable.prototype.rowClickHandler = function (e) {
+  let clickedIndex = 0;
+
   if (!e.target.classList.contains("t-row")) {
-    const clickedIndex = e.target.closest(".t-row").dataset;
-
-    this.rowClick(this.collection[clickedIndex]);
+    clickedIndex = e.target.closest(".t-row").dataset;
   } else {
-    const clickedIndex = e.target.dataset;
-
-    this.rowClick(this.collection[clickedIndex]);
+    clickedIndex = e.target.dataset;
   }
+  this.rowClick(this.collection[clickedIndex]);
 };
