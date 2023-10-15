@@ -1,8 +1,12 @@
 import { Router } from '@/routes';
 import './TransactionForm.scss';
+import { transactionsCollectionRef } from '@root/firebase';
+import { addDoc, getDocs, query, where } from 'firebase/firestore';
+import { categresCollectionRef } from '../../../firebase';
 
 export default function TransactionForm() {
   this.typeOptions = ['income', 'outcome', 'transfer', 'correction'];
+  this.categoryOptions = [];
   this.elements = {
     form: document.createElement('form'),
     formOwner: null,
@@ -19,7 +23,7 @@ export default function TransactionForm() {
   };
 }
 
-TransactionForm.prototype.render = function (parent) {
+TransactionForm.prototype.render = async function (parent) {
   this.elements.form.classList.add('transactionForm');
   this.elements.formType.classList.add('transactionForm__type');
   // this.elements.formWallets.classList.add('transactionForm__wallets');
@@ -28,16 +32,30 @@ TransactionForm.prototype.render = function (parent) {
   this.elements.formComment.classList.add('transactionForm__comment');
   this.elements.formButton.classList.add('transactionForm__button');
 
+  //необхідно звіритись з тим, як буде виглядати транзакція в базі даних, але станом на зараз підготую шаблон строврення обєкта транзакції:
+  this.elements.formType.name = 'type';
+  this.elements.formWallets.name = 'wallets';
+  this.elements.formCategory.name = 'category';
+  this.elements.formAmount.name = 'amount';
+  this.elements.formComment.name = 'comment';
+  this.elements.formDate.name = 'date';
+
   this.elements.formAmount.placeholder = 'Що по бабкам? Скільки хочеш скинути?';
   this.elements.formComment.placeholder =
     'Розкажи, що тебе довело до цієї ситуації...';
 
   this.elements.formOwner = Router.getCurrentUser().uid;
-  this.elements.formType.innerHTML = this.categoryOptions(this.typeOptions);
+  this.elements.formType.innerHTML = this.makeOptions(this.typeOptions);
+
+  this.categories = await this.getCategories();
+  this.categoriesOptions = this.categories.map((item) => item.name);
+  this.elements.formCategory.innerHTML = this.makeOptions(
+    this.categoriesOptions
+  );
   this.elements.formComment.setAttribute('type', 'textarea');
   this.elements.formButton.innerText = 'Save';
   this.elements.formButton.addEventListener('click', (event) =>
-    this.handleCreateForm(event)
+    this.handleSubmit(event)
   );
 
   this.elements.form.append(
@@ -48,18 +66,11 @@ TransactionForm.prototype.render = function (parent) {
     this.elements.formButton
   );
   parent.append(this.elements.form);
+  console.log(Router.getCurrentUser().uid);
 };
 
-TransactionForm.prototype.handleCreateForm = function (event) {
+TransactionForm.prototype.handleSubmit = async function (event) {
   event.preventDefault();
-
-  //необхідно звіритись з тим, як буде виглядати транзакція в базі даних, але станом на зараз підготую шаблон строврення обєкта транзакції:
-  this.elements.formType.name = 'type';
-  this.elements.formWallets.name = 'wallets';
-  this.elements.formCategory.name = 'category';
-  this.elements.formAmount.name = 'amount';
-  this.elements.formComment.name = 'comment';
-  this.elements.formDate.name = 'date';
 
   const formData = new FormData(this.elements.form);
 
@@ -73,22 +84,35 @@ TransactionForm.prototype.handleCreateForm = function (event) {
     date: formData.get('date'),
   };
 
-  // await addDoc(тут вставити аргументом посилання на колекцію транзакцій, newTransactionData);
+  console.log(newTransactionData);
 
-  //тут буде викликатись рендер форми нової транзакції хто створює форму, якщо я , то що у формі повинно бути?
-  const newTransactionForm = new TransactionForm();
+  await addDoc(transactionsCollectionRef, newTransactionData);
 
   console.log('new transaction');
 };
 
-TransactionForm.prototype.categoryOptions = function (optionsSet) {
+TransactionForm.prototype.makeOptions = function (optionsSet) {
   const options = optionsSet;
-  return [
-    ...new Set(
-      options.map(
-        (item) =>
-          `<option value="${item}" data-filter="${item}">${item}</option>`
-      )
-    ),
-  ].join();
+  return options
+    .map(
+      (item) => `<option value="${item}" data-filter="${item}">${item}</option>`
+    )
+    .join();
+};
+
+TransactionForm.prototype.getCategories = async function () {
+  const categoriesQuery = query(
+    categresCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid)
+  );
+
+  console.log(categoriesQuery);
+
+  const querySnapshot = await getDocs(categoriesQuery);
+  const result = [];
+  querySnapshot.forEach((docRef) => {
+    result.push({ id: docRef.id, ...docRef.data() });
+  });
+  // return res.data();
+  return result;
 };
