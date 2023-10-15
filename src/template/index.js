@@ -2,8 +2,6 @@ import Footer from "./Footer/Footer";
 import Header from "./Header/Header";
 
 import "./index.scss";
-import Footer from "./Footer";
-import Header from "./Header";
 
 export default function Page() {
   this.parent = document.querySelector("#app");

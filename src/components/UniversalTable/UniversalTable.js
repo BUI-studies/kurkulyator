@@ -1,4 +1,7 @@
+import "./UniversalTable.css";
+
 export default function UniversalTable(collection, options) {
+  this.rowClick = options.onClick;
   this.collection = collection;
   this.parent = options.parent;
   this.headerCells = options.header;
@@ -16,9 +19,14 @@ UniversalTable.prototype.render = function () {
   tableHeader.append(tableHeaderRow);
 
   const tableBody = document.createElement("ul");
-  tableBody.onclick = (e) => {
-    this.rowClickHandler(e);
-  };
+
+  if (!this.rowClick) {
+    console.log("No row click callback attached");
+  } else {
+    tableBody.onclick = (e) => {
+      this.rowClickHandler(e);
+    };
+  }
 
   this.collection.forEach((row, index) => {
     const tableRow = document.createElement("li");
@@ -36,10 +44,12 @@ UniversalTable.prototype.render = function () {
 
 UniversalTable.prototype.rowClickHandler = function (e) {
   if (!e.target.classList.contains("t-row")) {
-    console.log(e.target.closest(".t-row").dataset);
-  } else {
-    console.log(e.target.dataset);
-  }
+    const clickedIndex = e.target.closest(".t-row").dataset;
 
-  //TODO: дьоргать з колекції дані за датасет-індексом
+    this.rowClick(this.collection[clickedIndex]);
+  } else {
+    const clickedIndex = e.target.dataset;
+
+    this.rowClick(this.collection[clickedIndex]);
+  }
 };

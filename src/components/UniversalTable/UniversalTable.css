@@ -1,0 +1,12 @@
+ul {
+    list-style-type: none;
+}
+
+li {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+span {
+    border: 1px solid white
+}
