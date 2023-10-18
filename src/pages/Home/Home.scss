@@ -1,0 +1,30 @@
+.balance--wrapper {
+  display: inline-block;
+  padding: 1em;
+  background-color: gray;
+  border-radius: 1em;
+  width: 300px;
+  height: 200px;
+  text-align: right;
+}
+.balance--header {
+  font-weight: 700;
+}
+.balance--count {
+  display: inline-block;
+  font-size: 4em;
+  margin: 0;
+}
+.wallets--wrapper {
+  display: inline-block;
+  padding: 1em;
+  background-color: gray;
+  border-radius: 1em;
+  width: auto;
+  height: 200px;
+  margin-left: 2em;
+  margin-top: 0;
+}
+.wallets--header {
+  font-weight: 700;
+}
