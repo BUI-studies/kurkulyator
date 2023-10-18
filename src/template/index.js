@@ -8,11 +8,14 @@ export default function Page() {
   this.childrenWrapper = document.createElement("section");
   this.footer = new Footer();
   this.header = new Header();
+  this.parent = document.querySelector("#app");
+  this.childrenWrapper = document.createElement("section");
+  this.footer = new Footer();
+  this.header = new Header();
 }
 
 Page.prototype.render = function () {
   this.header.render(this.parent);
-  this.childrenWrapper.id = "pageContent";
   this.parent.append(this.childrenWrapper);
   this.footer.render(this.parent);
 };
@@ -24,4 +27,7 @@ Page.prototype.updateChildren = function (currentPage) {
 
 Page.prototype.updateHeader = function () {
   this.header.update();
+
+  this.childrenWrapper.replaceChildren();
+  currentPage.render(this.childrenWrapper);
 };
