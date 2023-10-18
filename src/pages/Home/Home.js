@@ -6,6 +6,5 @@ export default function Home() {
 
 Home.prototype.render = function (parent) {
   this.pageWrapper.append(this.placeholderText);
-  table.render();
   parent.append(this.pageWrapper);
 };
