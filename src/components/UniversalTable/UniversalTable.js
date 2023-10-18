@@ -3,34 +3,18 @@ import "./UniversalTable.scss";
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick;
   this.collection = collection;
-  this.parent = options.parent;
-  this.headerCells = options.headers;
+  this.headers = options.headers;
 }
 
-UniversalTable.prototype.render = function () {
-  //############################### tableHeader START####################################
-
+UniversalTable.prototype.render = function (parent) {
   const tableHeader = document.createElement("ul");
   const tableHeaderRow = document.createElement("li");
 
-  // tableHeaderRow.innerHTML = this.headerCells.reduce((acc, currentValue) => {
-  //   return acc + `<span>${currentValue}</span>`;
-  // }, "");
-
-  // tableHeader.append(tableHeaderRow);
-  this.headerCells.forEach((row, index) => {
-    tableHeaderRow.innerHTML = Object.values(row).reduce(
-      (acc, propertyValue) => {
-        return acc + `<span>${propertyValue}</span>`;
-      },
-      ""
-    );
-
-    tableHeader.append(tableHeaderRow);
+  this.headers.forEach((cell) => {
+    tableHeaderRow.innerHTML += `<span>${cell.title}</span>`;
   });
-  //############################### tableHeader END####################################
+  tableHeader.append(tableHeaderRow);
 
-  //############################### tableBody START####################################
   const tableBody = document.createElement("ul");
 
   if (!this.rowClick) {
@@ -46,14 +30,14 @@ UniversalTable.prototype.render = function () {
     tableRow.dataset.ind = index;
     tableRow.classList.add("t-row");
 
-    tableRow.innerHTML = Object.values(row).reduce((acc, propertyValue) => {
-      return acc + `<span>${propertyValue}</span>`;
-    }, "");
+    tableRow.innerHTML = this.headers
+      .map(({ name }) => `<span>${row[name]}</span>`)
+      .join("");
 
     tableBody.append(tableRow);
   });
-  //############################### tableBody END####################################
-  this.parent.append(tableHeader, tableBody);
+
+  parent.append(tableHeader, tableBody);
 };
 
 UniversalTable.prototype.rowClickHandler = function (e) {
