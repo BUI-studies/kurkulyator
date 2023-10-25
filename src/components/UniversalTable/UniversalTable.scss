@@ -1,0 +1,14 @@
+.table {
+  &-body {
+    list-style-type: none;
+  }
+
+  &-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  &-cell {
+    border: 1px solid white;
+  }
+}

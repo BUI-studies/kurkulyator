@@ -17,6 +17,22 @@ export const getTransactions = async () => {
   return res;
 };
 
+/**
+ * @param {number} dateRange - number or days
+ */
+export const getTransactionsByDateRange = async (dateRange = 3) => {
+  const transactionsCollectionByUserQuery = await query(
+    transactionsCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid)
+  );
+
+  const responseSnapShot = await getDocs(transactionsCollectionByUserQuery);
+  const res = [];
+
+  responseSnapShot.forEach((p) => res.push(p.data()));
+  return res;
+};
+
 export const getWallets = async () => {
   const walletsCollectionByUserQuery = await query(
     walletsCollectionRef,
@@ -69,7 +85,7 @@ export const getCategoriesByType = async (type = 'income') => {
 export const getByUser = async (collectionRefName) => {
   const collectionByUserQuery = await query(
     collectionRefName,
-    where('owner', '==', 'asd123')
+    where('owner', '==', Router.getCurrentUser().uid)
   );
   const responseSnapShot = await getDocs(collectionByUserQuery);
   const res = [];

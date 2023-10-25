@@ -5,7 +5,7 @@ import { ROUTES_NAMES, ROUTES, createPages } from "./Router.helper.js";
 let pages = createPages();
 
 let currentRoute = null;
-let currentPage = null;
+let currentPage = pages[ROUTES_NAMES.HOME];
 
 let currentUser = null;
 
@@ -30,5 +30,5 @@ export const clearRoutes = () => {
 };
 
 export const updateHeader = () => {
-  TEMPLATE.updateHeader();
+  TEMPLATE.updateHeader(currentPage);
 };
