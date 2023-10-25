@@ -11,7 +11,6 @@ export default function TransactionsHistory() {
 
 TransactionsHistory.prototype.render = async function (parent) {
   this.transactions = await getTransactions();
-  console.log(this.transactions);
 
   this.addButton.textContent = "New transaction";
   this.addButton.onclick = (e) => this.handleNewTransactionClick(e);
@@ -22,5 +21,4 @@ TransactionsHistory.prototype.render = async function (parent) {
 
 TransactionsHistory.prototype.handleNewTransactionClick = function (e) {
   e.preventDefault();
-  console.log("New transaction clicked");
 };

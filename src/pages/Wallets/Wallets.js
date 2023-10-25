@@ -10,7 +10,6 @@ export default function Wallets() {
 
 Wallets.prototype.render = async function (parent) {
   this.wallets = await getWallets();
-  console.log(this.wallets);
 
   this.addButton.textContent = "New wallet";
   this.addButton.onclick = (e) => this.handleNewWalletClick(e);
@@ -21,5 +20,4 @@ Wallets.prototype.render = async function (parent) {
 
 Wallets.prototype.handleNewWalletClick = function (e) {
   e.preventDefault();
-  console.log("New wallet clicked");
 };

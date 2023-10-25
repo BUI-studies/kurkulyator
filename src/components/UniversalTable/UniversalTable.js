@@ -27,9 +27,7 @@ UniversalTable.prototype.render = function (parent) {
   const tableBody = document.createElement("ul");
   tableBody.classList.add(this.classes.table);
 
-  if (!this.rowClick) {
-    console.log("No row click callback attached");
-  } else {
+  if (this.rowClick) {
     tableBody.onclick = (e) => {
       this.rowClickHandler(e);
     };

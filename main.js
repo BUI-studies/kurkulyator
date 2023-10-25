@@ -5,7 +5,6 @@ import { Router, ROUTES_NAMES } from "@/routes";
 import "./style.css";
 
 onAuthStateChanged(auth, (user) => {
-  console.log(user);
   Router.setCurrentUser(user);
   Router.updateHeader();
   if (!user) {

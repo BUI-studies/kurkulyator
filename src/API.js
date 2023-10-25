@@ -58,7 +58,7 @@ export const getCategories = async () => {
 export const getByUser = async (collectionRefName) => {
   const collectionByUserQuery = await query(
     collectionRefName,
-    where("owner", "==", "asd123")
+    where("owner", "==", Router.getCurrentUser().uid)
   );
   const responseSnapShot = await getDocs(collectionByUserQuery);
   const res = [];
