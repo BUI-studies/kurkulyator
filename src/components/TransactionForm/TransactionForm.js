@@ -45,9 +45,8 @@ TransactionForm.prototype.render = async function (parent) {
   this.elements.comment.name = 'comment';
   this.elements.date.name = 'date';
 
-  this.elements.amount.placeholder = 'Що по бабкам? Скільки хочеш скинути?';
-  this.elements.comment.placeholder =
-    'Розкажи, що тебе довело до цієї ситуації...';
+  this.elements.amount.placeholder = 'Введіть сумму коштів';
+  this.elements.comment.placeholder = 'Коментарі для транзакції (необовязково)';
 
   this.elements.owner = Router.getCurrentUser().uid;
   this.elements.type.innerHTML = this.makeOptions(this.typeOptions);
