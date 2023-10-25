@@ -25,7 +25,7 @@ Page.prototype.updateChildren = function (currentPage) {
   currentPage.render(this.childrenWrapper);
 };
 
-Page.prototype.updateHeader = function () {
+Page.prototype.updateHeader = function (currentPage) {
   this.header.update();
 
   this.childrenWrapper.replaceChildren();
