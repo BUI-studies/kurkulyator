@@ -2,7 +2,7 @@ import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import {
   walletsCollectionRef,
   transactionsCollectionRef,
-  categresCollectionRef,
+  categoriesCollectionRef,
 } from '../firebase';
 import { Router } from '@/routes';
 
@@ -28,15 +28,42 @@ export const getWallets = async () => {
   return res;
 };
 
+export const getWalletRefByName = async (walletName) => {
+  const walletsQuery = await query(
+    walletsCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid),
+    where('name', '==', walletName)
+  );
+
+  const responseSnapShot = await getDocs(walletsQuery);
+  return responseSnapShot.docs[0];
+};
+
 export const getCategories = async () => {
-  const categresCollectionByUserQuery = await query(
-    categresCollectionRef,
+  const categoriesCollectionByUserQuery = await query(
+    categoriesCollectionRef,
     where('owner', '==', Router.getCurrentUser().uid)
   );
-  const responseSnapShot = await getDocs(categresCollectionByUserQuery);
+  const responseSnapShot = await getDocs(categoriesCollectionByUserQuery);
   const res = [];
   responseSnapShot.forEach((p) => res.push(p.data()));
   return res;
+};
+
+export const getCategoriesByType = async (type = 'income') => {
+  const categoriesQuery = query(
+    categoriesCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid),
+    where('type', '==', type)
+  );
+
+  const querySnapshot = await getDocs(categoriesQuery);
+  const result = [];
+  querySnapshot.forEach((docRef) => {
+    result.push({ id: docRef.id, ...docRef.data() });
+  });
+  // return res.data();
+  return result;
 };
 
 export const getByUser = async (collectionRefName) => {

@@ -15,9 +15,13 @@ ModalWindow.prototype.render = function (parent, content) {
 
   this.modal.addEventListener('click', (event) => {
     if (event.target === this.modal) {
-      this.modal.remove();
+      this.close();
     }
   });
 
   parent.append(this.modal);
 };
+
+ModalWindow.prototype.close = function () {
+  this.modal.remove();
+}

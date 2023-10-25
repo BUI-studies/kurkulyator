@@ -1,6 +1,7 @@
 import { TransactionForm, ModalWindow } from '@/components';
 
 export default function Home() {
+  this.modal = new ModalWindow();
   this.elements = {
     self: document.createElement('div'),
     button: document.createElement('button'),
@@ -25,10 +26,9 @@ Home.prototype.render = function (parent) {
 Home.prototype.handleCreateForm = function (event) {
   event.preventDefault();
   //тут буде викликатись рендер форми нової транзакції хто створює форму, якщо я , то що у формі повинно бути?
-  const newTransactionForm = new TransactionForm();
+  const newTransactionForm = new TransactionForm(() => this.modal.close());
 
-  const newModalWindow = new ModalWindow();
-  newModalWindow.render(document.getElementById('app'), newTransactionForm);
+  this.modal.render(document.getElementById('app'), newTransactionForm);
   // newTransactionForm.render(document.querySelector('.modal__content'));
   console.log('new transaction');
 };
