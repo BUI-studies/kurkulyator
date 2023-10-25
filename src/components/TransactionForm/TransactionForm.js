@@ -93,6 +93,22 @@ TransactionForm.prototype.handleSubmit = async function (event) {
     date: formData.get('date'),
   };
 
+  const transactionType = newTransactionData.type;
+
+  switch (transactionType) {
+    case 'income':
+      // відправляємо дані в базу даних. Ліземо в гаманець, що вказаний у формі, і міняємо на ньому баланс відповідно вказаної суми у формі
+      break;
+    case 'outcome':
+      // відправляємо дані в базу даних. Ліземо в гаманець, що вказаний у формі, і знімаємо з нього вказану суму і "переводимо" її на вказану категорію витрат
+      break;
+    case 'transfer':
+      // у базі ганяємо вказану суму з форми між вказаними гаманцями, при чому звернути увагу на cash/card
+      break;
+    case 'correction':
+    // редагування паопередньо створеної тразакції (наприклад скоригувалась сума, або категорія? або коментар?)
+  }
+
   console.log(newTransactionData);
 
   await addDoc(transactionsCollectionRef, newTransactionData);

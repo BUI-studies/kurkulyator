@@ -40,9 +40,7 @@ Home.prototype.render = async function (parent) {
 
   this.newTransactionButton.innerText = 'New transaction';
   this.newTransactionButton.classList.add('home__button__newTransaction');
-  this.newTransactionButton.addEventListener('click', (event) =>
-    this.handleCreateForm(event)
-  );
+  this.newTransactionButton.onclick = (event) => this.handleCreateForm(event);
 
   const wallets = await getWallets();
 
@@ -107,7 +105,7 @@ Home.prototype.render = async function (parent) {
 Home.prototype.handleCreateForm = function (event) {
   event.preventDefault();
   const newTransactionForm = new TransactionForm(() => this.modal.close());
-
+  
   this.modal.render(document.getElementById('app'), newTransactionForm);
   console.log('new transaction');
 };
