@@ -52,7 +52,24 @@ export const getWalletRefByName = async (walletName) => {
   );
 
   const responseSnapShot = await getDocs(walletsQuery);
-  return responseSnapShot.docs[0];
+
+  return responseSnapShot.docs[0]
+    ? doc(walletsCollectionRef, responseSnapShot.docs[0].id)
+    : null;
+};
+
+export const getCategoryRefByName = async (categoryName) => {
+  const categoryQuery = await query(
+    categoriesCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid),
+    where('name', '==', categoryName)
+  );
+
+  const responseSnapShot = await getDocs(categoryQuery);
+
+  return responseSnapShot.docs[0]
+    ? doc(categoriesCollectionRef, responseSnapShot.docs[0].id)
+    : null;
 };
 
 export const getCategories = async () => {

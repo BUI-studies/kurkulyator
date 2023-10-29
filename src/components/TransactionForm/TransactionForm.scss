@@ -16,4 +16,10 @@
     outline: none;
     font-size: 16px;
   }
+  &__label {
+    display: flex;
+    flex-direction: column;
+
+    color: black;
+  }
 }

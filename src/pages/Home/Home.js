@@ -51,6 +51,7 @@ Home.prototype.render = async function (parent) {
   this.totalBalance.textContent = totalBalance;
 
   const transactionsWithRefs = await getTransactions();
+
   const transactions = await Promise.all(
     transactionsWithRefs.map(async (t) => ({
       ...t,
@@ -105,7 +106,7 @@ Home.prototype.render = async function (parent) {
 Home.prototype.handleCreateForm = function (event) {
   event.preventDefault();
   const newTransactionForm = new TransactionForm(() => this.modal.close());
-  
+
   this.modal.render(document.getElementById('app'), newTransactionForm);
   console.log('new transaction');
 };

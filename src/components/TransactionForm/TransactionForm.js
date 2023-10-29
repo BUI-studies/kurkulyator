@@ -1,10 +1,25 @@
-import { addDoc, getDocs, query, where } from 'firebase/firestore';
+import {
+  addDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  doc,
+  updateDoc,
+  Timestamp,
+} from 'firebase/firestore';
 import {
   transactionsCollectionRef,
   categoriesCollectionRef,
+  walletsCollectionRef,
 } from '@root/firebase';
 
-import { getWallets, getWalletRefByName, getCategoriesByType } from '@/API';
+import {
+  getWallets,
+  getWalletRefByName,
+  getCategoryRefByName,
+  getCategoriesByType,
+} from '@/API';
 import { Router } from '@/routes';
 
 import './TransactionForm.scss';
@@ -17,13 +32,17 @@ export default function TransactionForm({ afterSubmit }) {
     self: document.createElement('form'),
     owner: null,
     date: new Date(),
+    typeLabel: document.createElement('label'),
     type: document.createElement('select'),
     wallets: {
       from: null,
       to: null,
     },
+    categoryLabel: document.createElement('label'),
     category: document.createElement('select'),
+    amountLabel: document.createElement('label'),
     amount: document.createElement('input'),
+    commentLabel: document.createElement('label'),
     comment: document.createElement('input'),
     button: document.createElement('button'),
   };
@@ -45,15 +64,29 @@ TransactionForm.prototype.render = async function (parent) {
   this.elements.comment.name = 'comment';
   this.elements.date.name = 'date';
 
-  this.elements.amount.placeholder = 'Введіть сумму коштів';
-  this.elements.comment.placeholder = 'Коментарі для транзакції (необовязково)';
+  this.elements.amountLabel.innerText = 'Amount:';
+  this.elements.amountLabel.classList.add('transactionForm__label');
+  this.elements.amountLabel.append(this.elements.amount);
+
+  this.elements.commentLabel.innerText = "Comment (не обов'язково):";
+  this.elements.commentLabel.classList.add('transactionForm__label');
+  this.elements.commentLabel.append(this.elements.comment);
 
   this.elements.owner = Router.getCurrentUser().uid;
   this.elements.type.innerHTML = this.makeOptions(this.typeOptions);
 
+  this.elements.typeLabel.classList.add('transactionForm__label');
+  this.elements.typeLabel.innerText = 'Transaction type:';
+  this.elements.typeLabel.append(this.elements.type);
+
   this.categories = await getCategoriesByType();
   this.categoriesOptions = this.categories.map((item) => item.name);
+
+  this.elements.categoryLabel.innerText = 'Category:';
+  this.elements.categoryLabel.classList.add('transactionForm__label');
   this.elements.category.innerHTML = this.makeOptions(this.categoriesOptions);
+  this.elements.categoryLabel.append(this.elements.category);
+
   this.elements.comment.setAttribute('type', 'textarea');
   this.elements.button.innerText = 'Save';
 
@@ -66,10 +99,10 @@ TransactionForm.prototype.render = async function (parent) {
   });
 
   this.elements.self.append(
-    this.elements.type,
-    this.elements.category,
-    this.elements.amount,
-    this.elements.comment,
+    this.elements.typeLabel,
+    this.elements.categoryLabel,
+    this.elements.amountLabel,
+    this.elements.commentLabel,
     this.elements.button
   );
 
@@ -80,23 +113,34 @@ TransactionForm.prototype.render = async function (parent) {
 TransactionForm.prototype.handleSubmit = async function (event) {
   event.preventDefault();
 
+  const currentDate = new Date();
+
   const formData = new FormData(this.elements.self);
 
   const newTransactionData = {
     type: formData.get('type'),
-    from: await getWalletRefByName(formData.get('walletFrom')),
-    to: await getWalletRefByName(formData.get('walletTo')),
-    category: formData.get('category'),
-    amount: formData.get('amount'),
+    from: await getWalletRefByName(formData.get('walletFrom')), //returns DocumentRef or null
+    to: await getWalletRefByName(formData.get('walletTo')), //returns DocumentRef or null
+    category: await getCategoryRefByName(formData.get('category')), //!! TODO: make it by the example of the previous line
+    amount: Number(formData.get('amount')),
     comment: formData.get('comment'),
     owner: Router.getCurrentUser().uid,
-    date: formData.get('date'),
+    date: Timestamp.fromDate(currentDate), //!! TODO: make it work
   };
+
+  console.log('newTransactionData', newTransactionData);
+
+  await addDoc(transactionsCollectionRef, newTransactionData);
 
   const transactionType = newTransactionData.type;
 
   switch (transactionType) {
     case 'income':
+      const walletToData = (await getDoc(newTransactionData.to)).data();
+
+      await updateDoc(newTransactionData.to, {
+        balance: walletToData.balance + newTransactionData.amount,
+      });
       // відправляємо дані в базу даних. Ліземо в гаманець, що вказаний у формі, і міняємо на ньому баланс відповідно вказаної суми у формі
       break;
     case 'outcome':
@@ -109,11 +153,7 @@ TransactionForm.prototype.handleSubmit = async function (event) {
     // редагування паопередньо створеної тразакції (наприклад скоригувалась сума, або категорія? або коментар?)
   }
 
-  console.log(newTransactionData);
-
-  await addDoc(transactionsCollectionRef, newTransactionData);
-
-  this.afterSubmit(event, newTransactionData);
+  this.afterSubmit?.(event, newTransactionData); //calls the function only if it exists
 };
 
 TransactionForm.prototype.makeOptions = function (optionsSet) {
