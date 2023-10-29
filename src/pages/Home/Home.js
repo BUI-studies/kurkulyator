@@ -1,7 +1,8 @@
-import { getDoc } from "firebase/firestore";
-
 import { getWallets, getTransactions } from "@/API";
 import { UniversalTable } from "@/components";
+
+import { getDoc } from "firebase/firestore";
+import { throwable } from "@/utils/throwable";
 
 import "./Home.scss";
 
@@ -36,26 +37,35 @@ Home.prototype.render = async function (parent) {
   this.transactionsHeader.classList.add("transactions--header");
   this.transactionsHeader.textContent = "Transactions";
 
-  const wallets = await getWallets();
+  const wallets = await throwable(getWallets);
 
   const totalBalance = wallets.reduce(
     (acc, currWallet) => (acc += +currWallet.balance),
     0
   );
+
   this.totalBalance.textContent = totalBalance;
 
-  const transactionsWithRefs = await getTransactions();
-  const transactions = await Promise.all(
-    transactionsWithRefs.map(async (t) => ({
-      ...t,
-      to: t.to ? (await getDoc(t.to)).data().name : null,
-      from: t.from ? (await getDoc(t.from)).data().name : null,
-      category: (await getDoc(t.category)).data().name,
-      date: t.date.toDate().toLocaleString(),
-      comment: !t.comment ? "Empty" : t.comment,
-    }))
-  );
+  this.walletsTable = new UniversalTable(wallets, {
+    headers: [
+      { name: "name", title: "Name" },
+      { name: "balance", title: "Balance" },
+    ],
+  });
 
+  const transactionsWithRefs = await throwable(getTransactions);
+  const transactions = await throwable(() =>
+    Promise.all(
+      transactionsWithRefs.map(async (t) => ({
+        ...t,
+        to: t.to ? (await getDoc(t.to)).data().name : null,
+        from: t.from ? (await getDoc(t.from)).data().name : null,
+        category: (await getDoc(t.category)).data().name,
+        date: t.date.toDate().toLocaleString(),
+        comment: !t.comment ? "Empty" : t.comment,
+      }))
+    )
+  );
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
       { name: "category", title: "Category" },
@@ -71,13 +81,6 @@ Home.prototype.render = async function (parent) {
   this.transactionsWrapper.replaceChildren();
   this.transactionsWrapper.append(this.transactionsHeader);
   this.transactionsTable.render(this.transactionsWrapper);
-
-  this.walletsTable = new UniversalTable(wallets, {
-    headers: [
-      { name: "name", title: "Name" },
-      { name: "balance", title: "Balance" },
-    ],
-  });
 
   this.balanceWrapper.append(
     this.balanceText,

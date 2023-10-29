@@ -1,4 +1,5 @@
 import { getCategories } from "@/API";
+import { throwable } from "@/utils/throwable";
 
 export default function Categories() {
   this.pageWrapper = document.createElement("div");
@@ -8,7 +9,7 @@ export default function Categories() {
 }
 
 Categories.prototype.render = async function (parent) {
-  this.categories = await getCategories();
+  this.categories = await throwable(getCategories);
 
   this.addButton.textContent = "New category";
   this.addButton.onclick = (e) => this.handleNewCategotyClick(e);
