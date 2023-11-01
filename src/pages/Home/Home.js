@@ -57,7 +57,7 @@ Home.prototype.render = async function (parent) {
       ...t,
       to: t.to ? (await getDoc(t.to)).data().name : null,
       from: t.from ? (await getDoc(t.from)).data().name : null,
-      category: (await getDoc(t.category)).data().name,
+      category: t.category ? (await getDoc(t.category)).data().name : null,
       date: t.date.toDate().toLocaleString(),
       comment: !t.comment ? 'Empty' : t.comment,
     }))

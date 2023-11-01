@@ -121,38 +121,55 @@ TransactionForm.prototype.handleSubmit = async function (event) {
     type: formData.get('type'),
     from: await getWalletRefByName(formData.get('walletFrom')), //returns DocumentRef or null
     to: await getWalletRefByName(formData.get('walletTo')), //returns DocumentRef or null
-    category: await getCategoryRefByName(formData.get('category')), //!! TODO: make it by the example of the previous line
+    category: await getCategoryRefByName(formData.get('category')),
     amount: Number(formData.get('amount')),
     comment: formData.get('comment'),
     owner: Router.getCurrentUser().uid,
-    date: Timestamp.fromDate(currentDate), //!! TODO: make it work
+    date: Timestamp.fromDate(currentDate),
   };
 
   console.log('newTransactionData', newTransactionData);
 
-  await addDoc(transactionsCollectionRef, newTransactionData);
-
   const transactionType = newTransactionData.type;
 
   switch (transactionType) {
+    case 'correction':
+      if (newTransactionData.comment === '') {
+        newTransactionData.comment = 'Корекція балансу гаманцю';
+      }
     case 'income':
       const walletToData = (await getDoc(newTransactionData.to)).data();
-
       await updateDoc(newTransactionData.to, {
         balance: walletToData.balance + newTransactionData.amount,
       });
-      // відправляємо дані в базу даних. Ліземо в гаманець, що вказаний у формі, і міняємо на ньому баланс відповідно вказаної суми у формі
+
       break;
     case 'outcome':
-      // відправляємо дані в базу даних. Ліземо в гаманець, що вказаний у формі, і знімаємо з нього вказану суму і "переводимо" її на вказану категорію витрат
+      const walletFromData = (await getDoc(newTransactionData.from)).data();
+
+      await updateDoc(newTransactionData.from, {
+        balance: walletFromData.balance - newTransactionData.amount,
+      });
+
       break;
     case 'transfer':
-      // у базі ганяємо вказану суму з форми між вказаними гаманцями, при чому звернути увагу на cash/card
-      break;
-    case 'correction':
-    // редагування паопередньо створеної тразакції (наприклад скоригувалась сума, або категорія? або коментар?)
-  }
+      const walletFromDataTransfer = (
+        await getDoc(newTransactionData.from)
+      ).data();
 
+      const walletToDataTransfer = (await getDoc(newTransactionData.to)).data();
+
+      await updateDoc(newTransactionData.from, {
+        balance: walletFromDataTransfer.balance - newTransactionData.amount,
+      });
+
+      await updateDoc(newTransactionData.to, {
+        balance: walletToDataTransfer.balance + newTransactionData.amount,
+      });
+
+      break;
+  }
+  await addDoc(transactionsCollectionRef, newTransactionData);
   this.afterSubmit?.(event, newTransactionData); //calls the function only if it exists
 };
 
