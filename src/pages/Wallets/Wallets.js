@@ -1,8 +1,6 @@
 import { getWallets, getWallet, saveWallet } from '@/API';
-import { UniversalTable } from '@/components';
+import { UniversalTable, ModalWindow, WalletsForm } from '@/components';
 import { Router } from '@/routes';
-import { ModalWindow } from '@/components';
-import { WalletsForm } from '@/components';
 
 export default function Wallets() {
   this.pageWrapper = document.createElement('div');
@@ -15,11 +13,13 @@ export default function Wallets() {
 }
 
 Wallets.prototype.render = async function (parent) {
+  this.pageWrapper.replaceChildren();
+
   this.wallets = await getWallets();
 
   this.walletTable = new UniversalTable(this.wallets, {
     headers: [
-      { name: 'title', title: 'Title' },
+      { name: 'name', title: 'Title' },
       { name: 'balance', title: 'Balance' },
     ],
   });
@@ -35,3 +35,7 @@ Wallets.prototype.handleNewWalletClick = async function (e) {
   e.preventDefault();
   this.modal.render(this.pageWrapper, this.walletForm);
 };
+
+
+
+

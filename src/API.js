@@ -85,5 +85,31 @@ export const saveWallet = async (obj) => {
 
   if (checkWallet !== null) throw new ReferenceError('The Wallet has already exist');
 
-  await addDoc(walletsCollectionRef, obj);
+  return await addDoc(walletsCollectionRef, obj);
+};
+
+export const getWalletRefByName = async (walletName) => {
+  const walletsQuery = await query(
+    walletsCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid),
+    where('name', '==', walletName),
+  );
+
+  const responseSnapShot = await getDocs(walletsQuery);
+
+  return responseSnapShot.docs[0] ? doc(walletsCollectionRef, responseSnapShot.docs[0].id) : null;
+};
+
+export const getCategoryRefByName = async (categoryName) => {
+  const categoryQuery = await query(
+    categoriesCollectionRef,
+    where('owner', '==', Router.getCurrentUser().uid),
+    where('name', '==', categoryName),
+  );
+
+  const responseSnapShot = await getDocs(categoryQuery);
+
+  return responseSnapShot.docs[0]
+    ? doc(categoriesCollectionRef, responseSnapShot.docs[0].id)
+    : null;
 };
