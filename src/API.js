@@ -41,7 +41,8 @@ export const getWallets = async () => {
   const responseSnapShot = await getDocs(walletsCollectionByUserQuery);
   const res = [];
   responseSnapShot.forEach((p) => res.push(p.data()));
-  return res;
+  // return res;
+  throw new Error();
 };
 
 export const getCategories = async () => {
