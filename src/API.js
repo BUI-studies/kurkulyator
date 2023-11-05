@@ -1,15 +1,15 @@
-import { doc, getDoc, getDocs, query, where, addDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, query, where, addDoc } from "firebase/firestore";
 import {
   walletsCollectionRef,
   transactionsCollectionRef,
   categresCollectionRef,
-} from '../firebase';
-import { Router } from '@/routes';
+} from "../firebase";
+import { Router } from "@/routes";
 
 export const getTransactions = async () => {
   const transactionsCollectionByUserQuery = await query(
     transactionsCollectionRef,
-    where('owner', '==', Router.getCurrentUser().uid),
+    where("owner", "==", Router.getCurrentUser().uid)
   );
   const responseSnapShot = await getDocs(transactionsCollectionByUserQuery);
   const res = [];
@@ -23,7 +23,7 @@ export const getTransactions = async () => {
 export const getTransactionsByDateRange = async (dateRange = 3) => {
   const transactionsCollectionByUserQuery = await query(
     transactionsCollectionRef,
-    where('owner', '==', Router.getCurrentUser().uid),
+    where("owner", "==", Router.getCurrentUser().uid)
   );
 
   const responseSnapShot = await getDocs(transactionsCollectionByUserQuery);
@@ -36,7 +36,7 @@ export const getTransactionsByDateRange = async (dateRange = 3) => {
 export const getWallets = async () => {
   const walletsCollectionByUserQuery = await query(
     walletsCollectionRef,
-    where('owner', '==', Router.getCurrentUser().uid),
+    where("owner", "==", Router.getCurrentUser().uid)
   );
   const responseSnapShot = await getDocs(walletsCollectionByUserQuery);
   const res = [];
@@ -47,7 +47,7 @@ export const getWallets = async () => {
 export const getCategories = async () => {
   const categresCollectionByUserQuery = await query(
     categresCollectionRef,
-    where('owner', '==', Router.getCurrentUser().uid),
+    where("owner", "==", Router.getCurrentUser().uid)
   );
   const responseSnapShot = await getDocs(categresCollectionByUserQuery);
   const res = [];
@@ -58,7 +58,7 @@ export const getCategories = async () => {
 export const getByUser = async (collectionRefName) => {
   const collectionByUserQuery = await query(
     collectionRefName,
-    where('owner', '==', Router.getCurrentUser().uid),
+    where("owner", "==", Router.getCurrentUser().uid)
   );
   const responseSnapShot = await getDocs(collectionByUserQuery);
   const res = [];
@@ -66,11 +66,11 @@ export const getByUser = async (collectionRefName) => {
   return res;
 };
 
-export const getWallet = async (title) => {
+export const getWallet = async (name) => {
   const result = await query(
-    walletsCollectionRef, 
-    where('owner', '==', Router.getCurrentUser().uid),
-    where('name', '==', title)
+    walletsCollectionRef,
+    where("owner", "==", Router.getCurrentUser().uid),
+    where("name", "==", name)
   );
   const querySnapshot = await getDocs(result);
 
@@ -81,9 +81,10 @@ export const getWallet = async (title) => {
 };
 
 export const saveWallet = async (obj) => {
-  const checkWallet = await getWallet(obj.title);
+  const checkWallet = await getWallet(obj.name);
 
-  if (checkWallet !== null) throw new ReferenceError('The Wallet has already exist');
+  if (checkWallet !== null)
+    throw new ReferenceError("The Wallet has already exist");
 
   return await addDoc(walletsCollectionRef, obj);
 };
@@ -91,20 +92,22 @@ export const saveWallet = async (obj) => {
 export const getWalletRefByName = async (walletName) => {
   const walletsQuery = await query(
     walletsCollectionRef,
-    where('owner', '==', Router.getCurrentUser().uid),
-    where('name', '==', walletName),
+    where("owner", "==", Router.getCurrentUser().uid),
+    where("name", "==", walletName)
   );
 
   const responseSnapShot = await getDocs(walletsQuery);
 
-  return responseSnapShot.docs[0] ? doc(walletsCollectionRef, responseSnapShot.docs[0].id) : null;
+  return responseSnapShot.docs[0]
+    ? doc(walletsCollectionRef, responseSnapShot.docs[0].id)
+    : null;
 };
 
 export const getCategoryRefByName = async (categoryName) => {
   const categoryQuery = await query(
     categoriesCollectionRef,
-    where('owner', '==', Router.getCurrentUser().uid),
-    where('name', '==', categoryName),
+    where("owner", "==", Router.getCurrentUser().uid),
+    where("name", "==", categoryName)
   );
 
   const responseSnapShot = await getDocs(categoryQuery);

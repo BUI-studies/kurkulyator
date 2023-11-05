@@ -24,11 +24,11 @@ UniversalTable.prototype.render = function (parent) {
   });
   tableHeader.append(tableHeaderRow);
 
-  const tableBody = document.createElement("ul");
-  tableBody.classList.add(this.classes.table);
+  this.tableBody = document.createElement("ul");
+  this.tableBody.classList.add(this.classes.table);
 
   if (this.rowClick) {
-    tableBody.onclick = (e) => {
+    this.tableBody.onclick = (e) => {
       this.rowClickHandler(e);
     };
   }
@@ -49,10 +49,10 @@ UniversalTable.prototype.render = function (parent) {
       )
       .join("");
 
-    tableBody.append(tableRow);
+    this.tableBody.append(tableRow);
   });
-
-  parent.append(tableHeader, tableBody);
+  parent.append(tableHeader, this.tableBody);
+  console.log(this.collection);
 };
 
 UniversalTable.prototype.rowClickHandler = function (e) {
@@ -64,4 +64,34 @@ UniversalTable.prototype.rowClickHandler = function (e) {
     clickedIndex = e.target.dataset;
   }
   this.rowClick(this.collection[clickedIndex]);
+};
+
+UniversalTable.prototype.updateTable = function (updatedCollection) {
+  // ця частина працює. Нічого складного
+  const rowsToAdd = this.collection.filter(
+    (item, index) => !updatedCollection[index]?.name.includes(item.name)
+  );
+  const rowsToRemove = updatedCollection.filter(
+    (item, index) => !this.collection[index]?.name.includes(item.name)
+  );
+
+  // Ця виглядає складно. Щоб видалити, збираю усі клітинки...
+  const walletRows = document.querySelectorAll(".table-cell");
+  /*   ...проходжусь по усіх і порівнюю Назви волетів з назвами, які треба видалити.
+  Якщо знайшов - шукаю елемент з таким же дата ід та видаляю. 
+  Але якщо на сторінці є кілька таблиць - буде проблема. 
+  Треба інший дата-атрибут або якось робити його унікальним  //TODO: вирішити */
+  walletRows.forEach((row) => {
+    rowsToRemove.forEach((item) => {
+      if (item.name === row.innerText) {
+        document
+          .querySelector(`'[data-ind="${row.parentElement.dataset.ind}"]'`)
+          .remove();
+      }
+    });
+  });
+
+  /* Та ж потенційна проблема з додаванням нових рядків.
+  Їм треба генерувати унікальні дата-атрибути і хз як краще якщо кілька таблиць.
+  */
 };
