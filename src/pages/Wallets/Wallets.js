@@ -1,4 +1,5 @@
 import { getWallets } from "@/API";
+import { throwable } from "@/utils/throwable";
 
 export default function Wallets() {
   this.pageWrapper = document.createElement("div");
@@ -9,7 +10,7 @@ export default function Wallets() {
 }
 
 Wallets.prototype.render = async function (parent) {
-  this.wallets = await getWallets();
+  this.wallets = await throwable(getWallets);
 
   this.addButton.textContent = "New wallet";
   this.addButton.onclick = (e) => this.handleNewWalletClick(e);

@@ -1,4 +1,5 @@
 import { getTransactions } from "@/API";
+import { throwable } from "@/utils/throwable";
 
 export default function TransactionsHistory() {
   this.pageWrapper = document.createElement("div");
@@ -10,7 +11,7 @@ export default function TransactionsHistory() {
 }
 
 TransactionsHistory.prototype.render = async function (parent) {
-  this.transactions = await getTransactions();
+  this.transactions = await throwable(getTransactions);
 
   this.addButton.textContent = "New transaction";
   this.addButton.onclick = (e) => this.handleNewTransactionClick(e);

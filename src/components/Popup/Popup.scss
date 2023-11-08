@@ -1,0 +1,38 @@
+.error-popup {
+  position: fixed;
+  background-color: gray;
+  animation: fadeIn 0.5s;
+  max-width: 300px;
+  border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+p {
+  padding: 0 20px;
+}
+.top-right {
+  top: 100px;
+  right: 10px;
+}
+.top-left {
+  top: 100px;
+  margin-left: 10px;
+}
+
+.bottom-right {
+  margin-bottom: 100px;
+  right: 10px;
+}
+
+.bottom-left {
+  margin-bottom: 100px;
+  margin-left: 10px;
+}
