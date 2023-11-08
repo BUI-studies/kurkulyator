@@ -10,6 +10,7 @@ export default function UniversalTable(collection, options) {
     row: options?.classes?.row || "table-row",
     table: options?.classes?.table || "table-body",
   };
+  this.generateDataset = options.generateDataset;
 }
 
 UniversalTable.prototype.render = function (parent) {
@@ -24,44 +25,55 @@ UniversalTable.prototype.render = function (parent) {
   });
   tableHeader.append(tableHeaderRow);
 
-  const tableBody = document.createElement("ul");
-  tableBody.classList.add(this.classes.table);
+  this.tableBody = document.createElement("ul");
+  this.tableBody.classList.add(this.classes.table);
 
   if (this.rowClick) {
-    tableBody.onclick = (e) => {
+    this.tableBody.onclick = (e) => {
       this.rowClickHandler(e);
     };
   }
 
-  this.collection.forEach((row, index) => {
-    const tableRow = document.createElement("li");
-    tableRow.classList.add(this.classes.row);
+  this.collection.forEach((row, index) => this.createSingleRow(row, index));
+  parent.append(tableHeader, this.tableBody);
+};
 
-    tableRow.dataset.ind = index;
-    tableRow.classList.add("t-row");
+UniversalTable.prototype.createSingleRow = function (row, index) {
+  const tableRow = document.createElement("li");
+  tableRow.classList.add(this.classes.row);
 
-    tableRow.innerHTML = this.headers
-      .map(
-        ({ name }) =>
-          `<span class="${this.classes.cell}">${
-            row[name] || this.emptyCellValue
-          }</span>`
-      )
-      .join("");
+  tableRow.dataset.uniqueMarker = this.generateDataset?.(row) || index;
+  tableRow.dataset.collectionInd = index;
+  tableRow.classList.add("t-row");
 
-    tableBody.append(tableRow);
-  });
+  tableRow.innerHTML = this.headers
+    .map(
+      ({ name }) =>
+        `<span class="${this.classes.cell}">${
+          row[name] || this.emptyCellValue
+        }</span>`
+    )
+    .join("");
 
-  parent.append(tableHeader, tableBody);
+  this.tableBody.append(tableRow);
 };
 
 UniversalTable.prototype.rowClickHandler = function (e) {
   let clickedIndex = 0;
-
+  const somePropertyName = this.headers[0].name;
+  this.collection.find((item) => item[somePropertyName]);
   if (!e.target.classList.contains(this.classes.row)) {
-    clickedIndex = e.target.closest(`.${this.classes.row}`).dataset;
+    clickedIndex = e.target.closest(`.${this.classes.row}`).dataset
+      .collectionInd;
   } else {
-    clickedIndex = e.target.dataset;
+    clickedIndex = e.target.dataset.collectionInd;
   }
   this.rowClick(this.collection[clickedIndex]);
+};
+
+UniversalTable.prototype.updateTable = function (updatedCollection) {
+  this.tableBody.replaceChildren();
+  updatedCollection.forEach((row, index) => this.createSingleRow(row, index));
+
+  this.collection = updatedCollection;
 };
