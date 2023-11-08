@@ -1,11 +1,13 @@
 import { getDoc } from "firebase/firestore";
 
 import { getWallets, getTransactions } from "@/API";
-import { UniversalTable } from "@/components";
+import { UniversalTable, TransactionForm, ModalWindow } from "@/components";
 
 import "./Home.scss";
 
 export default function Home() {
+  this.modal = new ModalWindow();
+  this.newTransactionButton = document.createElement("button");
   this.pageWrapper = document.createElement("div");
   this.balanceWrapper = document.createElement("section");
   this.balanceText = document.createElement("h2");
@@ -32,9 +34,14 @@ Home.prototype.render = async function (parent) {
   this.walletsWrapper.classList.add("wallets--wrapper");
   this.walletsHeader.textContent = "Your wallets";
 
+  this.pageWrapper.classList.add("page-wrapper");
   this.transactionsWrapper.classList.add("transactions--wrapper");
   this.transactionsHeader.classList.add("transactions--header");
   this.transactionsHeader.textContent = "Transactions";
+
+  this.newTransactionButton.innerText = "New transaction";
+  this.newTransactionButton.classList.add("new-transaction-btn");
+  this.newTransactionButton.onclick = (event) => this.handleCreateForm(event);
 
   const wallets = await getWallets();
 
@@ -45,6 +52,7 @@ Home.prototype.render = async function (parent) {
   this.totalBalance.textContent = totalBalance;
 
   const transactionsWithRefs = await getTransactions();
+
   const transactions = await Promise.all(
     transactionsWithRefs.map(async (t) => {
       return {
@@ -92,7 +100,18 @@ Home.prototype.render = async function (parent) {
   this.pageWrapper.append(
     this.balanceWrapper,
     this.walletsWrapper,
+    this.newTransactionButton,
     this.transactionsWrapper
   );
   parent.append(this.pageWrapper);
+};
+
+Home.prototype.handleCreateForm = function (event) {
+  event.preventDefault();
+  const newTransactionForm = new TransactionForm({
+    afterSubmit: () => this.modal.close(),
+  });
+
+  this.modal.render(document.getElementById("app"), newTransactionForm);
+  console.log("new transaction");
 };

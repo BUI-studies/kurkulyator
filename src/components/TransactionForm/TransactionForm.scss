@@ -1,0 +1,26 @@
+.transactionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 10px;
+  width: 350px;
+
+  &__type,
+  &__amount,
+  &__category,
+  &__comment,
+  &__wallet,
+  &__button {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+  }
+  &__label {
+    display: flex;
+    flex-direction: column;
+
+    color: black;
+  }
+}
