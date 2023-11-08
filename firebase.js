@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection } from "firebase/firestore";
-import { GoogleAuthProvider, getAuth } from "firebase/auth";
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection } from 'firebase/firestore';
+import { GoogleAuthProvider, getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -20,6 +20,6 @@ export const googleAuthProvider = new GoogleAuthProvider();
 
 export const db = getFirestore(app);
 
-export const walletsCollectionRef = collection(db, "wallets");
-export const transactionsCollectionRef = collection(db, "transactions");
-export const categresCollectionRef = collection(db, "categories");
+export const walletsCollectionRef = collection(db, 'wallets');
+export const transactionsCollectionRef = collection(db, 'transactions');
+export const categoriesCollectionRef = collection(db, 'categories');

@@ -1,9 +1,15 @@
+.page-wrapper {
+  display: grid;
+  gap: 1em;
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .balance--wrapper {
-  display: inline-flex;
+  grid-column: 1 / span 1;
+  display: flex;
   padding: 1em;
   background-color: gray;
   border-radius: 1em;
-  width: 300px;
   height: 200px;
 }
 .balance--header .wallets--header .transactions--header {
@@ -16,16 +22,24 @@
   margin: 0;
 }
 .wallets--wrapper {
+  grid-column: 2 / span 1;
+
   display: inline-flex;
   padding: 1em;
   background-color: gray;
   border-radius: 1em;
-  width: 500px;
+
   height: 200px;
-  margin-left: 2em;
-  // margin-top: 0;
 }
+
+.new-transaction-btn {
+  grid-column: 1 / span 2;
+  padding: 0.5em;
+  text-transform: uppercase;
+}
+
 .transactions--wrapper {
+  grid-column: 1 / span 2;
   display: block;
   padding: 1em;
   background-color: gray;
