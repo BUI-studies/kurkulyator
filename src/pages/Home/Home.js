@@ -51,20 +51,7 @@ Home.prototype.render = async function (parent) {
   );
   this.totalBalance.textContent = totalBalance;
 
-  const transactionsWithRefs = await getTransactions();
-
-  const transactions = await Promise.all(
-    transactionsWithRefs.map(async (t) => {
-      return {
-        ...t,
-        to: t.to ? (await getDoc(t.to)).data().name : null,
-        from: t.from ? (await getDoc(t.from)).data().name : null,
-        category: t.category ? (await getDoc(t.category)).data().name : null,
-        date: t.date.toDate().toLocaleString(),
-        comment: !t.comment ? "Empty" : t.comment,
-      };
-    })
-  );
+  const transactions = await this.pullAllTransaction();
 
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
@@ -109,9 +96,30 @@ Home.prototype.render = async function (parent) {
 Home.prototype.handleCreateForm = function (event) {
   event.preventDefault();
   const newTransactionForm = new TransactionForm({
-    afterSubmit: () => this.modal.close(),
+    afterSubmit: async () => {
+      this.modal.close();
+      const transactions = await this.pullAllTransaction();
+      this.transactionsTable.updateTable(transactions);
+    },
   });
 
   this.modal.render(document.getElementById("app"), newTransactionForm);
   console.log("new transaction");
+};
+
+Home.prototype.pullAllTransaction = async function () {
+  const transactionsWithRefs = await getTransactions();
+
+  return Promise.all(
+    transactionsWithRefs.map(async (t) => {
+      return {
+        ...t,
+        to: t.to ? (await getDoc(t.to)).data().name : null,
+        from: t.from ? (await getDoc(t.from)).data().name : null,
+        category: t.category ? (await getDoc(t.category)).data().name : null,
+        date: t.date.toDate().toLocaleString(),
+        comment: !t.comment ? "Empty" : t.comment,
+      };
+    })
+  );
 };
