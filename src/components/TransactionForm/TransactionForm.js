@@ -15,10 +15,16 @@ import './TransactionForm.scss';
 
 export default function TransactionForm({ afterSubmit }) {
   this.typeOptions = ['income', 'outcome', 'transfer', 'correction'];
-  this.categoryOptions = [];
+
   this.afterSubmit = afterSubmit;
   this.elements = {
-    self: document.createElement('form'),
+    self: createElement({
+      tagName: 'form',
+      name: 'transaction-form',
+      id: 't-form',
+      innerText: '',
+      className: 'transactionForm',
+    }),
     owner: null,
     date: new Date(),
     typeLabel: createElement({
@@ -28,9 +34,29 @@ export default function TransactionForm({ afterSubmit }) {
       innerText: 'Transaction type:',
       className: 'transactionForm__label',
     }),
-    type: document.createElement('select'),
+
+    type: createSelect({
+      options: this.typeOptions,
+      name: 'type',
+      className: 'transactionForm__type',
+      optionsClassName: 'transactionForm__type-option',
+    }),
     wallets: {
+      labelFrom: createElement({
+        tagName: 'label',
+        name: 'wallet-from-label',
+        id: 'wfLabel',
+        innerText: 'From:',
+        className: 'transactionForm__label',
+      }),
       from: null,
+      labelTo: createElement({
+        tagName: 'label',
+        name: 'wallet-to-label',
+        id: 'wtLabel',
+        innerText: 'To:',
+        className: 'transactionForm__label',
+      }),
       to: null,
     },
     categoryLabel: createElement({
@@ -40,7 +66,12 @@ export default function TransactionForm({ afterSubmit }) {
       innerText: 'Category:',
       className: 'transactionForm__label',
     }),
-    category: document.createElement('select'),
+
+    category: createSelect({
+      name: 'category',
+      className: 'transactionForm__category',
+    }),
+
     amountLabel: createElement({
       tagName: 'label',
       name: 'amount-label',
@@ -48,7 +79,13 @@ export default function TransactionForm({ afterSubmit }) {
       innerText: 'Amount:',
       className: 'transactionForm__label',
     }),
-    amount: document.createElement('input'),
+
+    amount: createInput({
+      name: 'amount',
+      id: 'tFormAmount',
+      className: 'transactionForm__amount',
+      value: '',
+    }),
     commentLabel: createElement({
       tagName: 'label',
       name: 'comment-label',
@@ -56,42 +93,43 @@ export default function TransactionForm({ afterSubmit }) {
       innerText: "Comment (не обов'язково):",
       className: 'transactionForm__label',
     }),
-    comment: document.createElement('input'),
-    button: document.createElement('button'),
+
+    comment: createInput({
+      name: 'comment',
+      id: 'tFormComment',
+      className: 'transactionForm__comment',
+      value: '',
+    }),
+    button: createElement({
+      tagName: 'button',
+      name: 'form-submit',
+      id: 'tFormSubmit',
+      innerText: 'Save',
+      className: 'transactionForm__button',
+    }),
   };
 }
 
 TransactionForm.prototype.render = async function (parent) {
-  this.elements.self.classList.add('transactionForm');
-  this.elements.type.classList.add('transactionForm__type');
-  this.elements.category.classList.add('transactionForm__category');
-  this.elements.amount.classList.add('transactionForm__amount');
-  this.elements.comment.classList.add('transactionForm__comment');
-  this.elements.button.classList.add('transactionForm__button');
-
-  this.elements.type.name = 'type';
-  this.elements.category.name = 'category';
-  this.elements.amount.name = 'amount';
-  this.elements.comment.name = 'comment';
   this.elements.date.name = 'date';
+
+  this.categories = await getCategoriesByType();
+  this.categoriesOptions = this.categories.map((item) => item.name);
+
+  this.elements.category.innerHTML = makeOptions(
+    this.categoriesOptions,
+    'transactionForm__category-options'
+  );
 
   this.elements.amountLabel.append(this.elements.amount);
 
   this.elements.commentLabel.append(this.elements.comment);
 
   this.elements.owner = Router.getCurrentUser().uid;
-  this.elements.type.innerHTML = makeOptions(this.typeOptions);
- 
+
   this.elements.typeLabel.append(this.elements.type);
 
-  this.categories = await getCategoriesByType();
-  this.categoriesOptions = this.categories.map((item) => item.name);
-
-  this.elements.category.innerHTML = makeOptions(this.categoriesOptions);
   this.elements.categoryLabel.append(this.elements.category);
-
-  this.elements.comment.setAttribute('type', 'textarea');
-  this.elements.button.innerText = 'Save';
 
   this.elements.button.addEventListener('click', (event) =>
     this.handleSubmit(event)
@@ -110,7 +148,6 @@ TransactionForm.prototype.render = async function (parent) {
   );
 
   parent.append(this.elements.self);
-  console.log(Router.getCurrentUser().uid);
 };
 
 TransactionForm.prototype.handleSubmit = async function (event) {
@@ -192,20 +229,23 @@ TransactionForm.prototype.typeListener = async function (event) {
   this.elements.wallets.from = await this.makeWalletsInput('walletFrom');
   this.elements.wallets.to = await this.makeWalletsInput('walletTo');
 
+  this.elements.wallets.labelFrom.append(this.elements.wallets.from);
+  this.elements.wallets.labelTo.append(this.elements.wallets.to);
+
   switch (selectedType) {
     case 'transfer':
-      this.elements.category.remove();
+      this.elements.categoryLabel.remove();
       this.elements.type.insertAdjacentElement(
         'afterend',
-        this.elements.wallets.from
+        this.elements.wallets.labelFrom
       );
       this.elements.wallets.from.insertAdjacentElement(
         'afterend',
-        this.elements.wallets.to
+        this.elements.wallets.labelTo
       );
       break;
     case 'correction':
-      this.elements.category.remove();
+      this.elements.categoryLabel.remove();
     case 'income':
       const getCategoriesNamesIncome = [];
       (await getCategoriesByType('income')).forEach((item) =>
@@ -218,8 +258,15 @@ TransactionForm.prototype.typeListener = async function (event) {
 
       this.elements.type.insertAdjacentElement(
         'afterend',
-        this.elements.wallets.to
+        this.elements.wallets.labelTo
       );
+
+      if (!this.elements.categoryLabel.parentElement) {
+        this.elements.wallets.to.insertAdjacentElement(
+          'afterend',
+          this.elements.categoryLabel
+        );
+      }
       break;
     case 'outcome':
       const getCategoriesNamesOutcome = [];
@@ -232,7 +279,7 @@ TransactionForm.prototype.typeListener = async function (event) {
       );
       this.elements.type.insertAdjacentElement(
         'afterend',
-        this.elements.wallets.from
+        this.elements.wallets.labelFrom
       );
       break;
   }
@@ -243,10 +290,10 @@ TransactionForm.prototype.makeWalletsInput = async function (inputName) {
   const walletsOptions = wallets.map((item) => item.name);
   const walletsInput = document.createElement('select');
   walletsInput.name = inputName;
-  walletsInput.classList.add('transactionForm__wallets');
+  walletsInput.classList.add('transactionForm__wallet');
   walletsInput.innerHTML = makeOptions(
     walletsOptions,
-    'transactionForm__wallets'
+    'transactionForm__wallet-option'
   );
   return walletsInput;
 };

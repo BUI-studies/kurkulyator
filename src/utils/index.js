@@ -1,12 +1,3 @@
-// export const makeOptions = (optionsSet, optionClass) =>
-//   `<option default selected value="null">--none--</option>` +
-//   optionsSet
-//     .map(
-//       (item) =>
-//         `<option value="${item}" data-filter="${item}" class="${optionClass}">${item}</option>`
-//     )
-//     .join();
-
 /**
  * @function makeOptions
  * @param {{title: string, value: string}[]} optionsSet
@@ -17,7 +8,7 @@ export const makeOptions = (optionsSet, optionClass) => {
     (accumulator, currentItem) =>
       accumulator +
       `<option value="${currentItem}" data-filter="${currentItem}" class="${optionClass}">${currentItem}</option>`,
-    `<option default selected disabled value="null">--none--</option>`
+    `<option default selected disabled value="null" class="${optionClass}">--none--</option>`
   );
 };
 
@@ -67,7 +58,6 @@ export const createInput = ({
 export const createSelect = ({
   options = [],
   name,
-  options,
   className,
   optionsClassName,
 }) => {

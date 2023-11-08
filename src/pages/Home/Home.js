@@ -34,12 +34,13 @@ Home.prototype.render = async function (parent) {
   this.walletsWrapper.classList.add('wallets--wrapper');
   this.walletsHeader.textContent = 'Your wallets';
 
+  this.pageWrapper.classList.add('page-wrapper')
   this.transactionsWrapper.classList.add('transactions--wrapper');
   this.transactionsHeader.classList.add('transactions--header');
   this.transactionsHeader.textContent = 'Transactions';
 
   this.newTransactionButton.innerText = 'New transaction';
-  this.newTransactionButton.classList.add('home__button__newTransaction');
+  this.newTransactionButton.classList.add('new-transaction-btn');
   this.newTransactionButton.onclick = (event) => this.handleCreateForm(event);
 
   const wallets = await getWallets();
@@ -97,15 +98,17 @@ Home.prototype.render = async function (parent) {
   this.pageWrapper.append(
     this.balanceWrapper,
     this.walletsWrapper,
-    this.transactionsWrapper,
-    this.newTransactionButton
+    this.newTransactionButton,
+    this.transactionsWrapper
   );
   parent.append(this.pageWrapper);
 };
 
 Home.prototype.handleCreateForm = function (event) {
   event.preventDefault();
-  const newTransactionForm = new TransactionForm(() => this.modal.close());
+  const newTransactionForm = new TransactionForm({
+    afterSubmit: () => this.modal.close(),
+  });
 
   this.modal.render(document.getElementById('app'), newTransactionForm);
   console.log('new transaction');
