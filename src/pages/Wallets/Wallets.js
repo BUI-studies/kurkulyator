@@ -28,12 +28,6 @@ Wallets.prototype.render = async function (parent) {
       { name: "name", title: "Title" },
       { name: "balance", title: "Balance" },
     ],
-    generateDataset(rowObj) {
-      return `wallets__${rowObj.name}`;
-    },
-    // onClick(row) {
-    //   console.log(row);
-    // },
   });
 
   this.addButton.textContent = "New wallet";

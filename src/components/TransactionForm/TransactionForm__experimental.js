@@ -6,6 +6,7 @@ import {
   getWalletRefByName,
   getCategoryRefByName,
   getCategoriesByType,
+  transactionTypeActions,
 } from "@/API";
 
 import { makeOptions, createElement, createInput, createSelect } from "@/utils";
@@ -170,46 +171,8 @@ TransactionForm.prototype.handleSubmit = async function (event) {
 
   console.log("newTransactionData", newTransactionData);
 
-  const transactionType = newTransactionData.type;
+  await transactionTypeActions(newTransactionData);
 
-  //прибрати весь хардкод
-  switch (transactionType) {
-    case "correction":
-      if (newTransactionData.comment === "") {
-        newTransactionData.comment = "Корекція балансу гаманцю";
-      }
-    case "income":
-      const walletToData = (await getDoc(newTransactionData.to)).data();
-      await updateDoc(newTransactionData.to, {
-        balance: walletToData.balance + newTransactionData.amount,
-      });
-
-      break;
-    case "outcome":
-      const walletFromData = (await getDoc(newTransactionData.from)).data();
-
-      await updateDoc(newTransactionData.from, {
-        balance: walletFromData.balance - newTransactionData.amount,
-      });
-
-      break;
-    case "transfer":
-      const walletFromDataTransfer = (
-        await getDoc(newTransactionData.from)
-      ).data();
-
-      const walletToDataTransfer = (await getDoc(newTransactionData.to)).data();
-
-      await updateDoc(newTransactionData.from, {
-        balance: walletFromDataTransfer.balance - newTransactionData.amount,
-      });
-
-      await updateDoc(newTransactionData.to, {
-        balance: walletToDataTransfer.balance + newTransactionData.amount,
-      });
-
-      break;
-  }
   await addDoc(transactionsCollectionRef, newTransactionData);
   this.afterSubmit?.(event, newTransactionData);
 };

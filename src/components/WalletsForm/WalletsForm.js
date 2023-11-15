@@ -74,7 +74,9 @@ WalletsForm.prototype.submitForm = async function (e) {
   } else {
     this.elements.addButton.disabled = true;
     this.createdWallet = await saveWallet(walletObj);
-    await this.addTransaction(Number(walletObj.balance));
+    if (walletObj.balance !== "0") {
+      await this.addTransaction(Number(walletObj.balance));
+    }
   }
 
   this.closeForm(e);
