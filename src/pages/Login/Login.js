@@ -1,17 +1,25 @@
-import { googleAuthProvider, auth } from "../../../firebase";
-import { signInWithPopup } from "firebase/auth";
+import { googleAuthProvider, auth } from '../../../firebase';
+import { signInWithPopup } from 'firebase/auth';
+import { createElement } from '@/utils';
 
 export default function Login() {
-  this.googleButton = document.createElement("button");
-  this.pageWrapper = document.createElement("div");
+  this.googleButton = createElement({
+    tagName: 'button',
+    innerText: 'Log in with Google',
+  });
 
-  this.placeholderText = document.createElement("h2"); // temp placeholder
-  this.placeholderText.textContent = "Login page";
+  this.pageWrapper = createElement({
+    tagName: 'div',
+  });
+
+  this.placeholderText = createElement({
+    tagName: 'h2',
+    innerText: 'Login page',
+  }); // temp placeholder
 }
 
 Login.prototype.render = function (parent) {
   this.parent = parent;
-  this.googleButton.textContent = "Log in with Google";
   this.googleButton.onclick = (e) => this.handleSignInButtonClick(e);
 
   this.pageWrapper.append(this.placeholderText, this.googleButton);

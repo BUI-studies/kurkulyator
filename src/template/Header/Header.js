@@ -1,37 +1,58 @@
-import { auth } from "../../../firebase";
+import { auth } from '../../../firebase';
 
-import { Router, ROUTES_NAMES } from "@/routes/";
-import "./Header.scss";
+import { Router, ROUTES_NAMES } from '@/routes/';
+import { createElement } from '@/utils';
+import './Header.scss';
 
 export default function Header() {
-  this.headerWrapper = document.createElement("header");
-  this.logoWrapper = document.createElement("div");
-  this.logo = document.createElement("h2"); // temp logo placeholder
+  this.headerWrapper = createElement({
+    tagName: 'header',
+  });
+  this.logoWrapper = createElement({
+    tagName: 'div',
+  });
+  this.logo = createElement({
+    tagName: 'h2',
+    innerText: 'Logo',
+    classList: 'logo',
+  }); // temp logo placeholder
+  this.headerText = createElement({
+    tagName: 'h1',
+    innerText: 'Куркулятор',
+  });
+  this.loggedInUserSection = createElement({
+    tagName: 'div',
+    className: 'header--logged-out',
+  });
+  this.menuWrapper = createElement({
+    tagName: 'menu',
+  });
+  this.homePage = createElement({
+    tagName: 'li',
+    innerText: 'Home',
+  });
+  this.categoriesPage = createElement({
+    tagName: 'li',
+    innerText: 'Categories',
+  });
+  this.walletsPage = createElement({
+    tagName: 'li',
+    innerText: 'Wallets',
+  });
+  this.transactionsHistoryPage = createElement({
+    tagName: 'li',
+    innerText: 'Transactions history',
+  });
 
-  this.headerText = document.createElement("h1");
-  this.headerText.textContent = "Куркулятор";
-
-  this.loggedInUserSection = document.createElement("div");
-  this.loggedInUserSection.classList.add("header--logged-in");
-  this.menuWrapper = document.createElement("menu");
-  this.homePage = document.createElement("li");
-  this.homePage.textContent = "Home";
-  this.categoriesPage = document.createElement("li");
-  this.categoriesPage.textContent = "Categories";
-  this.walletsPage = document.createElement("li");
-  this.walletsPage.textContent = "Wallets";
-  this.transactionsHistoryPage = document.createElement("li");
-  this.transactionsHistoryPage.textContent = "Transactions history";
-
-  this.logOut = document.createElement("button");
-  this.logOut.textContent = "Log Out";
+  this.logOut = createElement({
+    tagName: 'button',
+    innerText: 'Log out',
+  });
 
   this.user = null;
 }
 
 Header.prototype.render = function (parent) {
-  this.logo.textContent = "Logo";
-  this.logo.classList.add("logo");
   this.logoWrapper.append(this.logo);
 
   this.headerWrapper.append(
@@ -67,7 +88,7 @@ Header.prototype.render = function (parent) {
     this.transactionsHistoryPage
   );
 
-  this.logOut.addEventListener("click", (e) => this.handleLogoutClick(e));
+  this.logOut.addEventListener('click', (e) => this.handleLogoutClick(e));
 
   if (this.user !== null) {
     this.loggedInUserSection.append(this.menuWrapper, this.logOut);
