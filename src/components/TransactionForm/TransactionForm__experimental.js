@@ -113,7 +113,7 @@ export default function TransactionForm({ afterSubmit }) {
   };
 }
 
-TransactionForm.prototype.render = async (parent) => {
+TransactionForm.prototype.render = async function (parent) {
   const categories = await getCategoriesByType();
   const categoriesOptions = categories.map((item) => item.name);
 
@@ -146,7 +146,7 @@ TransactionForm.prototype.render = async (parent) => {
   parent.append(this.elements.self);
 };
 
-TransactionForm.prototype.handleSubmit = async (e) => {
+TransactionForm.prototype.handleSubmit = async function (e) {
   e.preventDefault();
 
   const formData = new FormData(this.elements.self);
@@ -165,4 +165,88 @@ TransactionForm.prototype.handleSubmit = async (e) => {
   await transactionTypeActions(newTransactionData);
   await addDoc(transactionsCollectionRef, newTransactionData);
   this.afterSubmit?.(e, newTransactionData);
+};
+
+TransactionForm.prototype.typeListener = async function (e) {
+  this.elements.wallets.from = null;
+  this.elements.wallets.to = null;
+  this.elements.wallets.from?.remove();
+  this.elements.wallets.to?.remove();
+
+  const selectedType = e.target.value;
+
+  this.elements.category.innerHTML = makeOptions(
+    [],
+    "transactionForm__category"
+  );
+
+  this.elements.wallets.from = await this.makeWalletsInput("walletFrom");
+  this.elements.wallets.to = await this.makeWalletsInput("walletTo");
+  this.elements.wallets.labelFrom.append(this.elements.wallets.from);
+  this.elements.wallets.labelTo.append(this.elements.wallets.to);
+
+  switch (selectedType) {
+    case TRANSACTION_TYPE.TRANSFER:
+      this.elements.categoryLabel.remove();
+      this.elements.type.insertAdjacentElement(
+        "afterend",
+        this.elements.wallets.labelFrom
+      );
+      this.elements.wallets.from.insertAdjacentElement(
+        "afterend",
+        this.elements.wallets.labelTo
+      );
+      break;
+    case TRANSACTION_TYPE.CORRECTION:
+      this.elements.categoryLabel.remove();
+    case TRANSACTION_TYPE.INCOME:
+      const getCategoriesNamesIncome = [];
+      (await getCategoriesByType("income")).forEach((item) =>
+        getCategoriesNamesIncome.push(item.name)
+      );
+      this.elements.category.innerHTML = makeOptions(
+        getCategoriesNamesIncome,
+        "transactionForm__category"
+      );
+
+      this.elements.type.insertAdjacentElement(
+        "afterend",
+        this.elements.wallets.labelTo
+      );
+
+      if (!this.elements.categoryLabel.parentElement) {
+        this.elements.wallets.to.insertAdjacentElement(
+          "afterend",
+          this.elements.categoryLabel
+        );
+      }
+      break;
+    case TRANSACTION_TYPE.OUTCOME:
+      const getCategoriesNamesOutcome = [];
+      (await getCategoriesByType("outcome")).forEach((item) =>
+        getCategoriesNamesOutcome.push(item.name)
+      );
+      this.elements.category.innerHTML = makeOptions(
+        getCategoriesNamesOutcome,
+        "transactionForm__category"
+      );
+      this.elements.type.insertAdjacentElement(
+        "afterend",
+        this.elements.wallets.labelFrom
+      );
+      break;
+  }
+};
+
+TransactionForm.prototype.makeWalletsInput = async function (inputName) {
+  const wallets = await getWallets();
+  const walletsOptions = wallets.map((item) => item.name);
+  const walletsInput = document.createElement("select");
+  walletsInput.name = inputName;
+  walletsInput.classList.add("transactionForm__wallet");
+  walletsInput.innerHTML = makeOptions(
+    walletsOptions,
+    "transactionForm__wallet-option"
+  );
+  return walletsInput;
 };

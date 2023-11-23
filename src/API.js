@@ -1,4 +1,12 @@
-import { doc, getDocs, query, where, addDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 import {
   walletsCollectionRef,
@@ -143,14 +151,14 @@ export const transactionTypeActions = async (transactionData) => {
         transactionData.comment = "Корекція балансу гаманцю";
       }
     case TRANSACTION_TYPE.INCOME:
-      const walletToData = await getDoc(transactionData.to).data();
+      const walletToData = (await getDoc(transactionData.to)).data();
       await updateDoc(transactionData.to, {
         balance: walletToData.balance + transactionData.amount,
       });
 
       break;
     case TRANSACTION_TYPE.OUTCOME:
-      const walletFromData = await getDoc(transactionData.from).data();
+      const walletFromData = (await getDoc(transactionData.from)).data();
 
       await updateDoc(transactionData.from, {
         balance: walletFromData.balance - transactionData.amount,
@@ -158,9 +166,11 @@ export const transactionTypeActions = async (transactionData) => {
 
       break;
     case TRANSACTION_TYPE.TRANSFER:
-      const walletFromDataTransfer = await getDoc(transactionData.from).data();
+      const walletFromDataTransfer = (
+        await getDoc(transactionData.from)
+      ).data();
 
-      const walletToDataTransfer = await getDoc(transactionData.to).data();
+      const walletToDataTransfer = (await getDoc(transactionData.to)).data();
 
       await updateDoc(transactionData.from, {
         balance: walletFromDataTransfer.balance - transactionData.amount,
@@ -172,4 +182,5 @@ export const transactionTypeActions = async (transactionData) => {
 
       break;
   }
+  console.log("data sent");
 };
