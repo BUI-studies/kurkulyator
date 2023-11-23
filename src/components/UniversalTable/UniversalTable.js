@@ -1,32 +1,39 @@
-import "./UniversalTable.scss";
+import './UniversalTable.scss';
+import { createElement } from '@/utils';
 
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick;
   this.collection = collection;
   this.headers = options.headers;
-  this.emptyCellValue = options.emptyCellValue || "";
+  this.emptyCellValue = options.emptyCellValue || '';
   this.classes = {
-    cell: options?.classes?.cell || "table-cell",
-    row: options?.classes?.row || "table-row",
-    table: options?.classes?.table || "table-body",
+    cell: options?.classes?.cell || 'table-cell',
+    row: options?.classes?.row || 'table-row',
+    table: options?.classes?.table || 'table-body',
   };
   this.generateDataset = options.generateDataset;
 }
 
 UniversalTable.prototype.render = function (parent) {
-  const tableHeader = document.createElement("ul");
-  tableHeader.classList.add(this.classes.table);
+  const tableHeader = createElement({
+    tagName: 'ul',
+    className: this.classes.table,
+  });
 
-  const tableHeaderRow = document.createElement("li");
-  tableHeaderRow.classList.add(this.classes.row);
+  const tableHeaderRow = createElement({
+    tagName: 'li',
+    className: this.classes.row,
+  });
 
   this.headers.forEach((cell) => {
     tableHeaderRow.innerHTML += `<span class="${this.classes.cell}">${cell.title}</span>`;
   });
   tableHeader.append(tableHeaderRow);
 
-  this.tableBody = document.createElement("ul");
-  this.tableBody.classList.add(this.classes.table);
+  this.tableBody = createElement({
+    tagName: 'ul',
+    className: this.classes.table,
+  });
 
   if (this.rowClick) {
     this.tableBody.onclick = (e) => {
@@ -39,12 +46,12 @@ UniversalTable.prototype.render = function (parent) {
 };
 
 UniversalTable.prototype.createSingleRow = function (row, index) {
-  const tableRow = document.createElement("li");
+  const tableRow = document.createElement('li');
   tableRow.classList.add(this.classes.row);
 
   tableRow.dataset.uniqueMarker = this.generateDataset?.(row) || index;
   tableRow.dataset.collectionInd = index;
-  tableRow.classList.add("t-row");
+  tableRow.classList.add('t-row');
 
   tableRow.innerHTML = this.headers
     .map(
@@ -53,7 +60,7 @@ UniversalTable.prototype.createSingleRow = function (row, index) {
           row[name] || this.emptyCellValue
         }</span>`
     )
-    .join("");
+    .join('');
 
   this.tableBody.append(tableRow);
 };

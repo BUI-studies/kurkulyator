@@ -19,10 +19,13 @@ export const makeOptions = (optionsSet, optionClass) => {
  */
 export const createElement = ({ tagName, name, id, innerText, className }) => {
   const newElement = document.createElement(tagName);
-  newElement.name = name;
-  newElement.id = id;
-  newElement.innerText = innerText;
-  newElement.classList.add(className);
+
+  if (name) newElement.name = name;
+  if (id) newElement.id = id;
+  if (innerText) newElement.innerText = innerText;
+
+  if (className) newElement.classList.add(className);
+
   return newElement;
 };
 

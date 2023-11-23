@@ -1,9 +1,15 @@
-import { getWallets } from "@/API";
-import { UniversalTable, ModalWindow, WalletsForm } from "@/components";
+import { getWallets } from '@/API';
+import { createElement } from '@/utils';
+import { UniversalTable, ModalWindow, WalletsForm } from '@/components';
 
 export default function Wallets() {
-  this.pageWrapper = document.createElement("div");
-  this.addButton = document.createElement("button");
+  this.pageWrapper = createElement({
+    tagName: 'div',
+  });
+  this.addButton = createElement({
+    tagName: 'button',
+    innerText: 'New wallet',
+  });
   const handleModalClose = () => {
     this.modal.close();
     this.handleWalletsUpdate();
@@ -25,12 +31,11 @@ Wallets.prototype.render = async function (parent) {
 
   this.walletTable = new UniversalTable(this.wallets, {
     headers: [
-      { name: "name", title: "Title" },
-      { name: "balance", title: "Balance" },
+      { name: 'name', title: 'Title' },
+      { name: 'balance', title: 'Balance' },
     ],
   });
 
-  this.addButton.textContent = "New wallet";
   this.addButton.onclick = (e) => this.handleNewWalletClick(e);
   this.walletTable.render(this.pageWrapper);
   this.pageWrapper.append(this.addButton);

@@ -1,16 +1,25 @@
-import { getCategories } from "@/API";
+import { getCategories } from '@/API';
+import { createElement } from '@/utils';
 
 export default function Categories() {
-  this.pageWrapper = document.createElement("div");
-  this.addButton = document.createElement("button");
-  this.placeholderText = document.createElement("h2"); // temp placeholder
-  this.placeholderText.textContent = "Categories page";
+  this.pageWrapper = createElement({
+    tagName: 'div',
+    className: 'page-wrapper',
+  });
+  this.addButton = createElement({
+    tagName: 'button',
+    className: 'add-button',
+    innerText: 'New category',
+  });
+  this.placeholderText = createElement({
+    tagName: 'h2',
+  }); // temp placeholder
+  this.placeholderText.textContent = 'Categories page';
 }
 
 Categories.prototype.render = async function (parent) {
   this.categories = await getCategories();
 
-  this.addButton.textContent = "New category";
   this.addButton.onclick = (e) => this.handleNewCategotyClick(e);
   this.pageWrapper.append(this.placeholderText, this.addButton);
 
