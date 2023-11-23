@@ -11,7 +11,7 @@ export default function Home() {
 
   this.newTransactionButton = createElement({
     tagName: 'button',
-    textContent: 'New transaction',
+    innerText: 'New transaction',
     className: 'new-transaction-btn',
   });
   this.pageWrapper = createElement({
