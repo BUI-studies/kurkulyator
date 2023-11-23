@@ -179,14 +179,15 @@ TransactionForm.prototype.handleSubmit = async function (event) {
         newTransactionData.comment = "Корекція балансу гаманцю";
       }
     case "income":
-      const walletToData = (await getDoc(newTransactionData.to)).data();
+      const walletToData = await getDoc(newTransactionData.to).data();
+
       await updateDoc(newTransactionData.to, {
         balance: walletToData.balance + newTransactionData.amount,
       });
 
       break;
     case "outcome":
-      const walletFromData = (await getDoc(newTransactionData.from)).data();
+      const walletFromData = await getDoc(newTransactionData.from).data();
 
       await updateDoc(newTransactionData.from, {
         balance: walletFromData.balance - newTransactionData.amount,
@@ -194,11 +195,11 @@ TransactionForm.prototype.handleSubmit = async function (event) {
 
       break;
     case "transfer":
-      const walletFromDataTransfer = (
-        await getDoc(newTransactionData.from)
+      const walletFromDataTransfer = await getDoc(
+        newTransactionData.from
       ).data();
 
-      const walletToDataTransfer = (await getDoc(newTransactionData.to)).data();
+      const walletToDataTransfer = await getDoc(newTransactionData.to).data();
 
       await updateDoc(newTransactionData.from, {
         balance: walletFromDataTransfer.balance - newTransactionData.amount,

@@ -1,4 +1,4 @@
-import { addDoc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { addDoc, Timestamp } from "firebase/firestore";
 import { transactionsCollectionRef } from "@root/firebase";
 
 import {
@@ -9,13 +9,20 @@ import {
   transactionTypeActions,
 } from "@/API";
 
+import { TRANSACTION_TYPE } from "./TransactionForm.helper";
+
 import { makeOptions, createElement, createInput, createSelect } from "@/utils";
 import { Router } from "@/routes";
 
 import "./TransactionForm.scss";
 
 export default function TransactionForm({ afterSubmit }) {
-  this.typeOptions = ["income", "outcome", "transfer", "correction"];
+  this.typeOptions = [
+    TRANSACTION_TYPE.INCOME,
+    TRANSACTION_TYPE.OUTCOME,
+    TRANSACTION_TYPE.TRANSFER,
+    TRANSACTION_TYPE.CORRECTION,
+  ];
 
   this.afterSubmit = afterSubmit;
   this.elements = {
