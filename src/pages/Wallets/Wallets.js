@@ -1,20 +1,29 @@
 import { getWallets } from '@/API';
 import { createElement } from '@/utils';
-import { UniversalTable, ModalWindow, WalletsForm } from '@/components';
+import {
+  UniversalTable,
+  ModalWindow,
+  WalletsForm,
+  UniversalButton,
+} from '@/components';
 
 export default function Wallets() {
   this.pageWrapper = createElement({
     tagName: 'div',
   });
-  this.addButton = createElement({
-    tagName: 'button',
-    innerText: 'New wallet',
+
+  this.addButton = new UniversalButton({
+    text: 'New wallet',
+    onClick: (event) => this.handleNewWalletClick(event),
   });
+
   const handleModalClose = () => {
     this.modal.close();
     this.handleWalletsUpdate();
   };
+
   this.modal = new ModalWindow();
+
   this.walletForm = new WalletsForm({
     onClose: handleModalClose,
   });
@@ -22,7 +31,7 @@ export default function Wallets() {
 
 Wallets.prototype.render = async function (parent) {
   if (parent) {
-    this.parent = parent; //saves the parent fro the first render and allows us to further render this page without render
+    this.parent = parent;
   }
 
   this.pageWrapper.replaceChildren();
@@ -37,14 +46,10 @@ Wallets.prototype.render = async function (parent) {
     generateDataset(rowObj) {
       return `wallets__${rowObj.name}`;
     },
-    // onClick(row) {
-    //   console.log(row);
-    // },
   });
 
-  this.addButton.onclick = (e) => this.handleNewWalletClick(e);
   this.walletTable.render(this.pageWrapper);
-  this.pageWrapper.append(this.addButton);
+  this.addButton.render(this.pageWrapper);
   this.parent.append(this.pageWrapper);
 };
 
