@@ -113,6 +113,10 @@ export default function TransactionForm({ afterSubmit }) {
   };
 }
 
+/**
+ * Renders transaction form into passed parent
+ * @param {HTMLElement} parent
+ */
 TransactionForm.prototype.render = async function (parent) {
   const categories = await getCategoriesByType();
   const categoriesOptions = categories.map((item) => item.name);
@@ -146,6 +150,10 @@ TransactionForm.prototype.render = async function (parent) {
   parent.append(this.elements.self);
 };
 
+/**
+ * /f description/
+ * @param {Event} e
+ */
 TransactionForm.prototype.handleSubmit = async function (e) {
   e.preventDefault();
 
@@ -167,6 +175,10 @@ TransactionForm.prototype.handleSubmit = async function (e) {
   this.afterSubmit?.(e, newTransactionData);
 };
 
+/**
+ *
+ * @param {Event} e
+ */
 TransactionForm.prototype.typeListener = async function (e) {
   this.elements.wallets.from = null;
   this.elements.wallets.to = null;
