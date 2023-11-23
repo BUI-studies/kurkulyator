@@ -28,7 +28,6 @@ export default function TransactionForm({ afterSubmit }) {
 
   this.elements = {
     owner: null,
-    // date: new Date(), //перенести якшо нема в сабміт хендлєр
     self: createElement({
       tagName: "form",
       name: "transaction-form",
@@ -145,4 +144,25 @@ TransactionForm.prototype.render = async (parent) => {
   );
 
   parent.append(this.elements.self);
+};
+
+TransactionForm.prototype.handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(this.elements.self);
+
+  const newTransactionData = {
+    type: formData.get("type"),
+    from: await getWalletRefByName(formData.get("walletFrom")),
+    to: await getWalletRefByName(formData.get("walletTo")),
+    category: await getCategoryRefByName(formData.get("category")),
+    amount: Number(formData.get("amount")),
+    comment: formData.get("comment"),
+    owner: Router.getCurrentUser().uid,
+    date: Timestamp.fromDate(new Date()),
+  };
+
+  await transactionTypeActions(newTransactionData);
+  await addDoc(transactionsCollectionRef, newTransactionData);
+  this.afterSubmit?.(e, newTransactionData);
 };
