@@ -8,6 +8,8 @@ import {
   getCategoriesByType,
 } from '@/API';
 
+import { UniversalButton } from '@/components';
+
 import { makeOptions, createElement, createInput, createSelect } from '@/utils';
 import { Router } from '@/routes';
 
@@ -100,12 +102,11 @@ export default function TransactionForm({ afterSubmit }) {
       className: 'transactionForm__comment',
       value: '',
     }),
-    button: createElement({
-      tagName: 'button',
-      name: 'form-submit',
-      id: 'tFormSubmit',
-      innerText: 'Save',
+
+    button: new UniversalButton({
+      text: 'Save',
       className: 'transactionForm__button',
+      onClick: (event) => this.handleSubmit(event),
     }),
   };
 }
@@ -131,10 +132,6 @@ TransactionForm.prototype.render = async function (parent) {
 
   this.elements.categoryLabel.append(this.elements.category);
 
-  this.elements.button.addEventListener('click', (event) =>
-    this.handleSubmit(event)
-  );
-
   this.elements.type.addEventListener('change', (event) => {
     this.typeListener(event);
   });
@@ -143,9 +140,9 @@ TransactionForm.prototype.render = async function (parent) {
     this.elements.typeLabel,
     this.elements.categoryLabel,
     this.elements.amountLabel,
-    this.elements.commentLabel,
-    this.elements.button
+    this.elements.commentLabel
   );
+  this.elements.button.render(this.elements.self);
 
   parent.append(this.elements.self);
 };
@@ -172,7 +169,6 @@ TransactionForm.prototype.handleSubmit = async function (event) {
 
   const transactionType = newTransactionData.type;
 
-  //прибрати весь хардкод
   switch (transactionType) {
     case 'correction':
       if (newTransactionData.comment === '') {

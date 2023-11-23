@@ -1,6 +1,7 @@
 import { auth } from '../../../firebase';
 
 import { Router, ROUTES_NAMES } from '@/routes/';
+import { UniversalButton } from '@/components';
 import { createElement } from '@/utils';
 import './Header.scss';
 
@@ -44,9 +45,9 @@ export default function Header() {
     innerText: 'Transactions history',
   });
 
-  this.logOut = createElement({
-    tagName: 'button',
-    innerText: 'Log out',
+  this.logOut = new UniversalButton({
+    text: 'Log out',
+    onClick: (event) => this.handleLogoutClick(event),
   });
 
   this.user = null;
@@ -88,10 +89,10 @@ Header.prototype.render = function (parent) {
     this.transactionsHistoryPage
   );
 
-  this.logOut.addEventListener('click', (e) => this.handleLogoutClick(e));
 
   if (this.user !== null) {
-    this.loggedInUserSection.append(this.menuWrapper, this.logOut);
+    this.loggedInUserSection.append(this.menuWrapper);
+    this.logOut.render(this.loggedInUserSection);
   }
 
   parent.append(this.headerWrapper);
@@ -101,7 +102,8 @@ Header.prototype.update = function () {
   this.user = Router.getCurrentUser();
   this.loggedInUserSection.replaceChildren();
   if (this.user !== null) {
-    this.loggedInUserSection.append(this.menuWrapper, this.logOut);
+    this.loggedInUserSection.append(this.menuWrapper);
+    this.logOut.render(this.loggedInUserSection);
   }
 };
 
