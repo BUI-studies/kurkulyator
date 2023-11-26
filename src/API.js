@@ -139,7 +139,7 @@ export const saveWallet = async (obj) => {
   const checkWallet = await getWallet(obj.name);
 
   if (checkWallet !== null)
-    throw new ReferenceError("The Wallet has already exist");
+    throw new ReferenceError("The Wallet already exists");
 
   return await addDoc(walletsCollectionRef, obj);
 };
