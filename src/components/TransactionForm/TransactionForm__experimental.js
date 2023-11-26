@@ -12,7 +12,7 @@ import {
 import { makeOptions, createElement, createInput, createSelect } from "@/utils";
 import { Router } from "@/routes";
 
-import { TRANSACTION_TYPE } from "./TransactionForm.helper";
+import { TRANSACTION_TYPE } from "@/types/index.js";
 
 import "./TransactionForm.scss";
 
@@ -118,22 +118,26 @@ export default function TransactionForm({ afterSubmit }) {
  * @param {HTMLElement} parent
  */
 TransactionForm.prototype.render = async function (parent) {
-  const categories = await getCategoriesByType();
-  const categoriesOptions = categories.map((item) => item.name);
-
   this.elements.type.addEventListener("change", (event) => {
     this.typeListener(event);
   });
 
+  const categories = await getCategoriesByType();
+  const categoriesOptions = categories.map((item) => item.name);
   this.elements.category.innerHTML = makeOptions(
     categoriesOptions,
     "transactionForm__category-options"
   );
 
+  this.elements.wallets.from = await this.makeWalletsInput("walletFrom");
+  this.elements.wallets.to = await this.makeWalletsInput("walletTo");
+
   this.elements.typeLabel.append(this.elements.type);
   this.elements.categoryLabel.append(this.elements.category);
   this.elements.amountLabel.append(this.elements.amount);
   this.elements.commentLabel.append(this.elements.comment);
+  this.elements.wallets.labelFrom.append(this.elements.wallets.from);
+  this.elements.wallets.labelTo.append(this.elements.wallets.to);
 
   this.elements.button.addEventListener("click", (event) =>
     this.handleSubmit(event)
@@ -141,7 +145,6 @@ TransactionForm.prototype.render = async function (parent) {
 
   this.elements.self.append(
     this.elements.typeLabel,
-    this.elements.categoryLabel,
     this.elements.amountLabel,
     this.elements.commentLabel,
     this.elements.button
@@ -179,72 +182,51 @@ TransactionForm.prototype.handleSubmit = async function (e) {
  *
  * @param {Event} e
  */
-TransactionForm.prototype.typeListener = async function (e) {
-  this.elements.wallets.from = null;
-  this.elements.wallets.to = null;
-  this.elements.wallets.from?.remove();
-  this.elements.wallets.to?.remove();
+TransactionForm.prototype.typeListener = function (e) {
+  e.preventDefault();
+
+  this.elements.wallets.labelFrom?.remove();
+  this.elements.wallets.labelTo?.remove();
+  this.elements.categoryLabel?.remove();
 
   const selectedType = e.target.value;
 
-  this.elements.category.innerHTML = makeOptions(
-    [],
-    "transactionForm__category"
-  );
-
-  this.elements.wallets.from = await this.makeWalletsInput("walletFrom");
-  this.elements.wallets.to = await this.makeWalletsInput("walletTo");
-  this.elements.wallets.labelFrom.append(this.elements.wallets.from);
-  this.elements.wallets.labelTo.append(this.elements.wallets.to);
-
   switch (selectedType) {
-    case TRANSACTION_TYPE.TRANSFER:
-      this.elements.categoryLabel.remove();
-      this.elements.type.insertAdjacentElement(
+    case TRANSACTION_TYPE.INCOME:
+      this.elements.typeLabel.insertAdjacentElement(
+        "afterend",
+        this.elements.wallets.labelTo
+      );
+      this.elements.wallets.labelTo.insertAdjacentElement(
+        "afterend",
+        this.elements.categoryLabel
+      );
+      break;
+    case TRANSACTION_TYPE.OUTCOME:
+      this.elements.typeLabel.insertAdjacentElement(
         "afterend",
         this.elements.wallets.labelFrom
       );
-      this.elements.wallets.from.insertAdjacentElement(
+      this.elements.wallets.labelFrom.insertAdjacentElement(
+        "afterend",
+        this.elements.categoryLabel
+      );
+      break;
+    case TRANSACTION_TYPE.TRANSFER:
+      this.elements.typeLabel.insertAdjacentElement(
+        "afterend",
+        this.elements.wallets.labelFrom
+      );
+
+      this.elements.wallets.labelFrom.insertAdjacentElement(
         "afterend",
         this.elements.wallets.labelTo
       );
       break;
     case TRANSACTION_TYPE.CORRECTION:
-      this.elements.categoryLabel.remove();
-    case TRANSACTION_TYPE.INCOME:
-      const getCategoriesNamesIncome = [];
-      (await getCategoriesByType("income")).forEach((item) =>
-        getCategoriesNamesIncome.push(item.name)
-      );
-      this.elements.category.innerHTML = makeOptions(
-        getCategoriesNamesIncome,
-        "transactionForm__category"
-      );
-
-      this.elements.type.insertAdjacentElement(
+      this.elements.typeLabel.insertAdjacentElement(
         "afterend",
         this.elements.wallets.labelTo
-      );
-
-      if (!this.elements.categoryLabel.parentElement) {
-        this.elements.wallets.to.insertAdjacentElement(
-          "afterend",
-          this.elements.categoryLabel
-        );
-      }
-      break;
-    case TRANSACTION_TYPE.OUTCOME:
-      const getCategoriesNamesOutcome = [];
-      (await getCategoriesByType("outcome")).forEach((item) =>
-        getCategoriesNamesOutcome.push(item.name)
-      );
-      this.elements.category.innerHTML = makeOptions(
-        getCategoriesNamesOutcome,
-        "transactionForm__category"
-      );
-      this.elements.type.insertAdjacentElement(
-        "afterend",
-        this.elements.wallets.labelFrom
       );
       break;
   }

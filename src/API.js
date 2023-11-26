@@ -16,7 +16,7 @@ import {
 
 import { Router } from "@/routes";
 
-import { TRANSACTION_TYPE } from "@/components/TransactionForm/TransactionForm.helper.js";
+import { TRANSACTION_TYPE } from "@/types/index.js";
 
 export const getTransactions = async () => {
   const transactionsCollectionByUserQuery = query(
