@@ -35,8 +35,8 @@ Categories.prototype.handleNewCategoryClick = function (e) {
   const newCategoryForm = new CategoryForm({
     afterSubmit: () => modalForm.close(),
   }); //нова форма
-  newCategoryForm.render(modalForm.content); //рендеримо форму, передаємо парента
-  modalForm.render(this.pageWrapper, newCategoryForm); //рендеримо модалку, передаємо парента і другим параметром контент
+  newCategoryForm.render(modalForm.content);
+  modalForm.render(this.pageWrapper, newCategoryForm);
 
   console.log('new category');
 };

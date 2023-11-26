@@ -1,4 +1,6 @@
-import { getCategoryRefByName } from '@/API';
+import { getCategoryRefByName, addNewCategory } from '@/API';
+import { Router } from '@/routes';
+import { categoriesCollectionRef } from '../../../firebase';
 import { createElement, createInput, createSelect } from '@/utils';
 import { TRANSACTION_TYPE } from '@/types';
 import { UniversalButton } from '@/components';
@@ -54,15 +56,26 @@ CategoryForm.prototype.render = function (parent) {
 };
 
 CategoryForm.prototype.handleSubmit = async function (event) {
-  const categoryData = new FormData(event.target)
+  event.preventDefault();
+  const categoryData = new FormData(this.elements.self);
 
   const checkCategoryName = await getCategoryRefByName(
     categoryData.get('categoryName')
   );
-  
-  console.log(checkCategoryName);
 
-  event.preventDefault();
+  if (checkCategoryName) {
+    console.log('Category already exists');
+    return;
+  } else {
+    const newCategoryToAdd = {
+      name: categoryData.get('categoryName'),
+      type: categoryData.get('createType'),
+      owner: Router.getCurrentUser().uid,
+    };
+    addNewCategory(categoriesCollectionRef, newCategoryToAdd);
+    console.log('Category is new and created');
+  }
+
   console.log('submit');
   this.afterSubmit();
 };
