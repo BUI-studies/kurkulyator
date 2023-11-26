@@ -15,10 +15,12 @@ export default function WalletsForm({ onClose }) {
   this.elements = {
     form: createElement({
       tagName: "form",
+      className: "walletsForm",
     }),
     titleLabel: createElement({
       tagName: "label",
       innerText: "Title:",
+      className: "walletsForm__label",
     }),
     titleInput: createInput({
       type: "text",
@@ -28,6 +30,7 @@ export default function WalletsForm({ onClose }) {
     balanceLabel: createElement({
       tagName: "label",
       innerText: "Balance:",
+      className: "walletsForm__label",
     }),
     balanceInput: createInput({
       type: "text",
