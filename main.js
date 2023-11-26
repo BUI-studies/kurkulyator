@@ -2,7 +2,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { Router, ROUTES_NAMES } from "@/routes";
 
-import "./style.css";
+import "./style.scss";
 
 onAuthStateChanged(auth, (user) => {
   Router.setCurrentUser(user);

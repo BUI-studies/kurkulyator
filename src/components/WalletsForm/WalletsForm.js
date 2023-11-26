@@ -80,7 +80,7 @@ WalletsForm.prototype.submitForm = async function (e) {
   const existingWallet = await getWallet(walletObj.name);
 
   if (existingWallet !== null) {
-    throw new Error("The wallet with same name has already exist");
+    throw new Error("The wallet with same name already exists");
   } else if ((walletObj.name === "") | (walletObj.balance === "")) {
     throw new Error("The fields shouldn`t be empty");
   } else {
