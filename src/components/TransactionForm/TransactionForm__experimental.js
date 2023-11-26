@@ -1,4 +1,4 @@
-import { addDoc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { addDoc, Timestamp } from "firebase/firestore";
 import { transactionsCollectionRef } from "@root/firebase";
 
 import {
