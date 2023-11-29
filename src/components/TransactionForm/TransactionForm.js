@@ -1,13 +1,4 @@
-import { addDoc, Timestamp } from "firebase/firestore";
-import { transactionsCollectionRef } from "@root/firebase";
-
-import {
-  getWallets,
-  getWalletRefByName,
-  getCategoryRefByName,
-  getCategoriesByType,
-  transactionTypeActions,
-} from "@/API";
+import { getWallets, getCategories, saveTransaction } from "@/API";
 
 import { makeOptions, createElement, createInput, createSelect } from "@/utils";
 import { Router } from "@/routes";
@@ -24,6 +15,7 @@ export default function TransactionForm({ afterSubmit }) {
     TRANSACTION_TYPE.CORRECTION,
   ];
 
+  this.categories = null;
   this.afterSubmit = afterSubmit;
 
   this.elements = {
@@ -122,12 +114,7 @@ TransactionForm.prototype.render = async function (parent) {
     this.typeListener(event);
   });
 
-  const categories = await getCategoriesByType();
-  const categoriesOptions = categories.map((item) => item.name);
-  this.elements.category.innerHTML = makeOptions(
-    categoriesOptions,
-    "transactionForm__category-options"
-  );
+  this.categories = await getCategories();
 
   this.elements.wallets.from = await this.makeWalletsInput("walletFrom");
   this.elements.wallets.to = await this.makeWalletsInput("walletTo");
@@ -162,19 +149,17 @@ TransactionForm.prototype.handleSubmit = async function (e) {
 
   const formData = new FormData(this.elements.self);
 
-  const newTransactionData = {
+  const newTransactionData = await saveTransaction({
     type: formData.get("type"),
-    from: await getWalletRefByName(formData.get("walletFrom")),
-    to: await getWalletRefByName(formData.get("walletTo")),
-    category: await getCategoryRefByName(formData.get("category")),
-    amount: Number(formData.get("amount")),
+    from: formData.get("walletFrom"),
+    to: formData.get("walletTo"),
+    category: formData.get("category"),
+    amount: formData.get("amount"),
     comment: formData.get("comment"),
     owner: Router.getCurrentUser().uid,
-    date: Timestamp.fromDate(new Date()),
-  };
+    date: new Date(),
+  });
 
-  await transactionTypeActions(newTransactionData);
-  await addDoc(transactionsCollectionRef, newTransactionData);
   this.afterSubmit?.(e, newTransactionData);
 };
 
@@ -189,6 +174,11 @@ TransactionForm.prototype.typeListener = function (e) {
   this.elements.wallets.labelTo?.remove();
   this.elements.categoryLabel?.remove();
 
+  this.elements.category.innerHTML = makeOptions(
+    [],
+    "transactionForm__category"
+  );
+
   const selectedType = e.target.value;
 
   switch (selectedType) {
@@ -197,6 +187,14 @@ TransactionForm.prototype.typeListener = function (e) {
         "afterend",
         this.elements.wallets.labelTo
       );
+
+      this.elements.category.innerHTML = makeOptions(
+        this.categories
+          .filter(({ type }) => type === TRANSACTION_TYPE.INCOME)
+          .map(({ name }) => name),
+        "transactionForm__category-options"
+      );
+
       this.elements.wallets.labelTo.insertAdjacentElement(
         "afterend",
         this.elements.categoryLabel
@@ -207,6 +205,14 @@ TransactionForm.prototype.typeListener = function (e) {
         "afterend",
         this.elements.wallets.labelFrom
       );
+
+      this.elements.category.innerHTML = makeOptions(
+        this.categories
+          .filter(({ type }) => type === TRANSACTION_TYPE.OUTCOME)
+          .map(({ name }) => name),
+        "transactionForm__category-options"
+      );
+
       this.elements.wallets.labelFrom.insertAdjacentElement(
         "afterend",
         this.elements.categoryLabel

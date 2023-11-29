@@ -6,6 +6,7 @@ import {
   where,
   addDoc,
   updateDoc,
+  Timestamp,
 } from "firebase/firestore";
 
 import {
@@ -144,7 +145,7 @@ export const saveWallet = async (obj) => {
   return await addDoc(walletsCollectionRef, obj);
 };
 
-export const transactionTypeActions = async (transactionData) => {
+export const updateBalance = async (transactionData) => {
   switch (transactionData.type) {
     case TRANSACTION_TYPE.CORRECTION:
       if (transactionData.comment === "") {
@@ -183,4 +184,31 @@ export const transactionTypeActions = async (transactionData) => {
       break;
   }
   console.log("data sent");
+};
+
+export const saveTransaction = async ({
+  type,
+  from,
+  to,
+  category,
+  comment,
+  amount,
+  owner,
+  date,
+}) => {
+  const newTransactionData = {
+    type,
+    from: await getWalletRefByName(from),
+    to: await getWalletRefByName(to),
+    category: await getCategoryRefByName(category),
+    amount: Number(amount),
+    comment,
+    owner,
+    date: Timestamp.fromDate(date),
+  };
+
+  await updateBalance(newTransactionData);
+  await addDoc(transactionsCollectionRef, newTransactionData);
+
+  return newTransactionData;
 };
