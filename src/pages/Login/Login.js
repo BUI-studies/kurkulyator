@@ -1,11 +1,12 @@
 import { googleAuthProvider, auth } from '../../../firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { createElement } from '@/utils';
+import { UniversalButton } from '@/components';
 
 export default function Login() {
-  this.googleButton = createElement({
-    tagName: 'button',
-    innerText: 'Log in with Google',
+  this.googleButton = new UniversalButton({
+    text: 'Log in with Google',
+    onClick: (event) => this.handleSignInButtonClick(event),
   });
 
   this.pageWrapper = createElement({
@@ -15,14 +16,13 @@ export default function Login() {
   this.placeholderText = createElement({
     tagName: 'h2',
     innerText: 'Login page',
-  }); // temp placeholder
+  });
 }
 
 Login.prototype.render = function (parent) {
   this.parent = parent;
-  this.googleButton.onclick = (e) => this.handleSignInButtonClick(e);
-
-  this.pageWrapper.append(this.placeholderText, this.googleButton);
+  this.pageWrapper.append(this.placeholderText);
+  this.googleButton.render(this.pageWrapper);
   this.parent.append(this.pageWrapper);
 };
 

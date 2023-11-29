@@ -25,10 +25,7 @@ UniversalButton.prototype.render = function (parent) {
     }
   }
 
-  this.self.onclick = (e) => {
-    if (this.onClick) {
-      this.onClick(e);
-    }
-  };
+  this.self.onclick = this.onClick ? (e) => this.onClick(e) : undefined;
+  
   parent.append(this.self);
 };

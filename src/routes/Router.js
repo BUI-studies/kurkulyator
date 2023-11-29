@@ -18,7 +18,7 @@ export const navigate = (route) => {
   if (!Object.values(ROUTES_NAMES).includes(route))
     throw new Error(`There is no such route: ${route}!`);
 
-  currentRoute = ROUTES[route]; //keeps in memory the url part responsible for the page
+  currentRoute = ROUTES[route];
   history.pushState({}, "", `${currentRoute}`);
 
   currentPage = pages[route];

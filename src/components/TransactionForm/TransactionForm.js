@@ -1,10 +1,8 @@
 import { getWallets, getCategories, saveTransaction } from "@/API";
-
 import { makeOptions, createElement, createInput, createSelect } from "@/utils";
+import { UniversalButton } from "@/components";
 import { Router } from "@/routes";
-
 import { TRANSACTION_TYPE } from "@/types/index.js";
-
 import "./TransactionForm.scss";
 
 export default function TransactionForm({ afterSubmit }) {
@@ -95,12 +93,10 @@ export default function TransactionForm({ afterSubmit }) {
       className: "transactionForm__comment",
       value: "",
     }),
-    button: createElement({
-      tagName: "button",
-      name: "form-submit",
-      id: "tFormSubmit",
-      innerText: "Save",
+    button: new UniversalButton({
+      text: "Save",
       className: "transactionForm__button",
+      onClick: (event) => this.handleSubmit(event),
     }),
   };
 }
@@ -126,16 +122,12 @@ TransactionForm.prototype.render = async function (parent) {
   this.elements.wallets.labelFrom.append(this.elements.wallets.from);
   this.elements.wallets.labelTo.append(this.elements.wallets.to);
 
-  this.elements.button.addEventListener("click", (event) =>
-    this.handleSubmit(event)
-  );
-
   this.elements.self.append(
     this.elements.typeLabel,
     this.elements.amountLabel,
-    this.elements.commentLabel,
-    this.elements.button
+    this.elements.commentLabel
   );
+  this.elements.button.render(this.elements.self);
 
   parent.append(this.elements.self);
 };
