@@ -25,6 +25,7 @@ export default function WalletsForm({ onClose }) {
     titleInput: createInput({
       type: "text",
       name: "titleInput",
+      className: "walletsForm__input",
     }),
 
     balanceLabel: createElement({
@@ -35,18 +36,20 @@ export default function WalletsForm({ onClose }) {
     balanceInput: createInput({
       type: "text",
       name: "balanceInput",
+      className: "walletsForm__input",
+      value: 0,
     }),
 
     addButton: new UniversalButton({
       text: "Add new wallet",
-      className: "addNewWalletBtn",
+      className: "walletsForm__button",
       onClick: (e) => {
-        this.submitForm(e);
+        this.handleSubmit(e);
       },
     }),
-    cancelUniversalButton: new UniversalButton({
+    cancelButton: new UniversalButton({
       text: "Cancel",
-      className: "cancelBtn",
+      className: "walletsForm__button",
       onClick: (e) => {
         this.closeForm(e);
       },
@@ -64,16 +67,16 @@ WalletsForm.prototype.render = function (parent) {
   );
 
   this.elements.addButton.render(this.elements.form);
-  this.elements.cancelUniversalButton.render(this.elements.form);
+  this.elements.cancelButton.render(this.elements.form);
 
   parent?.append(this.elements.form);
 };
 
-WalletsForm.prototype.submitForm = async function (e) {
+WalletsForm.prototype.handleSubmit = async function (e) {
   e.preventDefault();
   const walletObj = {
     name: this.elements.titleInput.value,
-    balance: this.elements.balanceInput.value,
+    balance: +this.elements.balanceInput.value,
     owner: Router.getCurrentUser().uid,
   };
 
@@ -86,8 +89,8 @@ WalletsForm.prototype.submitForm = async function (e) {
   } else {
     this.elements.addButton.disabled = true;
     this.createdWallet = await saveWallet(walletObj);
-    if (walletObj.balance !== "0") {
-      await this.addTransaction(Number(walletObj.balance));
+    if (walletObj.balance !== 0) {
+      await this.addTransaction(+walletObj.balance);
     }
   }
 
