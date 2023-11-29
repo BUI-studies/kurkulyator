@@ -1,6 +1,6 @@
 import { addDoc, Timestamp } from 'firebase/firestore';
 
-import { transactionsCollectionRef } from '../../../firebase';
+import { transactionsCollectionRef } from '@root/firebase';
 
 import { Router } from '@/routes';
 import { UniversalButton } from '@/components';

@@ -13,7 +13,7 @@ import {
   walletsCollectionRef,
   transactionsCollectionRef,
   categoriesCollectionRef,
-} from '../firebase';
+} from '@root/firebase';
 import { Router } from '@/routes';
 
 export const getTransactions = async () => {

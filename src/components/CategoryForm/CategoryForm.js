@@ -1,6 +1,6 @@
 import { getCategoryRefByName, addNewCategory } from '@/API';
 import { Router } from '@/routes';
-import { categoriesCollectionRef } from '../../../firebase';
+import { categoriesCollectionRef } from '@root/firebase';
 import { createElement, createInput, createSelect } from '@/utils';
 import { TRANSACTION_TYPE } from '@/types';
 import { UniversalButton } from '@/components';
@@ -64,7 +64,6 @@ CategoryForm.prototype.handleSubmit = async function (event) {
   );
 
   if (checkCategoryName) {
-    console.log('Category already exists');
     return;
   } else {
     const newCategoryToAdd = {
@@ -73,9 +72,6 @@ CategoryForm.prototype.handleSubmit = async function (event) {
       owner: Router.getCurrentUser().uid,
     };
     addNewCategory(categoriesCollectionRef, newCategoryToAdd);
-    console.log('Category is new and created');
   }
-
-  console.log('submit');
   this.afterSubmit();
 };

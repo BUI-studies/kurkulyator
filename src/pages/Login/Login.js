@@ -1,4 +1,4 @@
-import { googleAuthProvider, auth } from '../../../firebase';
+import { googleAuthProvider, auth } from '@root/firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { createElement } from '@/utils';
 import { UniversalButton } from '@/components';

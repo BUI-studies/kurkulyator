@@ -1,4 +1,4 @@
-import { auth } from '../../../firebase';
+import { auth } from '@root/firebase';
 
 import { Router, ROUTES_NAMES } from '@/routes/';
 import { UniversalButton } from '@/components';
@@ -88,7 +88,6 @@ Header.prototype.render = function (parent) {
     this.walletsPage,
     this.transactionsHistoryPage
   );
-
 
   if (this.user !== null) {
     this.loggedInUserSection.append(this.menuWrapper);

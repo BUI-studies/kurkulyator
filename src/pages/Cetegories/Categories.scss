@@ -1,0 +1,24 @@
+.categories {
+  display: flex;
+  flex-direction: column;
+
+  & ul {
+    list-style: none !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  &-table {
+    display: flex;
+    flex-direction: column;
+
+    &__row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    &__cell {
+      border: 1px solid white;
+    }
+  }
+}
