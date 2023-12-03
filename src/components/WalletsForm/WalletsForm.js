@@ -1,49 +1,55 @@
-import { addDoc, Timestamp } from 'firebase/firestore';
+import { addDoc, Timestamp } from "firebase/firestore";
 
-import { transactionsCollectionRef } from '../../../firebase';
+import { transactionsCollectionRef } from "../../../firebase";
 
-import { Router } from '@/routes';
-import { UniversalButton } from '@/components';
-import { getWallet, saveWallet } from '@/API';
-import { createElement, createInput } from '@/utils';
+import { Router } from "@/routes";
+import { UniversalButton } from "@/components";
+import { getWallet, saveWallet } from "@/API";
+import { createElement, createInput } from "@/utils";
+import { TRANSACTION_TYPE } from "@/types/index.js";
 
-import './WalletsForm.scss';
+import "./WalletsForm.scss";
 
 export default function WalletsForm({ onClose }) {
   this.onClose = onClose;
   this.elements = {
     form: createElement({
-      tagName: 'form',
+      tagName: "form",
+      className: "walletsForm",
     }),
     titleLabel: createElement({
-      tagName: 'label',
-      innerText: 'Title',
+      tagName: "label",
+      innerText: "Title:",
+      className: "walletsForm__label",
     }),
     titleInput: createInput({
-      type: 'text',
-      name: 'titleInput',
+      type: "text",
+      name: "titleInput",
+      className: "walletsForm__input",
     }),
 
     balanceLabel: createElement({
-      tagName: 'label',
-      innerText: 'Balance',
+      tagName: "label",
+      innerText: "Balance:",
+      className: "walletsForm__label",
     }),
     balanceInput: createInput({
-      type: 'number',
-      name: 'balanceInput',
+      type: "text",
+      name: "balanceInput",
+      className: "walletsForm__input",
       value: 0,
     }),
 
     addButton: new UniversalButton({
-      text: 'Add new wallet',
-      className: 'addNewWalletBtn',
+      text: "Add new wallet",
+      className: "walletsForm__button",
       onClick: (e) => {
-        this.submitForm(e);
+        this.handleSubmit(e);
       },
     }),
-    cancelUniversalButton: new UniversalButton({
-      text: 'Cancel',
-      className: 'cancelBtn',
+    cancelButton: new UniversalButton({
+      text: "Cancel",
+      className: "walletsForm__button",
       onClick: (e) => {
         this.closeForm(e);
       },
@@ -61,29 +67,31 @@ WalletsForm.prototype.render = function (parent) {
   );
 
   this.elements.addButton.render(this.elements.form);
-  this.elements.cancelUniversalButton.render(this.elements.form);
+  this.elements.cancelButton.render(this.elements.form);
 
   parent?.append(this.elements.form);
 };
 
-WalletsForm.prototype.submitForm = async function (e) {
+WalletsForm.prototype.handleSubmit = async function (e) {
   e.preventDefault();
   const walletObj = {
     name: this.elements.titleInput.value,
-    balance: this.elements.balanceInput.value,
+    balance: +this.elements.balanceInput.value,
     owner: Router.getCurrentUser().uid,
   };
 
   const existingWallet = await getWallet(walletObj.name);
 
   if (existingWallet !== null) {
-    throw new Error('The wallet with same name has already exist');
-  } else if ((walletObj.name === '') | (walletObj.balance === '')) {
-    throw new Error('The fields shouldn`t be empty');
+    throw new Error("The wallet with same name already exists");
+  } else if ((walletObj.name === "") | (walletObj.balance === "")) {
+    throw new Error("The fields shouldn`t be empty");
   } else {
     this.elements.addButton.disabled = true;
     this.createdWallet = await saveWallet(walletObj);
-    await this.addTransaction(Number(walletObj.balance));
+    if (walletObj.balance !== 0) {
+      await this.addTransaction(+walletObj.balance);
+    }
   }
 
   this.closeForm(e);
@@ -98,10 +106,10 @@ WalletsForm.prototype.closeForm = function (e) {
 WalletsForm.prototype.addTransaction = async function (amount) {
   const obj = {
     date: Timestamp.fromDate(new Date()),
-    type: 'income',
+    type: TRANSACTION_TYPE.INCOME,
     amount: amount,
     category: null,
-    comment: 'initial balance',
+    comment: "initial balance",
     to: this.createdWallet,
     owner: Router.getCurrentUser().uid,
   };

@@ -1,63 +1,67 @@
-import { getDoc } from 'firebase/firestore';
-
-import { getWallets, getTransactions } from '@/API';
+import { getDoc } from "firebase/firestore";
+import { getWallets, getTransactions } from "@/API";
 import {
   UniversalTable,
   TransactionForm,
   ModalWindow,
   UniversalButton,
-} from '@/components';
-import { createElement } from '@/utils';
+} from "@/components";
+import { createElement } from "@/utils";
 
-import './Home.scss';
+import "./Home.scss";
 
 export default function Home() {
   this.modal = new ModalWindow();
 
-  this.newTransactionButton = new UniversalButton({
-    text: 'New transaction',
-    className: 'new-transaction-btn',
-    onClick: (event) => this.handleCreateForm(event),
-  });
+  (this.newTransactionButton = createElement({
+    tagName: "button",
+    innerText: "New transaction",
+    className: "new-transaction-btn",
+  })),
+    (this.newTransactionButton = new UniversalButton({
+      text: "New transaction",
+      className: "new-transaction-btn",
+      onClick: (event) => this.handleCreateForm(event),
+    }));
   this.pageWrapper = createElement({
-    tagName: 'div',
-    className: 'page-wrapper',
+    tagName: "div",
+    className: "page-wrapper",
   });
   this.balanceWrapper = createElement({
-    tagName: 'section',
-    className: 'balance--wrapper',
+    tagName: "section",
+    className: "balance--wrapper",
   });
   this.balanceText = createElement({
-    tagName: 'h2',
-    className: 'balance--header',
-    innerText: 'Total balance',
+    tagName: "h2",
+    className: "balance--header",
+    innerText: "Total balance",
   });
   this.totalBalance = createElement({
-    tagName: 'h2',
+    tagName: "h2",
     innerText: 0,
-    className: 'balance--count',
+    className: "balance--count",
   });
   this.currency = createElement({
-    tagName: 'h2',
-    innerText: '$',
-    className: 'balance--count',
+    tagName: "h2",
+    innerText: "$",
+    className: "balance--count",
   });
   this.walletsWrapper = createElement({
-    tagName: 'section',
-    className: 'wallets--wrapper',
+    tagName: "section",
+    className: "wallets--wrapper",
   });
   this.walletsHeader = createElement({
-    tagName: 'h2',
-    innerText: 'Your wallets',
+    tagName: "h2",
+    innerText: "Your wallets",
   });
   this.transactionsWrapper = createElement({
-    tagName: 'section',
-    className: 'transactions--wrapper',
+    tagName: "section",
+    className: "transactions--wrapper",
   });
   this.transactionsHeader = createElement({
-    tagName: 'h2',
-    className: 'transactions--header',
-    innerText: 'Transactions',
+    tagName: "h2",
+    className: "transactions--header",
+    innerText: "Transactions",
   });
 
   this.transactionsTable = null;
@@ -75,13 +79,13 @@ Home.prototype.render = async function (parent) {
 
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
-      { name: 'category', title: 'Category' },
-      { name: 'amount', title: 'Amount' },
-      { name: 'from', title: 'From' },
-      { name: 'to', title: 'To' },
-      { name: 'comment', title: 'Comment' },
-      { name: 'date', title: 'Date' },
-      { name: 'type', title: 'Type' },
+      { name: "category", title: "Category" },
+      { name: "amount", title: "Amount" },
+      { name: "from", title: "From" },
+      { name: "to", title: "To" },
+      { name: "comment", title: "Comment" },
+      { name: "date", title: "Date" },
+      { name: "type", title: "Type" },
     ],
   });
 
@@ -91,8 +95,8 @@ Home.prototype.render = async function (parent) {
 
   this.walletsTable = new UniversalTable(wallets, {
     headers: [
-      { name: 'name', title: 'Name' },
-      { name: 'balance', title: 'Balance' },
+      { name: "name", title: "Name" },
+      { name: "balance", title: "Balance" },
     ],
   });
 
@@ -120,8 +124,7 @@ Home.prototype.handleCreateForm = function (event) {
     },
   });
 
-  this.modal.render(document.getElementById('app'), newTransactionForm);
-  console.log('new transaction');
+  this.modal.render(document.getElementById("app"), newTransactionForm);
 };
 
 Home.prototype.pullAllTransaction = async function () {
@@ -135,7 +138,7 @@ Home.prototype.pullAllTransaction = async function () {
         from: t.from ? (await getDoc(t.from)).data().name : null,
         category: t.category ? (await getDoc(t.category)).data().name : null,
         date: t.date.toDate().toLocaleString(),
-        comment: !t.comment ? 'Empty' : t.comment,
+        comment: !t.comment ? "Empty" : t.comment,
       };
     })
   );
