@@ -14,11 +14,6 @@ import './Home.scss';
 export default function Home() {
   this.modal = new ModalWindow();
 
-  this.newTransactionButton = createElement({
-    tagName: "button",
-    innerText: "New transaction",
-    className: "new-transaction-btn",
-  });
   this.newTransactionButton = new UniversalButton({
     text: "New transaction",
     className: "new-transaction-btn",
@@ -138,6 +133,12 @@ Home.prototype.handleCreateForm = function (event) {
       this.modal.close();
       const transactions = await this.pullAllTransaction();
       this.transactionsTable.updateTable(transactions);
+      const wallets = await getWallets();
+      const totalBalance = wallets.reduce(
+        (acc, currWallet) => (acc += +currWallet.balance),
+        0
+      );
+      this.totalBalance.textContent = totalBalance;
     },
   });
 
