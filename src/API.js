@@ -59,7 +59,7 @@ export const getCategoryByNameAndType = async (categoryName, categoryType) => {
     where('owner', '==', Router.getCurrentUser().uid),
     where('name', '==', categoryName),
     where('type', '==', categoryType)
-  );
+  )
 
   const responseSnapShot = await getDocs(categoryQuery)
 
@@ -123,8 +123,8 @@ export const saveWallet = async (obj) => {
 }
 
 export const addNewCategory = async (collectionRefName, obj) => {
-  await addDoc(collectionRefName, obj);
-};
+  await addDoc(collectionRefName, obj)
+}
 
 export const updateBalance = async (transactionData) => {
   switch (transactionData.type) {

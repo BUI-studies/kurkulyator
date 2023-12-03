@@ -1,14 +1,14 @@
-import { getCategoryByNameAndType, addNewCategory } from '@/API';
-import { Router, ROUTES_NAMES } from '@/routes/';
-import { categoriesCollectionRef } from '@root/firebase';
-import { createElement, createInput, createSelect } from '@/utils';
-import { TRANSACTION_TYPE } from '@/types';
-import { UniversalButton } from '@/components';
+import { getCategoryByNameAndType, addNewCategory } from '@/API'
+import { Router, ROUTES_NAMES } from '@/routes/'
+import { categoriesCollectionRef } from '@root/firebase'
+import { createElement, createInput, createSelect } from '@/utils'
+import { TRANSACTION_TYPE } from '@/types'
+import { UniversalButton } from '@/components'
 
-import './CategoryForm.scss';
+import './CategoryForm.scss'
 
 export default function CategoryForm({ afterSubmit }) {
-  this.afterSubmit = afterSubmit;
+  this.afterSubmit = afterSubmit
   this.elements = {
     self: createElement({
       tagName: 'form',
@@ -41,41 +41,33 @@ export default function CategoryForm({ afterSubmit }) {
       className: 'add-button',
       onClick: (event) => this.handleSubmit(event),
     }),
-  };
+  }
 }
 
 CategoryForm.prototype.render = function (parent) {
-  this.elements.self.append(
-    this.elements.nameLabel,
-    this.elements.name,
-    this.elements.typeLabel,
-    this.elements.type
-  );
-  this.elements.submitButton.render(this.elements.self);
-  parent.append(this.elements.self);
-};
+  this.elements.self.append(this.elements.nameLabel, this.elements.name, this.elements.typeLabel, this.elements.type)
+  this.elements.submitButton.render(this.elements.self)
+  parent.append(this.elements.self)
+}
 
 CategoryForm.prototype.handleSubmit = async function (event) {
-  event.preventDefault();
-  const categoryData = new FormData(this.elements.self);
+  event.preventDefault()
+  const categoryData = new FormData(this.elements.self)
 
-  const checkCategory = await getCategoryByNameAndType(
-    categoryData.get('categoryName'),
-    categoryData.get('createType')
-  );
+  const checkCategory = await getCategoryByNameAndType(categoryData.get('categoryName'), categoryData.get('createType'))
 
   if (checkCategory) {
-    alert('Категорія з таким іменем і типом вже існує');
-    throw new Error('Категорія з таким іменем і типом вже існує');
-    return;
+    alert('Категорія з таким іменем і типом вже існує')
+    throw new Error('Категорія з таким іменем і типом вже існує')
+    return
   } else {
     const newCategoryToAdd = {
       name: categoryData.get('categoryName'),
       type: categoryData.get('createType'),
       owner: Router.getCurrentUser().uid,
-    };
-    addNewCategory(categoriesCollectionRef, newCategoryToAdd);
+    }
+    addNewCategory(categoriesCollectionRef, newCategoryToAdd)
   }
-  Router.navigate(ROUTES_NAMES.CATEGORIES);
-  this.afterSubmit();
-};
+  Router.navigate(ROUTES_NAMES.CATEGORIES)
+  this.afterSubmit()
+}
