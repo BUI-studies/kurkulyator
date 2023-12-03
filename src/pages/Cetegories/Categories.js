@@ -1,6 +1,5 @@
 import { getCategories } from '@/API'
 import { createElement } from '@/utils'
-import { createElement } from '@/utils'
 
 import { UniversalButton, ModalWindow, CategoryForm, UniversalTable } from '@/components'
 
