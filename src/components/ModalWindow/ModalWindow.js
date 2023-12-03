@@ -1,20 +1,20 @@
-import './ModalWindow.scss';
-import { createElement } from '@/utils';
+import "./ModalWindow.scss";
+import { createElement } from "@/utils";
 
 export default function ModalWindow() {
   this.modal = createElement({
-    tagMName: 'div',
-    name: 'modal',
-    id: '',
-    innerText: '',
-    className: 'modal',
+    tagName: "div",
+    name: "modal",
+    id: "",
+    innerText: "",
+    className: "modal",
   });
   this.content = createElement({
-    tagMName: 'div',
-    name: 'modal__content',
-    id: '',
-    innerText: '',
-    className: 'modal__content',
+    tagName: "div",
+    name: "modal__content",
+    id: "",
+    innerText: "",
+    className: "modal__content",
   });
 }
 

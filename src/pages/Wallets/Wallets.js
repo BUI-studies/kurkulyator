@@ -1,19 +1,19 @@
-import { getWallets } from '@/API';
-import { createElement } from '@/utils';
+import { getWallets } from "@/API";
+import { createElement } from "@/utils";
 import {
   UniversalTable,
   ModalWindow,
   WalletsForm,
   UniversalButton,
-} from '@/components';
+} from "@/components";
 
 export default function Wallets() {
   this.pageWrapper = createElement({
-    tagName: 'div',
+    tagName: "div",
   });
 
   this.addButton = new UniversalButton({
-    text: 'New wallet',
+    text: "New wallet",
     onClick: (event) => this.handleNewWalletClick(event),
   });
 
@@ -40,8 +40,8 @@ Wallets.prototype.render = async function (parent) {
 
   this.walletTable = new UniversalTable(this.wallets, {
     headers: [
-      { name: 'name', title: 'Title' },
-      { name: 'balance', title: 'Balance' },
+      { name: "name", title: "Title" },
+      { name: "balance", title: "Balance" },
     ],
     generateDataset(rowObj) {
       return `wallets__${rowObj.name}`;
