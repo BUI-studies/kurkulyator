@@ -66,7 +66,6 @@ Home.prototype.render = async function (parent) {
 
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
-
       {
         name: 'category',
         title: 'Category',
@@ -88,7 +87,6 @@ Home.prototype.render = async function (parent) {
         sort: (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       },
       { name: 'type', title: 'Type', sortBy: false },
-
     ],
   })
 
@@ -98,7 +96,6 @@ Home.prototype.render = async function (parent) {
 
   this.walletsTable = new UniversalTable(wallets, {
     headers: [
-
       {
         name: 'name',
         title: 'Name',
@@ -106,10 +103,8 @@ Home.prototype.render = async function (parent) {
         sort: (a, b) => a.date - b.date,
       },
       { name: 'balance', title: 'Balance', sortBy: false, sort: (a, b) => a.date - b.date },
-
     ],
   })
-
 
   this.balanceWrapper.append(this.balanceText, this.currency, this.totalBalance)
   this.walletsWrapper.replaceChildren()
@@ -120,7 +115,6 @@ Home.prototype.render = async function (parent) {
   this.pageWrapper.append(this.transactionsWrapper)
   parent.append(this.pageWrapper)
 }
-
 
 Home.prototype.handleCreateForm = function (event) {
   event.preventDefault()
@@ -150,9 +144,7 @@ Home.prototype.pullAllTransaction = async function () {
         category: t.category ? (await getDoc(t.category)).data().name : null,
         date: t.date.toDate().toLocaleString(),
         comment: !t.comment ? 'Empty' : t.comment,
-
       }
     })
   )
 }
-

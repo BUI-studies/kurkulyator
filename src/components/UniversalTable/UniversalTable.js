@@ -1,8 +1,8 @@
 import './UniversalTable.scss'
 import { createElement } from '@/utils'
 
-const ARROW_DOWN = '&#9660';
-const ARROW_UP = '&#9650';
+const ARROW_DOWN = '&#9660'
+const ARROW_UP = '&#9650'
 
 /**
  * @type Classes
@@ -37,19 +37,18 @@ const ARROW_UP = '&#9650';
  * @param {Options} config - configuration options for the UniversalTable
  */
 export default function UniversalTable(collection, options) {
+  this.rowClick = options.onClick
 
-  this.rowClick = options.onClick;
+  this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort)
+  console.log(this.sortingHeader)
 
-  this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort);
-  console.log(this.sortingHeader);
+  if (!this.sortingHeader) throw new TypeError('No header found matching sorting header criteria!')
 
-  if (!this.sortingHeader) throw new TypeError('No header found matching sorting header criteria!');
+  this.collection = collection.sort(this.sortingHeader.sort)
 
-  this.collection = collection.sort(this.sortingHeader.sort);
-
-  this.headers = options.headers;
-  this.emptyCellValue = options.emptyCellValue || '';
-  this.tableBody = null;
+  this.headers = options.headers
+  this.emptyCellValue = options.emptyCellValue || ''
+  this.tableBody = null
 
   this.classes = {
     cell: options?.classes?.cell || 'table-cell',
@@ -57,10 +56,8 @@ export default function UniversalTable(collection, options) {
     cellSorted: options?.classes?.cellSorted || 'table-cell--sorted',
     row: options?.classes?.row || 'table-row',
     table: options?.classes?.table || 'table-body',
-
   }
   this.generateDataset = options.generateDataset
-
 }
 
 UniversalTable.prototype.render = function (parent) {
@@ -74,97 +71,92 @@ UniversalTable.prototype.render = function (parent) {
     className: this.classes.row,
 
     onClick: (e) => {
-      this.sortByTableHeaderRow(e);
+      this.sortByTableHeaderRow(e)
     },
-  });
+  })
 
   this.headers.forEach((cell) => {
     tableHeaderRow.innerHTML += `<span data-prop-name="${cell.name}" class="${this.classes.cell} ${
       cell.sort ? this.classes.cellUnsorted : ''
-    }">${cell.title}</span>`;
-  });
+    }">${cell.title}</span>`
+  })
 
-  tableHeader.append(tableHeaderRow);
-
+  tableHeader.append(tableHeaderRow)
 
   this.tableBody = createElement({
     tagName: 'ul',
     className: this.classes.table,
   })
 
-  this.renderTableBody();
+  this.renderTableBody()
 
   if (this.rowClick) {
     this.tableBody.onclick = (e) => {
       this.rowClickHandler(e)
     }
   }
-  parent.append(tableHeader, this.tableBody);
-};
+  parent.append(tableHeader, this.tableBody)
+}
 
 UniversalTable.prototype.renderTableBody = function () {
-  this.tableBody.replaceChildren();
+  this.tableBody.replaceChildren()
   this.collection.forEach((row, index) => {
-    const tableRow = document.createElement('li');
-    tableRow.classList.add(this.classes.row);
+    const tableRow = document.createElement('li')
+    tableRow.classList.add(this.classes.row)
 
-    tableRow.dataset.ind = index;
-    tableRow.classList.add(this.classes.row);
+    tableRow.dataset.ind = index
+    tableRow.classList.add(this.classes.row)
 
     tableRow.innerHTML = this.headers
-      .map(
-        ({ name }) =>
-          `<span class="${this.classes.cell}">${row[name] || this.emptyCellValue}</span>`,
-      )
-      .join('');
+      .map(({ name }) => `<span class="${this.classes.cell}">${row[name] || this.emptyCellValue}</span>`)
+      .join('')
 
-    this.tableBody.append(tableRow);
-  });
-};
+    this.tableBody.append(tableRow)
+  })
+}
 
 UniversalTable.prototype.sortByTableHeaderRow = function (e) {
-  const targetElem = e.target;
+  const targetElem = e.target
 
   if (e.target.tagName === 'SPAN') {
     if (
       !targetElem.classList.contains(this.classes.cellUnsorted) &&
       !targetElem.classList.contains(this.classes.cellSorted)
     ) {
-      return;
+      return
     }
 
     if (targetElem.classList.contains(this.classes.cellUnsorted)) {
-      targetElem.classList.remove(this.classes.cellUnsorted);
-      targetElem.classList.add(this.classes.cellSorted);
+      targetElem.classList.remove(this.classes.cellUnsorted)
+      targetElem.classList.add(this.classes.cellSorted)
     } else if (targetElem.classList.contains(this.classes.cellSorted)) {
-      targetElem.classList.remove(this.classes.cellSorted);
-      targetElem.classList.add(this.classes.cellUnsorted);
+      targetElem.classList.remove(this.classes.cellSorted)
+      targetElem.classList.add(this.classes.cellUnsorted)
     }
 
-    const oldSortingHeader = this.headers.find(({ sortBy }) => sortBy);
+    const oldSortingHeader = this.headers.find(({ sortBy }) => sortBy)
     const headerToSortWith = this.headers.find((el) => {
-      return el.name === targetElem.dataset.propName;
-    });
+      return el.name === targetElem.dataset.propName
+    })
 
     if (headerToSortWith.sort) {
-      this.collection = this.collection.sort(headerToSortWith.sort);
+      this.collection = this.collection.sort(headerToSortWith.sort)
 
       //TODO: toggle the sortBy property in the old sorting header
       //TODO:  toggle the sortBy property in the new sorting header
 
-      this.renderTableBody();
+      this.renderTableBody()
     }
   }
-};
+}
 
 UniversalTable.prototype.rowClickHandler = function (e) {
-  let clickedIndex = 0;
+  let clickedIndex = 0
 
   if (!e.target.classList.contains(this.classes.row)) {
-    clickedIndex = e.target.closest(`.${this.classes.row}`).dataset;
+    clickedIndex = e.target.closest(`.${this.classes.row}`).dataset
   } else {
-    clickedIndex = e.target.dataset;
+    clickedIndex = e.target.dataset
   }
-  this.rowClick(this.collection[clickedIndex]);
-};
-
+  this.rowClick(this.collection[clickedIndex])
+}

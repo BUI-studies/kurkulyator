@@ -12,11 +12,11 @@
     border: 1px solid white;
 
     &--sorted::after {
-      content: '\25B2'; 
+      content: '\25B2';
     }
 
     &--unsorted::after {
-      content: '\25BC'; 
+      content: '\25BC';
     }
   }
 }
