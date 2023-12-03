@@ -167,9 +167,9 @@ export const updateBalance = async (transactionData) => {
 export const saveTransaction = async ({ type, from, to, category, comment, amount, owner, date }) => {
   const newTransactionData = {
     type,
-    from: await getWalletRefByName(from),
-    to: await getWalletRefByName(to),
-    category: await getCategoryByNameAndType(category),
+    from: from ? await getWalletRefByName(from) : null,
+    to: to ? await getWalletRefByName(to) : null,
+    category: await getCategoryByNameAndType(category, type),
     amount: Number(amount),
     comment,
     owner,

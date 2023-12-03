@@ -106,6 +106,7 @@ Home.prototype.handleCreateForm = function (event) {
       this.transactionsTable.updateTable(transactions)
       const wallets = await getWallets()
       const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
+
       this.totalBalance.textContent = totalBalance
     },
   })
