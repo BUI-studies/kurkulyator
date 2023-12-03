@@ -1,3 +1,19 @@
-form > label {
-  color: #000;
+.walletsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 350px;
+  &__label {
+    display: flex;
+    flex-direction: column;
+    color: #000;
+  }
+  &__input,
+  &__button {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+  }
 }

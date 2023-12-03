@@ -5,30 +5,51 @@ import { transactionsCollectionRef } from "../../../firebase";
 import { Router } from "@/routes";
 import { UniversalButton } from "@/components";
 import { getWallet, saveWallet } from "@/API";
+import { createElement, createInput } from "@/utils";
+import { TRANSACTION_TYPE } from "@/types/index.js";
 
 import "./WalletsForm.scss";
 
 export default function WalletsForm({ onClose }) {
   this.onClose = onClose;
   this.elements = {
-    form: document.createElement("form"),
+    form: createElement({
+      tagName: "form",
+      className: "walletsForm",
+    }),
+    titleLabel: createElement({
+      tagName: "label",
+      innerText: "Title:",
+      className: "walletsForm__label",
+    }),
+    titleInput: createInput({
+      type: "text",
+      name: "titleInput",
+      className: "walletsForm__input",
+    }),
 
-    titleLabel: document.createElement("label"),
-    titleInput: document.createElement("input"),
-
-    balanceLabel: document.createElement("label"),
-    balanceInput: document.createElement("input"),
+    balanceLabel: createElement({
+      tagName: "label",
+      innerText: "Balance:",
+      className: "walletsForm__label",
+    }),
+    balanceInput: createInput({
+      type: "text",
+      name: "balanceInput",
+      className: "walletsForm__input",
+      value: 0,
+    }),
 
     addButton: new UniversalButton({
       text: "Add new wallet",
-      className: "addNewWalletBtn",
+      className: "walletsForm__button",
       onClick: (e) => {
-        this.submitForm(e);
+        this.handleSubmit(e);
       },
     }),
-    cancelUniversalButton: new UniversalButton({
+    cancelButton: new UniversalButton({
       text: "Cancel",
-      className: "cancelBtn",
+      className: "walletsForm__button",
       onClick: (e) => {
         this.closeForm(e);
       },
@@ -37,12 +58,6 @@ export default function WalletsForm({ onClose }) {
 }
 
 WalletsForm.prototype.render = function (parent) {
-  this.elements.titleInput.type = "text";
-  this.elements.balanceInput.type = "number";
-
-  this.elements.titleLabel.textContent = "Title";
-  this.elements.balanceLabel.textContent = "Balance";
-
   this.elements.titleLabel.append(this.elements.titleInput);
   this.elements.balanceLabel.append(this.elements.balanceInput);
 
@@ -52,29 +67,31 @@ WalletsForm.prototype.render = function (parent) {
   );
 
   this.elements.addButton.render(this.elements.form);
-  this.elements.cancelUniversalButton.render(this.elements.form);
+  this.elements.cancelButton.render(this.elements.form);
 
   parent?.append(this.elements.form);
 };
 
-WalletsForm.prototype.submitForm = async function (e) {
+WalletsForm.prototype.handleSubmit = async function (e) {
   e.preventDefault();
   const walletObj = {
     name: this.elements.titleInput.value,
-    balance: this.elements.balanceInput.value,
+    balance: +this.elements.balanceInput.value,
     owner: Router.getCurrentUser().uid,
   };
 
   const existingWallet = await getWallet(walletObj.name);
 
   if (existingWallet !== null) {
-    throw new Error("The wallet with same name has already exist");
+    throw new Error("The wallet with same name already exists");
   } else if ((walletObj.name === "") | (walletObj.balance === "")) {
     throw new Error("The fields shouldn`t be empty");
   } else {
     this.elements.addButton.disabled = true;
     this.createdWallet = await saveWallet(walletObj);
-    await this.addTransaction(Number(walletObj.balance));
+    if (walletObj.balance !== 0) {
+      await this.addTransaction(+walletObj.balance);
+    }
   }
 
   this.closeForm(e);
@@ -89,7 +106,7 @@ WalletsForm.prototype.closeForm = function (e) {
 WalletsForm.prototype.addTransaction = async function (amount) {
   const obj = {
     date: Timestamp.fromDate(new Date()),
-    type: "income",
+    type: TRANSACTION_TYPE.INCOME,
     amount: amount,
     category: null,
     comment: "initial balance",

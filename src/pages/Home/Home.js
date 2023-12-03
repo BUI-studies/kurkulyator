@@ -1,24 +1,70 @@
-import { getDoc } from 'firebase/firestore';
+import { getDoc } from "firebase/firestore";
+import { getWallets, getTransactions } from "@/API";
+import {
+  UniversalTable,
+  TransactionForm,
+  ModalWindow,
+  UniversalButton,
+} from "@/components";
+import { createElement } from "@/utils";
 
-import { getWallets, getTransactions } from '@/API';
-import { UniversalTable, TransactionForm, ModalWindow } from '@/components';
 
 import './Home.scss';
 
 export default function Home() {
   this.modal = new ModalWindow();
-  this.newTransactionButton = document.createElement('button');
-  this.pageWrapper = document.createElement('div');
-  this.balanceWrapper = document.createElement('section');
-  this.balanceText = document.createElement('h2');
-  this.totalBalance = document.createElement('h2');
-  this.currency = document.createElement('h2');
 
-  this.walletsWrapper = document.createElement('section');
-  this.walletsHeader = document.createElement('h2');
+  this.newTransactionButton = createElement({
+    tagName: "button",
+    innerText: "New transaction",
+    className: "new-transaction-btn",
+  });
+  this.newTransactionButton = new UniversalButton({
+    text: "New transaction",
+    className: "new-transaction-btn",
+    onClick: (event) => this.handleCreateForm(event),
+  });
+  this.pageWrapper = createElement({
+    tagName: "div",
+    className: "page-wrapper",
+  });
+  this.balanceWrapper = createElement({
+    tagName: "section",
+    className: "balance--wrapper",
+  });
+  this.balanceText = createElement({
+    tagName: "h2",
+    className: "balance--header",
+    innerText: "Total balance",
+  });
+  this.totalBalance = createElement({
+    tagName: "h2",
+    innerText: 0,
+    className: "balance--count",
+  });
+  this.currency = createElement({
+    tagName: "h2",
+    innerText: "$",
+    className: "balance--count",
+  });
+  this.walletsWrapper = createElement({
+    tagName: "section",
+    className: "wallets--wrapper",
+  });
+  this.walletsHeader = createElement({
+    tagName: "h2",
+    innerText: "Your wallets",
+  });
+  this.transactionsWrapper = createElement({
+    tagName: "section",
+    className: "transactions--wrapper",
+  });
+  this.transactionsHeader = createElement({
+    tagName: "h2",
+    className: "transactions--header",
+    innerText: "Transactions",
+  });
 
-  this.transactionsWrapper = document.createElement('section');
-  this.transactionsHeader = document.createElement('h2');
   this.transactionsTable = null;
 }
 
@@ -46,6 +92,7 @@ Home.prototype.render = async function (parent) {
   const wallets = await getWallets();
 
   const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0);
+
   this.totalBalance.textContent = totalBalance;
 
   const transactions = await this.pullAllTransaction();
@@ -96,12 +143,11 @@ Home.prototype.render = async function (parent) {
   this.walletsWrapper.replaceChildren();
   this.walletsWrapper.append(this.walletsHeader);
   this.walletsTable.render(this.walletsWrapper);
-  this.pageWrapper.append(
-    this.balanceWrapper,
-    this.walletsWrapper,
-    this.newTransactionButton,
-    this.transactionsWrapper,
-  );
+
+  this.pageWrapper.append(this.balanceWrapper, this.walletsWrapper);
+  this.newTransactionButton.render(this.pageWrapper);
+  this.pageWrapper.append(this.transactionsWrapper);
+  
   parent.append(this.pageWrapper);
 };
 
@@ -115,8 +161,7 @@ Home.prototype.handleCreateForm = function (event) {
     },
   });
 
-  this.modal.render(document.getElementById('app'), newTransactionForm);
-  console.log('new transaction');
+  this.modal.render(document.getElementById("app"), newTransactionForm);
 };
 
 Home.prototype.pullAllTransaction = async function () {

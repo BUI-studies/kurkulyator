@@ -1,14 +1,22 @@
-export default function UniversalButton({ text, children, className = 'customButton', onClick }) {
-  this.self = document.createElement('button');
-  this.text = text;
+import { createElement } from '@/utils';
+
+export default function UniversalButton({
+  text,
+  children,
+  className = 'customButton',
+  onClick,
+}) {
+  this.self = createElement({
+    tagName: 'button',
+    name: 'customButton',
+    innerText: text || '',
+    className,
+  });
   this.children = children;
-  this.className = className;
   this.onClick = onClick;
 }
 
 UniversalButton.prototype.render = function (parent) {
-  this.self.innerText = this.text || '';
-
   if (this.children) {
     if (typeof this.children === 'string') {
       this.self.innerHTML += this.children;
@@ -17,12 +25,7 @@ UniversalButton.prototype.render = function (parent) {
     }
   }
 
-  if (this.className) this.self.classList.add(this.className);
-
-  this.self.onclick = (e) => {
-    if (this.onClick) {
-      this.onClick(e);
-    }
-  };
+  this.self.onclick = this.onClick ? (e) => this.onClick(e) : undefined;
+  
   parent.append(this.self);
 };

@@ -1,14 +1,26 @@
-import { doc, getDoc, getDocs, query, where, addDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  addDoc,
+  updateDoc,
+  Timestamp,
+} from "firebase/firestore";
 
 import {
   walletsCollectionRef,
   transactionsCollectionRef,
   categoriesCollectionRef,
 } from "../firebase";
+
 import { Router } from "@/routes";
 
+import { TRANSACTION_TYPE } from "@/types/index.js";
+
 export const getTransactions = async () => {
-  const transactionsCollectionByUserQuery = await query(
+  const transactionsCollectionByUserQuery = query(
     transactionsCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid)
   );
@@ -22,7 +34,7 @@ export const getTransactions = async () => {
  * @param {number} dateRange - number or days
  */
 export const getTransactionsByDateRange = async (dateRange = 3) => {
-  const transactionsCollectionByUserQuery = await query(
+  const transactionsCollectionByUserQuery = query(
     transactionsCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid)
   );
@@ -35,7 +47,7 @@ export const getTransactionsByDateRange = async (dateRange = 3) => {
 };
 
 export const getWallets = async () => {
-  const walletsCollectionByUserQuery = await query(
+  const walletsCollectionByUserQuery = query(
     walletsCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid)
   );
@@ -46,7 +58,7 @@ export const getWallets = async () => {
 };
 
 export const getWalletRefByName = async (walletName) => {
-  const walletsQuery = await query(
+  const walletsQuery = query(
     walletsCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid),
     where("name", "==", walletName)
@@ -60,7 +72,7 @@ export const getWalletRefByName = async (walletName) => {
 };
 
 export const getCategoryRefByName = async (categoryName) => {
-  const categoryQuery = await query(
+  const categoryQuery = query(
     categoriesCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid),
     where("name", "==", categoryName)
@@ -74,7 +86,7 @@ export const getCategoryRefByName = async (categoryName) => {
 };
 
 export const getCategories = async () => {
-  const categoriesCollectionByUserQuery = await query(
+  const categoriesCollectionByUserQuery = query(
     categoriesCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid)
   );
@@ -84,7 +96,7 @@ export const getCategories = async () => {
   return res;
 };
 
-export const getCategoriesByType = async (type = "income") => {
+export const getCategoriesByType = async (type = TRANSACTION_TYPE.INCOME) => {
   const categoriesQuery = query(
     categoriesCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid),
@@ -96,12 +108,11 @@ export const getCategoriesByType = async (type = "income") => {
   querySnapshot.forEach((docRef) => {
     result.push({ id: docRef.id, ...docRef.data() });
   });
-  // return res.data();
   return result;
 };
 
 export const getByUser = async (collectionRefName) => {
-  const collectionByUserQuery = await query(
+  const collectionByUserQuery = query(
     collectionRefName,
     where("owner", "==", Router.getCurrentUser().uid)
   );
@@ -112,7 +123,7 @@ export const getByUser = async (collectionRefName) => {
 };
 
 export const getWallet = async (name) => {
-  const result = await query(
+  const result = query(
     walletsCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid),
     where("name", "==", name)
@@ -129,7 +140,74 @@ export const saveWallet = async (obj) => {
   const checkWallet = await getWallet(obj.name);
 
   if (checkWallet !== null)
-    throw new ReferenceError("The Wallet has already exist");
+    throw new ReferenceError("The Wallet already exists");
 
   return await addDoc(walletsCollectionRef, obj);
+};
+
+export const updateBalance = async (transactionData) => {
+  switch (transactionData.type) {
+    case TRANSACTION_TYPE.CORRECTION:
+      if (transactionData.comment === "") {
+        transactionData.comment = "Корекція балансу гаманцю";
+      }
+    case TRANSACTION_TYPE.INCOME:
+      const walletToData = (await getDoc(transactionData.to)).data();
+      await updateDoc(transactionData.to, {
+        balance: walletToData.balance + transactionData.amount,
+      });
+
+      break;
+    case TRANSACTION_TYPE.OUTCOME:
+      const walletFromData = (await getDoc(transactionData.from)).data();
+
+      await updateDoc(transactionData.from, {
+        balance: walletFromData.balance - transactionData.amount,
+      });
+
+      break;
+    case TRANSACTION_TYPE.TRANSFER:
+      const walletFromDataTransfer = (
+        await getDoc(transactionData.from)
+      ).data();
+
+      const walletToDataTransfer = (await getDoc(transactionData.to)).data();
+
+      await updateDoc(transactionData.from, {
+        balance: walletFromDataTransfer.balance - transactionData.amount,
+      });
+
+      await updateDoc(transactionData.to, {
+        balance: walletToDataTransfer.balance + transactionData.amount,
+      });
+
+      break;
+  }
+};
+
+export const saveTransaction = async ({
+  type,
+  from,
+  to,
+  category,
+  comment,
+  amount,
+  owner,
+  date,
+}) => {
+  const newTransactionData = {
+    type,
+    from: await getWalletRefByName(from),
+    to: await getWalletRefByName(to),
+    category: await getCategoryRefByName(category),
+    amount: Number(amount),
+    comment,
+    owner,
+    date: Timestamp.fromDate(date),
+  };
+
+  await updateBalance(newTransactionData);
+  await addDoc(transactionsCollectionRef, newTransactionData);
+
+  return newTransactionData;
 };

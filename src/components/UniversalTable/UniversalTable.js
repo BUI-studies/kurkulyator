@@ -1,5 +1,7 @@
 import './UniversalTable.scss';
 
+import { createElement } from '@/utils';
+
 const ARROW_DOWN = '&#9660';
 const ARROW_UP = '&#9650';
 
@@ -47,7 +49,7 @@ export default function UniversalTable(collection, options) {
 
   this.headers = options.headers;
   this.emptyCellValue = options.emptyCellValue || '';
-  this.tableBody = document.createElement('ul');
+  this.tableBody = null;
   this.classes = {
     cell: options?.classes?.cell || 'table-cell',
     cellUnsorted: options?.classes?.cellUnsorted || 'table-cell--unsorted',
@@ -58,16 +60,18 @@ export default function UniversalTable(collection, options) {
 }
 
 UniversalTable.prototype.render = function (parent) {
-  const tableHeader = document.createElement('ul');
-  tableHeader.classList.add(this.classes.table);
+  const tableHeader = createElement({
+    tagName: 'ul',
+    className: this.classes.table,
+  });
 
-  const tableHeaderRow = document.createElement('li');
-
-  tableHeaderRow.onclick = (e) => {
-    this.sortByTableHeaderRow(e);
-  };
-
-  tableHeaderRow.classList.add(this.classes.row);
+  const tableHeaderRow = createElement({
+    tagName: 'li',
+    className: this.classes.row,
+    onClick: (e) => {
+      this.sortByTableHeaderRow(e);
+    };
+  });
 
   this.headers.forEach((cell) => {
     tableHeaderRow.innerHTML += `<span data-prop-name="${cell.name}" class="${this.classes.cell} ${
@@ -77,7 +81,10 @@ UniversalTable.prototype.render = function (parent) {
 
   tableHeader.append(tableHeaderRow);
 
-  this.tableBody.classList.add(this.classes.table);
+  this.tableBody = createElement({
+    tagName: 'ul',
+    className: this.classes.table,
+  });
 
   this.renderTableBody();
 
