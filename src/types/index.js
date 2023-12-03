@@ -3,4 +3,4 @@ export const TRANSACTION_TYPE = Object.freeze({
   OUTCOME: 'outcome',
   TRANSFER: 'transfer',
   CORRECTION: 'correction',
-});
+})

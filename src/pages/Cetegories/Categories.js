@@ -1,5 +1,7 @@
-import { getCategories } from '@/API';
-import { createElement } from '@/utils';
+import { getCategories } from '@/API'
+import { createElement } from '@/utils'
+import { createElement } from '@/utils'
+
 import {
   UniversalButton,
   ModalWindow,
