@@ -1,6 +1,5 @@
-import './UniversalTable.scss';
-
-import { createElement } from '@/utils';
+import './UniversalTable.scss'
+import { createElement } from '@/utils'
 
 const ARROW_DOWN = '&#9660';
 const ARROW_UP = '&#9650';
@@ -38,6 +37,7 @@ const ARROW_UP = '&#9650';
  * @param {Options} config - configuration options for the UniversalTable
  */
 export default function UniversalTable(collection, options) {
+
   this.rowClick = options.onClick;
 
   this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort);
@@ -50,24 +50,29 @@ export default function UniversalTable(collection, options) {
   this.headers = options.headers;
   this.emptyCellValue = options.emptyCellValue || '';
   this.tableBody = null;
+
   this.classes = {
     cell: options?.classes?.cell || 'table-cell',
     cellUnsorted: options?.classes?.cellUnsorted || 'table-cell--unsorted',
     cellSorted: options?.classes?.cellSorted || 'table-cell--sorted',
     row: options?.classes?.row || 'table-row',
     table: options?.classes?.table || 'table-body',
-  };
+
+  }
+  this.generateDataset = options.generateDataset
+
 }
 
 UniversalTable.prototype.render = function (parent) {
   const tableHeader = createElement({
     tagName: 'ul',
     className: this.classes.table,
-  });
+  })
 
   const tableHeaderRow = createElement({
     tagName: 'li',
     className: this.classes.row,
+
     onClick: (e) => {
       this.sortByTableHeaderRow(e);
     },
@@ -81,17 +86,18 @@ UniversalTable.prototype.render = function (parent) {
 
   tableHeader.append(tableHeaderRow);
 
+
   this.tableBody = createElement({
     tagName: 'ul',
     className: this.classes.table,
-  });
+  })
 
   this.renderTableBody();
 
   if (this.rowClick) {
     this.tableBody.onclick = (e) => {
-      this.rowClickHandler(e);
-    };
+      this.rowClickHandler(e)
+    }
   }
   parent.append(tableHeader, this.tableBody);
 };
@@ -161,3 +167,4 @@ UniversalTable.prototype.rowClickHandler = function (e) {
   }
   this.rowClick(this.collection[clickedIndex]);
 };
+
