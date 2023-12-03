@@ -1,8 +1,8 @@
 import { getCategoryByNameAndType, addNewCategory } from '@/API';
-import { Router } from '@/routes';
+import { Router, ROUTES_NAMES } from '@/routes/';
 import { categoriesCollectionRef } from '@root/firebase';
 import { createElement, createInput, createSelect } from '@/utils';
-import { TRANSACTION_TYPE_FOR_CATEGORY_CREATING } from '@/types';
+import { TRANSACTION_TYPE } from '@/types';
 import { UniversalButton } from '@/components';
 
 import './CategoryForm.scss';
@@ -32,7 +32,7 @@ export default function CategoryForm({ afterSubmit }) {
       innerText: 'Оберіть тип категорії:',
     }),
     type: createSelect({
-      options: Object.values(TRANSACTION_TYPE_FOR_CATEGORY_CREATING), // ['income', 'outcome', ...]
+      options: [TRANSACTION_TYPE.INCOME, TRANSACTION_TYPE.OUTCOME],
       name: 'createType',
       className: 'categoryForm__type',
     }),
@@ -76,5 +76,6 @@ CategoryForm.prototype.handleSubmit = async function (event) {
     };
     addNewCategory(categoriesCollectionRef, newCategoryToAdd);
   }
+  Router.navigate(ROUTES_NAMES.CATEGORIES);
   this.afterSubmit();
 };
