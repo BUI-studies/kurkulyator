@@ -8,7 +8,7 @@ import {
   collection,
   updateDoc,
   Timestamp,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 import {
   walletsCollectionRef,
@@ -17,7 +17,7 @@ import {
 } from '@root/firebase';
 import { Router } from '@/routes';
 
-import { TRANSACTION_TYPE } from "@/types/index.js";
+import { TRANSACTION_TYPE } from '@/types/index.js';
 
 export const getTransactions = async () => {
   const transactionsCollectionByUserQuery = query(
@@ -71,11 +71,12 @@ export const getWalletRefByName = async (walletName) => {
     : null;
 };
 
-export const getCategoryRefByName = async (categoryName) => {
+export const getCategoryByNameAndType = async (categoryName, categoryType) => {
   const categoryQuery = query(
     categoriesCollectionRef,
     where('owner', '==', Router.getCurrentUser().uid),
-    where('name', '==', categoryName)
+    where('name', '==', categoryName),
+    where('type', '==', categoryType)
   );
 
   const responseSnapShot = await getDocs(categoryQuery);
@@ -139,21 +140,21 @@ export const getWallet = async (name) => {
 export const saveWallet = async (obj) => {
   const checkWallet = await getWallet(obj.name);
 
-  if (checkWallet !== null) throw new ReferenceError("The Wallet already exists");
+  if (checkWallet !== null)
+    throw new ReferenceError('The Wallet already exists');
 
   return await addDoc(walletsCollectionRef, obj);
 };
 
-
 export const addNewCategory = async (collectionRefName, obj) => {
   await addDoc(collectionRefName, obj);
-}
+};
 
 export const updateBalance = async (transactionData) => {
   switch (transactionData.type) {
     case TRANSACTION_TYPE.CORRECTION:
-      if (transactionData.comment === "") {
-        transactionData.comment = "Корекція балансу гаманцю";
+      if (transactionData.comment === '') {
+        transactionData.comment = 'Корекція балансу гаманцю';
       }
     case TRANSACTION_TYPE.INCOME:
       const walletToData = (await getDoc(transactionData.to)).data();
@@ -203,7 +204,7 @@ export const saveTransaction = async ({
     type,
     from: await getWalletRefByName(from),
     to: await getWalletRefByName(to),
-    category: await getCategoryRefByName(category),
+    category: await getCategoryByNameAndType(category),
     amount: Number(amount),
     comment,
     owner,

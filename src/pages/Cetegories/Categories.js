@@ -26,30 +26,25 @@ export default function Categories() {
 
   this.placeholderText = createElement({
     tagName: 'h2',
-  }); // temp placeholder
+  });
   this.placeholderText.textContent = 'Categories page';
 }
 
 Categories.prototype.render = async function (parent) {
   this.categories = await getCategories();
-
-  // this.addButton.onclick = (e) => this.handleNewCategoryClick(e);
   this.pageWrapper.append(this.placeholderText);
   this.addButton.render(this.pageWrapper);
-
   this.addTable();
-
   this.pageWrapper.append(this.tableWrapper);
-
   parent.append(this.pageWrapper);
 };
 
 Categories.prototype.handleNewCategoryClick = function (e) {
   e.preventDefault();
-  const modalForm = new ModalWindow(); // !!!!!!!!!!!!!!!!!!!!!!!!! НЕ ДОМ ЕЛЕМЕНТ !!!!!!!!!!!!!!!!!!!!!!!!!
+  const modalForm = new ModalWindow();
   const newCategoryForm = new CategoryForm({
     afterSubmit: () => modalForm.close(),
-  }); //нова форма
+  });
   newCategoryForm.render(modalForm.content);
   modalForm.render(this.pageWrapper, newCategoryForm);
 

@@ -1,8 +1,8 @@
-import { getCategoryRefByName, addNewCategory } from '@/API';
+import { getCategoryByNameAndType, addNewCategory } from '@/API';
 import { Router } from '@/routes';
 import { categoriesCollectionRef } from '@root/firebase';
 import { createElement, createInput, createSelect } from '@/utils';
-import { TRANSACTION_TYPE } from '@/types';
+import { TRANSACTION_TYPE_FOR_CATEGORY_CREATING } from '@/types';
 import { UniversalButton } from '@/components';
 
 import './CategoryForm.scss';
@@ -32,7 +32,7 @@ export default function CategoryForm({ afterSubmit }) {
       innerText: 'Оберіть тип категорії:',
     }),
     type: createSelect({
-      options: Object.values(TRANSACTION_TYPE), // ['income', 'outcome', ...]
+      options: Object.values(TRANSACTION_TYPE_FOR_CATEGORY_CREATING), // ['income', 'outcome', ...]
       name: 'createType',
       className: 'categoryForm__type',
     }),
@@ -59,11 +59,14 @@ CategoryForm.prototype.handleSubmit = async function (event) {
   event.preventDefault();
   const categoryData = new FormData(this.elements.self);
 
-  const checkCategoryName = await getCategoryRefByName(
-    categoryData.get('categoryName')
+  const checkCategory = await getCategoryByNameAndType(
+    categoryData.get('categoryName'),
+    categoryData.get('createType')
   );
 
-  if (checkCategoryName) {
+  if (checkCategory) {
+    alert('Категорія з таким іменем і типом вже існує');
+    throw new Error('Категорія з таким іменем і типом вже існує');
     return;
   } else {
     const newCategoryToAdd = {

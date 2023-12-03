@@ -4,3 +4,9 @@ export const TRANSACTION_TYPE = Object.freeze({
   TRANSFER: 'transfer',
   CORRECTION: 'correction',
 });
+
+
+export const TRANSACTION_TYPE_FOR_CATEGORY_CREATING = Object.freeze({
+  INCOME: 'income',
+  OUTCOME: 'outcome',
+});
