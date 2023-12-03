@@ -9,8 +9,8 @@ export const makeOptions = (optionsSet, optionClass) => {
       accumulator +
       `<option value="${currentItem}" data-filter="${currentItem}" class="${optionClass}">${currentItem}</option>`,
     `<option default selected disabled value="null" class="${optionClass}">--none--</option>`
-  );
-};
+  )
+}
 
 /**
  * @function createElement
@@ -18,61 +18,50 @@ export const makeOptions = (optionsSet, optionClass) => {
  * @param {{tagName: string, name: string, id: string, className:string}} config
  */
 export const createElement = ({ tagName, name, id, innerText, className }) => {
-  const newElement = document.createElement(tagName);
+  const newElement = document.createElement(tagName)
 
-  if (name) newElement.name = name;
-  if (id) newElement.id = id;
-  if (innerText) newElement.innerText = innerText;
+  if (name) newElement.name = name
+  if (id) newElement.id = id
+  if (innerText) newElement.innerText = innerText
 
-  if (className) newElement.classList.add(className);
+  if (className) newElement.classList.add(className)
 
-  return newElement;
-};
+  return newElement
+}
 
 /**
  * @function createInput
  *
  * @param {type:string, name:string, id: string, className: string, value; string} config
  */
-export const createInput = ({
-  type = 'text',
-  name,
-  id,
-  className,
-  value = '',
-}) => {
-  if (type === 'select') return createSelect();
-  if (!name) throw TypeError('name attribute is required');
+export const createInput = ({ type = 'text', name, id, className, value = '' }) => {
+  if (type === 'select') return createSelect()
+  if (!name) throw TypeError('name attribute is required')
 
-  const newInput = document.createElement('input');
-  newInput.type = type;
-  newInput.name = name;
-  newInput.id = id;
-  newInput.classList.add(className);
-  newInput.value = value;
-  return newInput;
-};
+  const newInput = document.createElement('input')
+  newInput.type = type
+  newInput.name = name
+  newInput.id = id
+  newInput.classList.add(className)
+  newInput.value = value
+  return newInput
+}
 
 /**
  * @function createSelect
  *
  * @param {options:string[], name:string, className: string, optionsClassName; string} config
  */
-export const createSelect = ({
-  options = [],
-  name,
-  className,
-  optionsClassName,
-}) => {
-  if (!name) throw TypeError('name attribute is required');
+export const createSelect = ({ options = [], name, className, optionsClassName }) => {
+  if (!name) throw TypeError('name attribute is required')
 
-  const newSelect = document.createElement('select');
-  newSelect.classList.add(className);
-  newSelect.name = name;
+  const newSelect = document.createElement('select')
+  newSelect.classList.add(className)
+  newSelect.name = name
 
   if (options) {
-    newSelect.innerHTML = makeOptions(options, optionsClassName);
+    newSelect.innerHTML = makeOptions(options, optionsClassName)
   }
 
-  return newSelect;
-};
+  return newSelect
+}
