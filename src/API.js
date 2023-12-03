@@ -96,7 +96,7 @@ export const getCategories = async () => {
   return res;
 };
 
-export const getCategoriesByType = async (type = "income") => {
+export const getCategoriesByType = async (type = TRANSACTION_TYPE.INCOME) => {
   const categoriesQuery = query(
     categoriesCollectionRef,
     where("owner", "==", Router.getCurrentUser().uid),
@@ -183,7 +183,6 @@ export const updateBalance = async (transactionData) => {
 
       break;
   }
-  console.log("data sent");
 };
 
 export const saveTransaction = async ({

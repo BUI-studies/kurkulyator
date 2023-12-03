@@ -125,7 +125,6 @@ Home.prototype.handleCreateForm = function (event) {
   });
 
   this.modal.render(document.getElementById("app"), newTransactionForm);
-  console.log("new transaction");
 };
 
 Home.prototype.pullAllTransaction = async function () {
