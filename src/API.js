@@ -53,11 +53,12 @@ export const getWalletRefByName = async (walletName) => {
   return responseSnapShot.docs[0] ? doc(walletsCollectionRef, responseSnapShot.docs[0].id) : null
 }
 
-export const getCategoryRefByName = async (categoryName) => {
+export const getCategoryByNameAndType = async (categoryName, categoryType) => {
   const categoryQuery = query(
     categoriesCollectionRef,
     where('owner', '==', Router.getCurrentUser().uid),
-    where('name', '==', categoryName)
+    where('name', '==', categoryName),
+    where('type', '==', categoryType)
   )
 
   const responseSnapShot = await getDocs(categoryQuery)
@@ -121,6 +122,10 @@ export const saveWallet = async (obj) => {
   return await addDoc(walletsCollectionRef, obj)
 }
 
+export const addNewCategory = async (collectionRefName, obj) => {
+  await addDoc(collectionRefName, obj)
+}
+
 export const updateBalance = async (transactionData) => {
   switch (transactionData.type) {
     case TRANSACTION_TYPE.CORRECTION:
@@ -164,7 +169,7 @@ export const saveTransaction = async ({ type, from, to, category, comment, amoun
     type,
     from: await getWalletRefByName(from),
     to: await getWalletRefByName(to),
-    category: await getCategoryRefByName(category),
+    category: await getCategoryByNameAndType(category),
     amount: Number(amount),
     comment,
     owner,
