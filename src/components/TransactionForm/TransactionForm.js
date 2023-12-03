@@ -1,9 +1,9 @@
-import { getWallets, getCategories, saveTransaction } from "@/API";
-import { makeOptions, createElement, createInput, createSelect } from "@/utils";
-import { UniversalButton } from "@/components";
-import { Router } from "@/routes";
-import { TRANSACTION_TYPE } from "@/types/index.js";
-import "./TransactionForm.scss";
+import { getWallets, getCategories, saveTransaction } from '@/API'
+import { makeOptions, createElement, createInput, createSelect } from '@/utils'
+import { UniversalButton } from '@/components'
+import { Router } from '@/routes'
+import { TRANSACTION_TYPE } from '@/types/index.js'
+import './TransactionForm.scss'
 
 export default function TransactionForm({ afterSubmit }) {
   this.typeOptions = [
@@ -11,94 +11,94 @@ export default function TransactionForm({ afterSubmit }) {
     TRANSACTION_TYPE.OUTCOME,
     TRANSACTION_TYPE.TRANSFER,
     TRANSACTION_TYPE.CORRECTION,
-  ];
+  ]
 
-  this.categories = null;
-  this.afterSubmit = afterSubmit;
+  this.categories = null
+  this.afterSubmit = afterSubmit
 
   this.elements = {
     owner: null,
     self: createElement({
-      tagName: "form",
-      name: "transaction-form",
-      id: "t-form",
-      innerText: "",
-      className: "transactionForm",
+      tagName: 'form',
+      name: 'transaction-form',
+      id: 't-form',
+      innerText: '',
+      className: 'transactionForm',
     }),
     typeLabel: createElement({
-      tagName: "label",
-      name: "transaction-type-label",
-      id: "ttLabel",
-      innerText: "Transaction type:",
-      className: "transactionForm__label",
+      tagName: 'label',
+      name: 'transaction-type-label',
+      id: 'ttLabel',
+      innerText: 'Transaction type:',
+      className: 'transactionForm__label',
     }),
     type: createSelect({
       options: this.typeOptions,
-      name: "type",
-      className: "transactionForm__type",
-      optionsClassName: "transactionForm__type-option",
+      name: 'type',
+      className: 'transactionForm__type',
+      optionsClassName: 'transactionForm__type-option',
     }),
     wallets: {
       labelFrom: createElement({
-        tagName: "label",
-        name: "wallet-from-label",
-        id: "wfLabel",
-        innerText: "From:",
-        className: "transactionForm__label",
+        tagName: 'label',
+        name: 'wallet-from-label',
+        id: 'wfLabel',
+        innerText: 'From:',
+        className: 'transactionForm__label',
       }),
       from: null,
       labelTo: createElement({
-        tagName: "label",
-        name: "wallet-to-label",
-        id: "wtLabel",
-        innerText: "To:",
-        className: "transactionForm__label",
+        tagName: 'label',
+        name: 'wallet-to-label',
+        id: 'wtLabel',
+        innerText: 'To:',
+        className: 'transactionForm__label',
       }),
       to: null,
     },
     categoryLabel: createElement({
-      tagName: "label",
-      name: "category-label",
-      id: "catLabel",
-      innerText: "Category:",
-      className: "transactionForm__label",
+      tagName: 'label',
+      name: 'category-label',
+      id: 'catLabel',
+      innerText: 'Category:',
+      className: 'transactionForm__label',
     }),
     category: createSelect({
-      name: "category",
-      className: "transactionForm__category",
+      name: 'category',
+      className: 'transactionForm__category',
     }),
     amountLabel: createElement({
-      tagName: "label",
-      name: "amount-label",
-      id: "amoLabel",
-      innerText: "Amount:",
-      className: "transactionForm__label",
+      tagName: 'label',
+      name: 'amount-label',
+      id: 'amoLabel',
+      innerText: 'Amount:',
+      className: 'transactionForm__label',
     }),
     amount: createInput({
-      name: "amount",
-      id: "tFormAmount",
-      className: "transactionForm__amount",
-      value: "",
+      name: 'amount',
+      id: 'tFormAmount',
+      className: 'transactionForm__amount',
+      value: '',
     }),
     commentLabel: createElement({
-      tagName: "label",
-      name: "comment-label",
-      id: "comLabel",
+      tagName: 'label',
+      name: 'comment-label',
+      id: 'comLabel',
       innerText: "Comment (не обов'язково):",
-      className: "transactionForm__label",
+      className: 'transactionForm__label',
     }),
     comment: createInput({
-      name: "comment",
-      id: "tFormComment",
-      className: "transactionForm__comment",
-      value: "",
+      name: 'comment',
+      id: 'tFormComment',
+      className: 'transactionForm__comment',
+      value: '',
     }),
     button: new UniversalButton({
-      text: "Save",
-      className: "transactionForm__button",
+      text: 'Save',
+      className: 'transactionForm__button',
       onClick: (event) => this.handleSubmit(event),
     }),
-  };
+  }
 }
 
 /**
@@ -106,139 +106,104 @@ export default function TransactionForm({ afterSubmit }) {
  * @param {HTMLElement} parent
  */
 TransactionForm.prototype.render = async function (parent) {
-  this.elements.type.addEventListener("change", (event) => {
-    this.typeListener(event);
-  });
+  this.elements.type.addEventListener('change', (event) => {
+    this.typeListener(event)
+  })
 
-  this.categories = await getCategories();
+  this.categories = await getCategories()
 
-  this.elements.wallets.from = await this.makeWalletsInput("walletFrom");
-  this.elements.wallets.to = await this.makeWalletsInput("walletTo");
+  this.elements.wallets.from = await this.makeWalletsInput('walletFrom')
+  this.elements.wallets.to = await this.makeWalletsInput('walletTo')
 
-  this.elements.typeLabel.append(this.elements.type);
-  this.elements.categoryLabel.append(this.elements.category);
-  this.elements.amountLabel.append(this.elements.amount);
-  this.elements.commentLabel.append(this.elements.comment);
-  this.elements.wallets.labelFrom.append(this.elements.wallets.from);
-  this.elements.wallets.labelTo.append(this.elements.wallets.to);
+  this.elements.typeLabel.append(this.elements.type)
+  this.elements.categoryLabel.append(this.elements.category)
+  this.elements.amountLabel.append(this.elements.amount)
+  this.elements.commentLabel.append(this.elements.comment)
+  this.elements.wallets.labelFrom.append(this.elements.wallets.from)
+  this.elements.wallets.labelTo.append(this.elements.wallets.to)
 
-  this.elements.self.append(
-    this.elements.typeLabel,
-    this.elements.amountLabel,
-    this.elements.commentLabel
-  );
-  this.elements.button.render(this.elements.self);
+  this.elements.self.append(this.elements.typeLabel, this.elements.amountLabel, this.elements.commentLabel)
+  this.elements.button.render(this.elements.self)
 
-  parent.append(this.elements.self);
-};
+  parent.append(this.elements.self)
+}
 
 /**
  * /f description/
  * @param {Event} e
  */
 TransactionForm.prototype.handleSubmit = async function (e) {
-  e.preventDefault();
+  e.preventDefault()
 
-  const formData = new FormData(this.elements.self);
+  const formData = new FormData(this.elements.self)
 
   const newTransactionData = await saveTransaction({
-    type: formData.get("type"),
-    from: formData.get("walletFrom"),
-    to: formData.get("walletTo"),
-    category: formData.get("category"),
-    amount: formData.get("amount"),
-    comment: formData.get("comment"),
+    type: formData.get('type'),
+    from: formData.get('walletFrom'),
+    to: formData.get('walletTo'),
+    category: formData.get('category'),
+    amount: formData.get('amount'),
+    comment: formData.get('comment'),
     owner: Router.getCurrentUser().uid,
     date: new Date(),
-  });
+  })
 
-  this.afterSubmit?.(e, newTransactionData);
-};
+  this.afterSubmit?.(e, newTransactionData)
+}
 
 /**
  *
  * @param {Event} e
  */
 TransactionForm.prototype.typeListener = function (e) {
-  e.preventDefault();
+  e.preventDefault()
 
-  this.elements.wallets.labelFrom?.remove();
-  this.elements.wallets.labelTo?.remove();
-  this.elements.categoryLabel?.remove();
+  this.elements.wallets.labelFrom?.remove()
+  this.elements.wallets.labelTo?.remove()
+  this.elements.categoryLabel?.remove()
 
-  this.elements.category.innerHTML = makeOptions(
-    [],
-    "transactionForm__category"
-  );
+  this.elements.category.innerHTML = makeOptions([], 'transactionForm__category')
 
-  const selectedType = e.target.value;
+  const selectedType = e.target.value
 
   switch (selectedType) {
     case TRANSACTION_TYPE.INCOME:
-      this.elements.typeLabel.insertAdjacentElement(
-        "afterend",
-        this.elements.wallets.labelTo
-      );
+      this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
 
       this.elements.category.innerHTML = makeOptions(
-        this.categories
-          .filter(({ type }) => type === TRANSACTION_TYPE.INCOME)
-          .map(({ name }) => name),
-        "transactionForm__category-options"
-      );
+        this.categories.filter(({ type }) => type === TRANSACTION_TYPE.INCOME).map(({ name }) => name),
+        'transactionForm__category-options'
+      )
 
-      this.elements.wallets.labelTo.insertAdjacentElement(
-        "afterend",
-        this.elements.categoryLabel
-      );
-      break;
+      this.elements.wallets.labelTo.insertAdjacentElement('afterend', this.elements.categoryLabel)
+      break
     case TRANSACTION_TYPE.OUTCOME:
-      this.elements.typeLabel.insertAdjacentElement(
-        "afterend",
-        this.elements.wallets.labelFrom
-      );
+      this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelFrom)
 
       this.elements.category.innerHTML = makeOptions(
-        this.categories
-          .filter(({ type }) => type === TRANSACTION_TYPE.OUTCOME)
-          .map(({ name }) => name),
-        "transactionForm__category-options"
-      );
+        this.categories.filter(({ type }) => type === TRANSACTION_TYPE.OUTCOME).map(({ name }) => name),
+        'transactionForm__category-options'
+      )
 
-      this.elements.wallets.labelFrom.insertAdjacentElement(
-        "afterend",
-        this.elements.categoryLabel
-      );
-      break;
+      this.elements.wallets.labelFrom.insertAdjacentElement('afterend', this.elements.categoryLabel)
+      break
     case TRANSACTION_TYPE.TRANSFER:
-      this.elements.typeLabel.insertAdjacentElement(
-        "afterend",
-        this.elements.wallets.labelFrom
-      );
+      this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelFrom)
 
-      this.elements.wallets.labelFrom.insertAdjacentElement(
-        "afterend",
-        this.elements.wallets.labelTo
-      );
-      break;
+      this.elements.wallets.labelFrom.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
+      break
     case TRANSACTION_TYPE.CORRECTION:
-      this.elements.typeLabel.insertAdjacentElement(
-        "afterend",
-        this.elements.wallets.labelTo
-      );
-      break;
+      this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
+      break
   }
-};
+}
 
 TransactionForm.prototype.makeWalletsInput = async function (inputName) {
-  const wallets = await getWallets();
-  const walletsOptions = wallets.map((item) => item.name);
-  const walletsInput = document.createElement("select");
-  walletsInput.name = inputName;
-  walletsInput.classList.add("transactionForm__wallet");
-  walletsInput.innerHTML = makeOptions(
-    walletsOptions,
-    "transactionForm__wallet-option"
-  );
-  return walletsInput;
-};
+  const wallets = await getWallets()
+  const walletsOptions = wallets.map((item) => item.name)
+  const walletsInput = document.createElement('select')
+  walletsInput.name = inputName
+  walletsInput.classList.add('transactionForm__wallet')
+  walletsInput.innerHTML = makeOptions(walletsOptions, 'transactionForm__wallet-option')
+  return walletsInput
+}

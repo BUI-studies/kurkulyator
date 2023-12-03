@@ -1,6 +1,6 @@
 export const TRANSACTION_TYPE = Object.freeze({
-  INCOME: "income",
-  OUTCOME: "outcome",
-  TRANSFER: "transfer",
-  CORRECTION: "correction",
-});
+  INCOME: 'income',
+  OUTCOME: 'outcome',
+  TRANSFER: 'transfer',
+  CORRECTION: 'correction',
+})
