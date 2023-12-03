@@ -69,26 +69,6 @@ export default function Home() {
 }
 
 Home.prototype.render = async function (parent) {
-  this.balanceWrapper.classList.add('balance--wrapper');
-  this.balanceText.textContent = 'Total balance';
-  this.balanceText.classList.add('balance--header');
-  this.totalBalance.textContent = 0;
-  this.totalBalance.classList.add('balance--count');
-  this.currency.textContent = '$';
-  this.currency.classList.add('balance--count');
-
-  this.walletsWrapper.classList.add('wallets--wrapper');
-  this.walletsHeader.textContent = 'Your wallets';
-
-  this.pageWrapper.classList.add('page-wrapper');
-  this.transactionsWrapper.classList.add('transactions--wrapper');
-  this.transactionsHeader.classList.add('transactions--header');
-  this.transactionsHeader.textContent = 'Transactions';
-
-  this.newTransactionButton.innerText = 'New transaction';
-  this.newTransactionButton.classList.add('new-transaction-btn');
-  this.newTransactionButton.onclick = (event) => this.handleCreateForm(event);
-
   const wallets = await getWallets();
 
   const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0);

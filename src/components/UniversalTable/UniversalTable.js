@@ -70,7 +70,7 @@ UniversalTable.prototype.render = function (parent) {
     className: this.classes.row,
     onClick: (e) => {
       this.sortByTableHeaderRow(e);
-    };
+    },
   });
 
   this.headers.forEach((cell) => {
@@ -130,7 +130,6 @@ UniversalTable.prototype.sortByTableHeaderRow = function (e) {
     if (targetElem.classList.contains(this.classes.cellUnsorted)) {
       targetElem.classList.remove(this.classes.cellUnsorted);
       targetElem.classList.add(this.classes.cellSorted);
-      
     } else if (targetElem.classList.contains(this.classes.cellSorted)) {
       targetElem.classList.remove(this.classes.cellSorted);
       targetElem.classList.add(this.classes.cellUnsorted);
@@ -142,7 +141,7 @@ UniversalTable.prototype.sortByTableHeaderRow = function (e) {
     });
 
     if (headerToSortWith.sort) {
-      this.collection = this.collection.sort(headerToSortWith.sort);      
+      this.collection = this.collection.sort(headerToSortWith.sort);
 
       //TODO: toggle the sortBy property in the old sorting header
       //TODO:  toggle the sortBy property in the new sorting header
