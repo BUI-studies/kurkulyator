@@ -43,7 +43,7 @@ export default function Home() {
   })
   this.walletsHeader = createElement({
     tagName: 'h2',
-    innerText: 'Your wallets',
+    innerText: 'Wallets:',
     className: 'wallets__title',
   })
   this.transactionsWrapper = createElement({
@@ -53,7 +53,7 @@ export default function Home() {
   this.transactionsHeader = createElement({
     tagName: 'h2',
     className: 'transactions__title',
-    innerText: 'Transactions',
+    innerText: 'Transactions:',
   })
 
   this.transactionsTable = null
@@ -111,7 +111,7 @@ Home.prototype.handleCreateForm = function (event) {
       const wallets = await getWallets()
       const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
 
-      this.totalBalance.textContent = totalBalance
+      this.totalBalance.textContent = `${this.currency}${totalBalance}`
     },
   })
 

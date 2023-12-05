@@ -1,14 +1,28 @@
 .table {
-  &-body {
-    list-style-type: none;
+  &__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  &-row {
+  &__row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+    &:nth-child(odd) {
+      background-color: #2f2f2f;
+    }
+
+    &--header {
+      background-color: transparent !important;
+      & > .table__cell {
+        font-weight: 700;
+      }
+    }
   }
 
-  &-cell {
-    border: 1px solid white;
+  &__cell {
+    padding: 0.5em;
+    border: 1px solid #6c6c6c;
   }
 }

@@ -8,9 +8,10 @@ export default function UniversalTable(collection, options) {
   this.headers = options.headers
   this.emptyCellValue = options.emptyCellValue || ''
   this.classes = {
-    cell: options?.classes?.cell || 'table-cell',
-    row: options?.classes?.row || 'table-row',
-    table: options?.classes?.table || 'table-body',
+    cell: options?.classes?.cell || 'table__cell',
+    row: options?.classes?.row || 'table__row',
+    headerRow: options?.classes?.headerRow || 'table__row--header',
+    table: options?.classes?.table || 'table__body',
   }
   this.generateDataset = options.generateDataset
 }
@@ -23,7 +24,7 @@ UniversalTable.prototype.render = function (parent) {
 
   const tableHeaderRow = createElement({
     tagName: 'li',
-    className: this.classes.row,
+    classNames: [this.classes.row, this.classes.headerRow],
   })
 
   this.headers.forEach((cell) => {
