@@ -1,5 +1,6 @@
-import './UniversalTable.scss'
 import { createElement } from '@/utils'
+
+import './_UniversalTable.scss'
 
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick

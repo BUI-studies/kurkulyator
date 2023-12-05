@@ -5,7 +5,7 @@ import { createElement, createInput, createSelect } from '@/utils'
 import { TRANSACTION_TYPE } from '@/types'
 import { UniversalButton } from '@/components'
 
-import './CategoryForm.scss'
+import './_CategoryForm.scss'
 
 export default function CategoryForm({ afterSubmit }) {
   this.afterSubmit = afterSubmit

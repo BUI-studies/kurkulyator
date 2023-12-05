@@ -3,7 +3,7 @@ import { createElement } from '@/utils'
 
 import { UniversalButton, ModalWindow, CategoryForm, UniversalTable } from '@/components'
 
-import './Categories.scss'
+import './_Categories.scss'
 
 export default function Categories() {
   this.pageWrapper = createElement({

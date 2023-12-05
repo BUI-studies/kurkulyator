@@ -3,7 +3,7 @@ import { getWallets, getTransactions } from '@/API'
 import { UniversalTable, TransactionForm, ModalWindow, UniversalButton } from '@/components'
 import { createElement } from '@/utils'
 
-import './Home.scss'
+import './_Home.scss'
 
 export default function Home() {
   this.modal = new ModalWindow()

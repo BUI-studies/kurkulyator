@@ -8,7 +8,7 @@ import { getWallet, saveWallet } from '@/API'
 import { createElement, createInput } from '@/utils'
 import { TRANSACTION_TYPE } from '@/types/index.js'
 
-import './WalletsForm.scss'
+import './_WalletsForm.scss'
 
 export default function WalletsForm({ onClose }) {
   this.onClose = onClose
