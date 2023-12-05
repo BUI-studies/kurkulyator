@@ -1,11 +1,14 @@
+import { createElement } from '@/utils'
+
 import Footer from './Footer/Footer'
 import Header from './Header/Header'
 
-// import './index.scss'
-
 export default function Page() {
   this.parent = document.querySelector('#app')
-  this.childrenWrapper = document.createElement('section')
+  this.childrenWrapper = createElement({
+    tagName: 'section',
+    classNames: ['container', 'page-content'],
+  })
   this.header = new Header()
   this.footer = new Footer()
 }
