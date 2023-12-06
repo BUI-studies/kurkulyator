@@ -1,5 +1,6 @@
-import './Footer.scss'
 import { createElement } from '@/utils'
+
+import './_Footer.scss'
 
 export default function Footer() {
   this.footerWrapper = createElement({ tagName: 'footer' })

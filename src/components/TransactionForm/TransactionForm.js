@@ -3,7 +3,8 @@ import { makeOptions, createElement, createInput, createSelect } from '@/utils'
 import { UniversalButton } from '@/components'
 import { Router } from '@/routes'
 import { TRANSACTION_TYPE } from '@/types/index.js'
-import './TransactionForm.scss'
+
+import './_TransactionForm.scss'
 
 export default function TransactionForm({ afterSubmit }) {
   this.typeOptions = [

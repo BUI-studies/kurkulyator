@@ -4,3 +4,9 @@ export const TRANSACTION_TYPE = Object.freeze({
   TRANSFER: 'transfer',
   CORRECTION: 'correction',
 })
+
+export const CURRENCY = Object.freeze({
+  USD: '$',
+  EUR: '€',
+  UAH: '₴',
+})

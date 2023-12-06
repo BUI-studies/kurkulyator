@@ -3,6 +3,8 @@ import { signInWithPopup } from 'firebase/auth'
 import { createElement } from '@/utils'
 import { UniversalButton } from '@/components'
 
+import './_Login.scss'
+
 export default function Login() {
   this.googleButton = new UniversalButton({
     text: 'Log in with Google',
