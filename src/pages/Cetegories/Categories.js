@@ -16,7 +16,6 @@ export default function Categories() {
   })
   this.addButton = new UniversalButton({
     text: 'New category',
-    className: 'add-button',
     onClick: (event) => this.handleNewCategoryClick(event),
   })
 
@@ -54,11 +53,7 @@ Categories.prototype.addTable = async function () {
       { title: 'Name', name: 'name' },
       { title: 'Type', name: 'type' },
     ],
-    classes: {
-      table: 'categories-table',
-      cell: 'categories-table__cell',
-      row: 'categories-table__row',
-    },
+
   })
   table.render(this.tableWrapper)
 }
