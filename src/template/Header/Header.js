@@ -103,5 +103,7 @@ Header.prototype.update = function () {
 Header.prototype.handleLogoutClick = function (e) {
   e.preventDefault()
   auth.signOut()
-  this.headerContentWrapper.replaceChildren()
+
+  this.menuWrapper.remove()
+  this.logOut.self.remove()
 }
