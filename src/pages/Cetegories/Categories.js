@@ -16,7 +16,6 @@ export default function Categories() {
   })
   this.addButton = new UniversalButton({
     text: 'New category',
-    className: 'add-button',
     onClick: (event) => this.handleNewCategoryClick(event),
   })
 
