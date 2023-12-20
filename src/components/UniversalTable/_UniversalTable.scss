@@ -24,5 +24,13 @@
   &__cell {
     padding: 0.5em;
     border: 1px solid #6c6c6c;
+
+    &--sorted::after {
+      content: '\25B2';
+    }
+
+    &--unsorted::after {
+      content: '\25BC';
+    }
   }
 }

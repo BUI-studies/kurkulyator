@@ -1,6 +1,5 @@
 import { createElement } from '@/utils'
 
-<<<<<<< HEAD
 const ARROW_DOWN = '&#9660'
 const ARROW_UP = '&#9650'
 
@@ -36,15 +35,13 @@ const ARROW_UP = '&#9650'
  * @param {object[]} collection - collection to be shown as a table on the screen
  * @param {Options} config - configuration options for the UniversalTable
  */
-=======
+
 import './_UniversalTable.scss'
 
->>>>>>> master
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick
 
   this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort)
-  console.log(this.sortingHeader)
 
   if (!this.sortingHeader) throw new TypeError('No header found matching sorting header criteria!')
 
@@ -55,18 +52,12 @@ export default function UniversalTable(collection, options) {
   this.tableBody = null
 
   this.classes = {
-<<<<<<< HEAD
-    cell: options?.classes?.cell || 'table-cell',
-    cellUnsorted: options?.classes?.cellUnsorted || 'table-cell--unsorted',
-    cellSorted: options?.classes?.cellSorted || 'table-cell--sorted',
-    row: options?.classes?.row || 'table-row',
-    table: options?.classes?.table || 'table-body',
-=======
+    cellUnsorted: options?.classes?.cellUnsorted || 'table__cell--unsorted',
+    cellSorted: options?.classes?.cellSorted || 'table__cell--sorted',
     cell: options?.classes?.cell || 'table__cell',
     row: options?.classes?.row || 'table__row',
     headerRow: options?.classes?.headerRow || 'table__row--header',
     table: options?.classes?.table || 'table__body',
->>>>>>> master
   }
   this.generateDataset = options.generateDataset
 }
@@ -79,15 +70,10 @@ UniversalTable.prototype.render = function (parent) {
 
   const tableHeaderRow = createElement({
     tagName: 'li',
-<<<<<<< HEAD
-    className: this.classes.row,
-
     onClick: (e) => {
       this.sortByTableHeaderRow(e)
     },
-=======
     classNames: [this.classes.row, this.classes.headerRow],
->>>>>>> master
   })
 
   this.headers.forEach((cell) => {
@@ -138,15 +124,7 @@ UniversalTable.prototype.sortByTableHeaderRow = function (e) {
       !targetElem.classList.contains(this.classes.cellUnsorted) &&
       !targetElem.classList.contains(this.classes.cellSorted)
     ) {
-      return
-    }
-
-    if (targetElem.classList.contains(this.classes.cellUnsorted)) {
-      targetElem.classList.remove(this.classes.cellUnsorted)
-      targetElem.classList.add(this.classes.cellSorted)
-    } else if (targetElem.classList.contains(this.classes.cellSorted)) {
-      targetElem.classList.remove(this.classes.cellSorted)
-      targetElem.classList.add(this.classes.cellUnsorted)
+      return null
     }
 
     const oldSortingHeader = this.headers.find(({ sortBy }) => sortBy)
@@ -155,13 +133,20 @@ UniversalTable.prototype.sortByTableHeaderRow = function (e) {
     })
 
     if (headerToSortWith.sort) {
-      this.collection = this.collection.sort(headerToSortWith.sort)
+      // debugger
+      if (targetElem.classList.contains(this.classes.cellSorted)) {
+        this.collection = this.collection.sort((...args) => !headerToSortWith.sort(...args))
+        targetElem.classList.replace(this.classes.cellSorted, this.classes.cellUnsorted)
+      } else {
+        this.collection = this.collection.sort(headerToSortWith.sort)
+        targetElem.classList.replace(this.classes.cellUnsorted, this.classes.cellSorted)
+      }
 
-      //TODO: toggle the sortBy property in the old sorting header
-      //TODO:  toggle the sortBy property in the new sorting header
-
-      this.renderTableBody()
+      //TODO: finish unsorting apllience
+    } else {
+      throw new TypeError(`no sorting method found: ${headerToSortWith.title}`)
     }
+    this.renderTableBody()
   }
 }
 
