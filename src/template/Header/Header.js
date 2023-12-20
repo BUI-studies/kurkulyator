@@ -3,46 +3,44 @@ import { auth } from '@root/firebase'
 import { Router, ROUTES_NAMES } from '@/routes/'
 import { UniversalButton } from '@/components'
 import { createElement } from '@/utils'
-import './Header.scss'
+
+import './_Header.scss'
 
 export default function Header() {
+  this.parent = null
   this.headerWrapper = createElement({
     tagName: 'header',
+    classNames: ['page-top', 'container'],
   })
-  this.logoWrapper = createElement({
-    tagName: 'div',
-  })
-  this.logo = createElement({
-    tagName: 'h2',
-    innerText: 'Logo',
-    classList: 'logo',
-  }) // temp logo placeholder
-  this.headerText = createElement({
+  this.company = createElement({
     tagName: 'h1',
     innerText: 'Куркулятор',
+    className: 'page-top__company',
   })
-  this.loggedInUserSection = createElement({
-    tagName: 'div',
-    className: 'header--logged-out',
-  })
+  this.headerContentWrapper = document.createDocumentFragment()
   this.menuWrapper = createElement({
     tagName: 'menu',
+    className: 'page-top__menu',
   })
   this.homePage = createElement({
     tagName: 'li',
     innerText: 'Home',
+    className: 'page-top__menu-item',
   })
   this.categoriesPage = createElement({
     tagName: 'li',
     innerText: 'Categories',
+    className: 'page-top__menu-item',
   })
   this.walletsPage = createElement({
     tagName: 'li',
     innerText: 'Wallets',
+    className: 'page-top__menu-item',
   })
   this.transactionsHistoryPage = createElement({
     tagName: 'li',
     innerText: 'Transactions history',
+    className: 'page-top__menu-item',
   })
 
   this.logOut = new UniversalButton({
@@ -54,10 +52,6 @@ export default function Header() {
 }
 
 Header.prototype.render = function (parent) {
-  this.logoWrapper.append(this.logo)
-
-  this.headerWrapper.append(this.logoWrapper, this.headerText, this.loggedInUserSection)
-
   this.homePage.onclick = (e) => {
     e.preventDefault()
     Router.navigate(ROUTES_NAMES.HOME)
@@ -81,31 +75,35 @@ Header.prototype.render = function (parent) {
   this.menuWrapper.append(this.homePage, this.categoriesPage, this.walletsPage, this.transactionsHistoryPage)
 
   if (this.user !== null) {
-    this.loggedInUserSection.append(this.menuWrapper)
-    this.logOut.render(this.loggedInUserSection)
+    this.headerContentWrapper.append(this.menuWrapper)
+    this.logOut.render(this.headerContentWrapper)
   }
 
   this.menuWrapper.append(this.homePage, this.categoriesPage, this.walletsPage, this.transactionsHistoryPage)
 
   if (this.user !== null) {
-    this.loggedInUserSection.append(this.menuWrapper)
-    this.logOut.render(this.loggedInUserSection)
+    this.headerContentWrapper.append(this.menuWrapper)
+    this.logOut.render(this.headerContentWrapper)
   }
 
+  this.headerWrapper.append(this.company, this.headerContentWrapper)
+  this.parent = parent
   parent.append(this.headerWrapper)
 }
 
 Header.prototype.update = function () {
   this.user = Router.getCurrentUser()
-  this.loggedInUserSection.replaceChildren()
   if (this.user !== null) {
-    this.loggedInUserSection.append(this.menuWrapper)
-    this.logOut.render(this.loggedInUserSection)
+    this.headerContentWrapper.append(this.menuWrapper)
+    this.logOut.render(this.headerContentWrapper)
   }
+  this.headerWrapper.append(this.headerContentWrapper)
 }
 
 Header.prototype.handleLogoutClick = function (e) {
   e.preventDefault()
   auth.signOut()
-  this.loggedInUserSection.replaceChildren()
+
+  this.menuWrapper.remove()
+  this.logOut.self.remove()
 }

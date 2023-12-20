@@ -3,6 +3,8 @@ import { createElement } from '@/utils'
 
 import { UniversalButton } from '@/components'
 
+import './_TransactionsHistory.scss'
+
 export default function TransactionsHistory() {
   this.pageWrapper = createElement({
     tagName: 'div',

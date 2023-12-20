@@ -16,17 +16,17 @@ export const makeOptions = (optionsSet, optionClass) => {
 /**
  * @function createElement
  *
- * @param {{tagName: string, name: string, id: string, className:string}} config
+ * @param {{tagName: string, name: string, id: string, className:string, classNames: string[]}} config
  */
-
-export const createElement = ({ tagName, name, id, innerText, className, onClick }) => {
+export const createElement = ({ tagName, name, id, innerText, className, classNames, onClick }) => {
   const newElement = document.createElement(tagName)
 
   if (name) newElement.name = name
   if (id) newElement.id = id
   if (innerText) newElement.innerText = innerText
   if (onClick) newElement.onclick = onClick
-  if (className) newElement.classList.add(className)
+  if (className && !classNames) newElement.classList.add(className)
+  if (classNames) newElement.classList.add(...classNames)
 
   return newElement
 }

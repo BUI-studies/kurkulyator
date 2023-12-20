@@ -1,11 +1,14 @@
 import { createElement } from '@/utils'
 
-export default function UniversalButton({ text, children, className = 'customButton', onClick }) {
+import './_UniversalButton.scss'
+
+export default function UniversalButton({ text, children, name, className = 'universal-button', classNames, onClick }) {
   this.self = createElement({
     tagName: 'button',
-    name: 'customButton',
+    name,
     innerText: text || '',
     className,
+    classNames,
   })
   this.children = children
   this.onClick = onClick

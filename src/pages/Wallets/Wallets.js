@@ -2,6 +2,8 @@ import { getWallets } from '@/API'
 import { createElement } from '@/utils'
 import { UniversalTable, ModalWindow, WalletsForm, UniversalButton } from '@/components'
 
+import './_Wallets.scss'
+
 export default function Wallets() {
   this.pageWrapper = createElement({
     tagName: 'div',

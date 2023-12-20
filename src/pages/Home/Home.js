@@ -2,56 +2,58 @@ import { getDoc } from 'firebase/firestore'
 import { getWallets, getTransactions } from '@/API'
 import { UniversalTable, TransactionForm, ModalWindow, UniversalButton } from '@/components'
 import { createElement } from '@/utils'
+import { CURRENCY } from '@/types'
 
-import './Home.scss'
+import './_Home.scss'
 
 export default function Home() {
   this.modal = new ModalWindow()
+  this.currency = CURRENCY.UAH
 
   this.newTransactionButton = new UniversalButton({
     text: 'New transaction',
-    className: 'new-transaction-btn',
     onClick: (event) => this.handleCreateForm(event),
   })
-  this.pageWrapper = createElement({
-    tagName: 'div',
-    className: 'page-wrapper',
+
+  this.pageWrapper = document.createDocumentFragment()
+
+  this.topPannel = createElement({
+    tagName: 'section',
+    className: 'top-panel',
   })
+
   this.balanceWrapper = createElement({
     tagName: 'section',
-    className: 'balance--wrapper',
+    className: 'balance',
   })
   this.balanceText = createElement({
     tagName: 'h2',
-    className: 'balance--header',
-    innerText: 'Total balance',
+    className: 'balance__text',
+    innerText: 'Total balance:',
   })
   this.totalBalance = createElement({
     tagName: 'h2',
-    innerText: 0,
-    className: 'balance--count',
+    innerText: `${this.currency}0`,
+    className: 'balance__count',
   })
-  this.currency = createElement({
-    tagName: 'h2',
-    innerText: '$',
-    className: 'balance--count',
-  })
+
   this.walletsWrapper = createElement({
     tagName: 'section',
-    className: 'wallets--wrapper',
+    className: 'wallets',
   })
   this.walletsHeader = createElement({
     tagName: 'h2',
-    innerText: 'Your wallets',
+    innerText: 'Wallets:',
+    className: 'wallets__title',
   })
   this.transactionsWrapper = createElement({
     tagName: 'section',
-    className: 'transactions--wrapper',
+    className: 'transactions',
   })
   this.transactionsHeader = createElement({
     tagName: 'h2',
-    className: 'transactions--header',
-    innerText: 'Transactions',
+    className: 'transactions__title',
+    innerText: 'Transactions:',
   })
 
   this.transactionsTable = null
@@ -60,7 +62,7 @@ export default function Home() {
 Home.prototype.render = async function (parent) {
   const wallets = await getWallets()
   const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
-  this.totalBalance.textContent = totalBalance
+  this.totalBalance.textContent = `${this.currency}${totalBalance}`
 
   const transactions = await this.pullAllTransaction()
 
@@ -106,13 +108,15 @@ Home.prototype.render = async function (parent) {
     ],
   })
 
-  this.balanceWrapper.append(this.balanceText, this.currency, this.totalBalance)
+  this.balanceWrapper.append(this.balanceText, this.totalBalance)
   this.walletsWrapper.replaceChildren()
   this.walletsWrapper.append(this.walletsHeader)
+
+  this.newTransactionButton.render(this.topPannel)
+  this.topPannel.append(this.balanceWrapper, this.walletsWrapper)
+
   this.walletsTable.render(this.walletsWrapper)
-  this.pageWrapper.append(this.balanceWrapper, this.walletsWrapper)
-  this.newTransactionButton.render(this.pageWrapper)
-  this.pageWrapper.append(this.transactionsWrapper)
+  this.pageWrapper.append(this.topPannel, this.transactionsWrapper)
   parent.append(this.pageWrapper)
 }
 
@@ -125,7 +129,8 @@ Home.prototype.handleCreateForm = function (event) {
       this.transactionsTable.updateTable(transactions)
       const wallets = await getWallets()
       const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
-      this.totalBalance.textContent = totalBalance
+
+      this.totalBalance.textContent = `${this.currency}${totalBalance}`
     },
   })
 

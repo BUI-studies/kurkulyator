@@ -1,6 +1,6 @@
-import './UniversalTable.scss'
 import { createElement } from '@/utils'
 
+<<<<<<< HEAD
 const ARROW_DOWN = '&#9660'
 const ARROW_UP = '&#9650'
 
@@ -36,6 +36,10 @@ const ARROW_UP = '&#9650'
  * @param {object[]} collection - collection to be shown as a table on the screen
  * @param {Options} config - configuration options for the UniversalTable
  */
+=======
+import './_UniversalTable.scss'
+
+>>>>>>> master
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick
 
@@ -51,11 +55,18 @@ export default function UniversalTable(collection, options) {
   this.tableBody = null
 
   this.classes = {
+<<<<<<< HEAD
     cell: options?.classes?.cell || 'table-cell',
     cellUnsorted: options?.classes?.cellUnsorted || 'table-cell--unsorted',
     cellSorted: options?.classes?.cellSorted || 'table-cell--sorted',
     row: options?.classes?.row || 'table-row',
     table: options?.classes?.table || 'table-body',
+=======
+    cell: options?.classes?.cell || 'table__cell',
+    row: options?.classes?.row || 'table__row',
+    headerRow: options?.classes?.headerRow || 'table__row--header',
+    table: options?.classes?.table || 'table__body',
+>>>>>>> master
   }
   this.generateDataset = options.generateDataset
 }
@@ -68,11 +79,15 @@ UniversalTable.prototype.render = function (parent) {
 
   const tableHeaderRow = createElement({
     tagName: 'li',
+<<<<<<< HEAD
     className: this.classes.row,
 
     onClick: (e) => {
       this.sortByTableHeaderRow(e)
     },
+=======
+    classNames: [this.classes.row, this.classes.headerRow],
+>>>>>>> master
   })
 
   this.headers.forEach((cell) => {

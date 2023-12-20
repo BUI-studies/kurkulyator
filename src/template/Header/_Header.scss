@@ -1,0 +1,45 @@
+.page-top {
+  display: grid;
+  grid-template-columns: 1fr 6fr 1fr;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2em;
+  padding-top: 2em;
+  padding-bottom: 2em;
+
+  &__company {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.5em;
+    color: white;
+  }
+
+  &__menu {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    list-style-type: none;
+  }
+
+  &__menu-item {
+    font-weight: 700;
+    transition: color 0.2s;
+
+    &:hover {
+      color: blueviolet;
+      cursor: pointer;
+    }
+  }
+}
+
+.logo {
+  width: 100px;
+  text-align: center;
+}
+
+.header--logged-in {
+  justify-self: end;
+  display: flex;
+  gap: 2em;
+  align-items: center;
+}

@@ -1,5 +1,6 @@
-import './ModalWindow.scss'
 import { createElement } from '@/utils'
+
+import './_ModalWindow.scss'
 
 export default function ModalWindow() {
   this.modal = createElement({
