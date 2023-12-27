@@ -71,7 +71,7 @@ UniversalTable.prototype.rowClickHandler = function (e) {
   } else {
     clickedIndex = e.target.dataset.collectionInd
   }
-  this.rowClick(this.collection[clickedIndex])
+  this.rowClick(e, this.collection[clickedIndex])
 }
 
 UniversalTable.prototype.updateTable = function (updatedCollection) {

@@ -1,4 +1,4 @@
-import { doc, getDoc, getDocs, query, where, addDoc, updateDoc, Timestamp } from 'firebase/firestore'
+import { doc, getDoc, getDocs, query, where, addDoc, updateDoc, Timestamp, deleteDoc } from 'firebase/firestore'
 
 import { walletsCollectionRef, transactionsCollectionRef, categoriesCollectionRef } from '../firebase'
 
@@ -13,7 +13,7 @@ export const getTransactions = async () => {
   )
   const responseSnapShot = await getDocs(transactionsCollectionByUserQuery)
   const res = []
-  responseSnapShot.forEach((p) => res.push(p.data()))
+  responseSnapShot.forEach((p) => res.push({ id: p.id, ...p.data() }))
   return res
 }
 
@@ -180,4 +180,9 @@ export const saveTransaction = async ({ type, from, to, category, comment, amoun
   await addDoc(transactionsCollectionRef, newTransactionData)
 
   return newTransactionData
+}
+
+export const deleteTransaction = async (id) => {
+  const transactionToDelete = getDoc(doc(transactionsCollectionRef, id))
+  await deleteDoc(transactionToDelete)
 }
