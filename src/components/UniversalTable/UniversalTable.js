@@ -1,4 +1,5 @@
 import { createElement } from '@/utils'
+import { mirrorSortingResults } from './UniversalTable.helper'
 
 const ARROW_DOWN = '&#9660'
 const ARROW_UP = '&#9650'
@@ -133,16 +134,13 @@ UniversalTable.prototype.sortByTableHeaderRow = function (e) {
     })
 
     if (headerToSortWith.sort) {
-      // debugger
       if (targetElem.classList.contains(this.classes.cellSorted)) {
-        this.collection = this.collection.sort((...args) => !headerToSortWith.sort(...args))
+        this.collection.sort((...args) => mirrorSortingResults(headerToSortWith.sort(...args)))
         targetElem.classList.replace(this.classes.cellSorted, this.classes.cellUnsorted)
       } else {
-        this.collection = this.collection.sort(headerToSortWith.sort)
+        this.collection.sort(headerToSortWith.sort)
         targetElem.classList.replace(this.classes.cellUnsorted, this.classes.cellSorted)
       }
-
-      //TODO: finish unsorting apllience
     } else {
       throw new TypeError(`no sorting method found: ${headerToSortWith.title}`)
     }
