@@ -1,4 +1,4 @@
-import { getWallets, getCategories, saveTransaction } from '@/API'
+import { getWallets, getCategories, saveTransaction } from '@/api'
 import { makeOptions, createElement, createInput, createSelect } from '@/utils'
 import { UniversalButton } from '@/components'
 import { Router } from '@/routes'
@@ -19,7 +19,7 @@ export default function TransactionForm({ afterSubmit }) {
 
   this.elements = {
     owner: null,
-    self: createElement({
+    self: createElement({ 
       tagName: 'form',
       name: 'transaction-form',
       id: 't-form',

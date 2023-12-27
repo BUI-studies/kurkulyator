@@ -1,5 +1,6 @@
 import { getDoc } from 'firebase/firestore'
-import { getWallets, getTransactions, deleteTransaction } from '@/API'
+import { Router, ROUTES_NAMES } from '@/routes'
+import { getWallets, getTransactions, deleteTransaction } from '@/api'
 import { UniversalTable, TransactionForm, ModalWindow, UniversalButton } from '@/components'
 import { createElement } from '@/utils'
 import { CURRENCY } from '@/types'
@@ -85,11 +86,12 @@ Home.prototype.render = async function (parent) {
       { name: 'comment', title: 'Comment' },
       { name: 'delete', title: 'Delete' },
     ],
-    onClick: (event, clickedTransaction) => {
+    onClick: async (event, clickedTransaction) => {
       if (event.target.tagName === 'BUTTON' || event.target.closest(`button.remove-transaction`)) {
         if (confirm('Are you sure you want to delete this transaction?')) {
           //TODO: undfinished. home should be rerendered after response
-          deleteTransaction(clickedTransaction.id)
+          await deleteTransaction(clickedTransaction.id)
+          Router.navigate(ROUTES_NAMES.HOME)
         } else return null
       } else return null
     },
