@@ -158,3 +158,8 @@ UniversalTable.prototype.rowClickHandler = function (e) {
   }
   this.rowClick(this.collection[clickedIndex])
 }
+
+UniversalTable.prototype.updateTable = function (updatedCollection) {
+  this.collection = updatedCollection
+  this.renderTableBody()
+}
