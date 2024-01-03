@@ -90,6 +90,7 @@ Home.prototype.render = async function (parent) {
         name: 'date',
         title: 'Date',
         sortBy: true,
+        // TODO: make it work properly using firebase timestamp api
         sort: (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       },
       { name: 'type', title: 'Type', sortBy: false },
@@ -104,6 +105,10 @@ Home.prototype.render = async function (parent) {
           await deleteTransaction(clickedTransaction.id)
           const transactions = await this.pullAllTransaction()
           this.transactionsTable.updateTable(transactions)
+          const wallets = await getWallets()
+          this.walletsTable.updateTable(wallets)
+          const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
+          this.totalBalance.textContent = `${this.currency}${totalBalance}`
         } else return null
       } else return null
     },
@@ -146,8 +151,8 @@ Home.prototype.handleCreateForm = function (event) {
       this.transactionsTable.updateTable(transactions)
       const wallets = await getWallets()
       const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
-
       this.totalBalance.textContent = `${this.currency}${totalBalance}`
+      this.walletsTable.updateTable(wallets)
     },
   })
 
