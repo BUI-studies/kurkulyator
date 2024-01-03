@@ -50,8 +50,9 @@ Categories.prototype.addTable = async function () {
   this.tableWrapper.replaceChildren()
   const table = await new UniversalTable(this.categories, {
     headers: [
-      { title: 'Name', name: 'name' },
+      { title: 'Name', name: 'name', sortBy: true, sort: (a, b) => a.name.localeCompare(b.name)},
       { title: 'Type', name: 'type' },
+
     ],
 
   })
