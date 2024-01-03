@@ -102,7 +102,6 @@ Home.prototype.render = async function (parent) {
     onClick: async (event, clickedTransaction) => {
       if (event.target.tagName === 'BUTTON' || event.target.closest(`button.remove-transaction`)) {
         if (confirm('Are you sure you want to delete this transaction?')) {
-          //TODO: undfinished. home should be rerendered after response
           await deleteTransaction(clickedTransaction.id)
           Router.navigate(ROUTES_NAMES.HOME)
         } else return null
