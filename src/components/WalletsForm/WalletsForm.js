@@ -4,9 +4,9 @@ import { transactionsCollectionRef } from '../../../firebase'
 
 import { Router } from '@/routes'
 import { UniversalButton } from '@/components'
-import { getWallet, saveWallet } from '@/API'
+import { getWallet, saveWallet } from '@/api'
 import { createElement, createInput } from '@/utils'
-import { TRANSACTION_TYPE } from '@/types/index.js'
+import { TRANSACTION_TYPE } from '@/types'
 
 import './_WalletsForm.scss'
 
