@@ -68,13 +68,27 @@ Home.prototype.render = async function (parent) {
 
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
-      { name: 'category', title: 'Category' },
-      { name: 'amount', title: 'Amount' },
-      { name: 'from', title: 'From' },
-      { name: 'to', title: 'To' },
-      { name: 'comment', title: 'Comment' },
-      { name: 'date', title: 'Date' },
-      { name: 'type', title: 'Type' },
+      {
+        name: 'category',
+        title: 'Category',
+        sortBy: false,
+      },
+      {
+        name: 'amount',
+        title: 'Amount',
+        sortBy: false,
+        sort: (a, b) => Number(b.amount) - Number(a.amount),
+      },
+      { name: 'from', title: 'From', sortBy: false },
+      { name: 'to', title: 'To', sortBy: false },
+      { name: 'comment', title: 'Comment', sortBy: false },
+      {
+        name: 'date',
+        title: 'Date',
+        sortBy: true,
+        sort: (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      },
+      { name: 'type', title: 'Type', sortBy: false },
     ],
   })
 
@@ -84,8 +98,13 @@ Home.prototype.render = async function (parent) {
 
   this.walletsTable = new UniversalTable(wallets, {
     headers: [
-      { name: 'name', title: 'Name' },
-      { name: 'balance', title: 'Balance' },
+      {
+        name: 'name',
+        title: 'Name',
+        sortBy: true,
+        sort: (a, b) => a.date - b.date,
+      },
+      { name: 'balance', title: 'Balance', sortBy: false, sort: (a, b) => a.date - b.date },
     ],
   })
 

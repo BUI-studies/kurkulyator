@@ -8,6 +8,7 @@ export const makeOptions = (optionsSet, optionClass) => {
     (accumulator, currentItem) =>
       accumulator +
       `<option value="${currentItem}" data-filter="${currentItem}" class="${optionClass}">${currentItem}</option>`,
+
     `<option default selected disabled value="null" class="${optionClass}">--none--</option>`
   )
 }
@@ -17,15 +18,15 @@ export const makeOptions = (optionsSet, optionClass) => {
  *
  * @param {{tagName: string, name: string, id: string, className:string, classNames: string[]}} config
  */
-export const createElement = ({ tagName, name, id, innerText, className, classNames }) => {
+export const createElement = ({ tagName, name, id, innerText, className, classNames, onClick }) => {
   const newElement = document.createElement(tagName)
 
   if (name) newElement.name = name
   if (id) newElement.id = id
   if (innerText) newElement.innerText = innerText
-
+  if (onClick) newElement.onclick = onClick
   if (className && !classNames) newElement.classList.add(className)
-  if(classNames) newElement.classList.add(...classNames)
+  if (classNames) newElement.classList.add(...classNames)
 
   return newElement
 }
