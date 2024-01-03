@@ -37,7 +37,7 @@ Wallets.prototype.render = async function (parent) {
 
   this.walletTable = new UniversalTable(this.wallets, {
     headers: [
-      { name: 'name', title: 'Title' },
+      { name: 'name', title: 'Title', sortBy: true, sort: (a, b) => a.name.localeCompare(b.name) },
       { name: 'balance', title: 'Balance' },
     ],
     generateDataset(rowObj) {
