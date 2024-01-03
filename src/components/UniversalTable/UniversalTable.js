@@ -152,9 +152,9 @@ UniversalTable.prototype.rowClickHandler = function (e) {
   let clickedIndex = 0
 
   if (!e.target.classList.contains(this.classes.row)) {
-    clickedIndex = e.target.closest(`.${this.classes.row}`).dataset
+    clickedIndex = e.target.closest(`.${this.classes.row}`).dataset.ind
   } else {
-    clickedIndex = e.target.dataset
+    clickedIndex = e.target.dataset.ind
   }
   this.rowClick(e, this.collection[clickedIndex])
 }
