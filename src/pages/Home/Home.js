@@ -97,7 +97,7 @@ Home.prototype.render = async function (parent) {
     onDelete: async (id) => {
       if (confirm('Are you sure you want to delete this transaction?')) {
         await deleteTransaction(id)
-        const transactions = await this.pullAllTransaction()
+        const transactions = await getTransactions()
         this.transactionsTable.updateTable(transactions)
         const wallets = await getWallets()
         this.walletsTable.updateTable(wallets)
