@@ -5,7 +5,7 @@ const ARROW_DOWN = '&#9660'
 const ARROW_UP = '&#9650'
 
 /**
- * @type Classes
+ * @typedef {Object} Classes
  *
  * @property {string} cell - class name for the row. By default it is - 'table-cell'.
  * @property {string} celUnsorted - class name for the unsorted row. By default it is - 'table-cell--unsorted'.
@@ -15,7 +15,7 @@ const ARROW_UP = '&#9650'
  */
 
 /**
- * @type Header
+ * @typedef {Object} Header
  *
  * @property {string} name - the name of the object's property. Gonna be used as a variable to extract the value from the object like so - collectionItem[headerName]
  * @property {string} title - how you would like to show the property on the screen
@@ -23,32 +23,40 @@ const ARROW_UP = '&#9650'
  */
 
 /**
- * @type Options
+ * @typedef {Object} Options
  *
  * @property {Header[]} headers - array of table column headers that should be shown as a first row
  * @property {any} emptyCellValue - literally any value you'd like to put to represent emptiness
  * @property {Classes} classes - classes to style up the table. If some of the class names are not in your object - they will be replaced by the default class names.
- */
-
-/**
- * @constructor UniversalTable
- *
- * @param {object[]} collection - collection to be shown as a table on the screen
- * @param {Options} config - configuration options for the UniversalTable
+ * @property {Boolean} deletable - whether the table needs to render a column with "Delete" buttons for every row in the collection
+ * @property {function} onDelete - callback function called after clicking on the delete button of any row
  */
 
 import './_UniversalTable.scss'
 
+/**
+ * @constructor UniversalTable
+ *
+ * @param collection {object[]} - collection to be shown as a table on the screen
+ * @param options {Options} - configuration options for the UniversalTable
+ */
 export default function UniversalTable(collection, options) {
   this.rowClick = options.onClick
+
+  if ((!options.deletable && options.onDelete) || (options.deletable && !options.onDelete)) {
+    throw new TypeError('Invalid argument - both "deletable" and "onDelete" should be passed')
+  }
+  this.deletable = options.deletable
+  this.onDelete = options.onDelete
 
   this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort)
 
   if (!this.sortingHeader) throw new TypeError('No header found matching sorting header criteria!')
 
+  // to every item in the resullting array, add detele property with a string value "pisun"
   this.collection = collection.sort(this.sortingHeader.sort)
 
-  this.headers = options.headers
+  this.headers = this.deletable ? [...options.headers, { name: 'delete', title: 'Delete' }] : options.headers
   this.emptyCellValue = options.emptyCellValue || ''
   this.tableBody = null
 
@@ -92,16 +100,29 @@ UniversalTable.prototype.render = function (parent) {
 
   this.renderTableBody()
 
-  if (this.rowClick) {
-    this.tableBody.onclick = (e) => {
-      this.rowClickHandler(e)
+  this.tableBody.onclick = (e) => {
+    const closestButton = e.target.closest(`button.remove-transaction`)
+    if ((e.target.tagName === 'BUTTON' && e.target.classList.contains('remove-transaction')) || closestButton) {
+      const targetID = (closestButton || e.target).id
+      this.onDelete(e.target.id)
     }
+
+    this.rowClickHandler(e)
   }
+
   parent.append(tableHeader, this.tableBody)
 }
 
 UniversalTable.prototype.renderTableBody = function () {
   this.tableBody.replaceChildren()
+
+  if (this.deletable && this.onDelete) {
+    this.collection = this.collection.map((row) => ({
+      ...row,
+      delete: `<button id="${row.id}" class="remove-transaction"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button>`,
+    }))
+  }
+
   this.collection.forEach((row, index) => {
     const tableRow = document.createElement('li')
     tableRow.classList.add(this.classes.row)
@@ -156,7 +177,8 @@ UniversalTable.prototype.rowClickHandler = function (e) {
   } else {
     clickedIndex = e.target.dataset.ind
   }
-  this.rowClick(e, this.collection[clickedIndex])
+
+  this.rowClick?.(e, this.collection[clickedIndex])
 }
 
 UniversalTable.prototype.updateTable = function (updatedCollection) {
