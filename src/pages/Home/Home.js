@@ -92,22 +92,17 @@ Home.prototype.render = async function (parent) {
         sort: (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       },
       { name: 'type', title: 'Type', sortBy: false },
-      { name: 'delete', title: 'Delete' },
     ],
-    onClick: async (event, clickedTransaction) => {
-      if (
-        (event.target.tagName === 'BUTTON' && event.target.classList.contains('remove-transaction')) ||
-        event.target.closest(`button.remove-transaction`)
-      ) {
-        if (confirm('Are you sure you want to delete this transaction?')) {
-          await deleteTransaction(clickedTransaction.id)
-          const transactions = await getTransactions()
-          this.transactionsTable.updateTable(transactions)
-          const wallets = await getWallets()
-          this.walletsTable.updateTable(wallets)
-          const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
-          this.totalBalance.textContent = `${this.currency}${totalBalance}`
-        } else return null
+    deletable: true,
+    onDelete: async (id) => {
+      if (confirm('Are you sure you want to delete this transaction?')) {
+        await deleteTransaction(id)
+        const transactions = await this.pullAllTransaction()
+        this.transactionsTable.updateTable(transactions)
+        const wallets = await getWallets()
+        this.walletsTable.updateTable(wallets)
+        const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
+        this.totalBalance.textContent = `${this.currency}${totalBalance}`
       } else return null
     },
   })
