@@ -100,3 +100,7 @@ export const deleteTransaction = async (id) => {
 
   await deleteDoc(transactionRef)
 }
+
+export const getTransactionsByWallet = async () => {
+  const transactionsCollectionByWalletName = query()
+}

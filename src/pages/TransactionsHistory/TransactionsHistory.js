@@ -1,4 +1,4 @@
-import { getTransactions } from '@/API'
+import { getTransactions, getWallets } from '@/API'
 import { createElement, createSelect, makeOptions } from '@/utils'
 
 import { UniversalButton, UniversalTable } from '@/components'
@@ -24,17 +24,36 @@ export default function TransactionsHistory() {
     className: 'filters__title',
     innerText: 'Filters:',
   })
+  this.filterByWalletLabel = createElement({
+    tagName: 'Label',
+    name: 'filter-bw-label',
+    id: 'fbwLabel',
+    innerText: 'Wallets:',
+    className: 'filters__label',
+  })
   this.filterByWallet = createSelect({
     name: 'filter-by-wallet',
     className: 'filters__filter-by-wallet',
   })
   this.filterButton = new UniversalButton({
     text: 'Filter',
+    className: 'filters__filter-btn',
+    onClick: (e) => this.handleFilter(e),
   })
   this.transactionsTable = null
 }
 
 TransactionsHistory.prototype.render = async function (parent) {
+  this.filterByWallet.innerHTML = []
+  const wallets = await getWallets()
+  const walletsOptions = wallets.map((item) => item.name)
+  this.filterByWallet.innerHTML = makeOptions(walletsOptions, 'filters__wallet')
+
+  this.filterByWalletLabel.append(this.filterByWallet)
+
+  this.filtersWrapper.append(this.filtersHeader, this.filterByWalletLabel)
+  this.filterButton.render(this.filtersWrapper)
+
   const transactions = await getTransactions()
 
   this.transactionsTable = new UniversalTable(transactions, {
@@ -69,5 +88,9 @@ TransactionsHistory.prototype.render = async function (parent) {
   this.transactionsWrapper.append(this.transactionsHeader)
   this.transactionsTable.render(this.transactionsWrapper)
 
-  parent.append(this.transactionsWrapper)
+  parent.append(this.filtersWrapper, this.transactionsWrapper)
+}
+
+TransactionsHistory.prototype.handleFilterByWallet = async function (e) {
+  e.preventDefault()
 }
