@@ -2,7 +2,16 @@ import { createElement } from '@/utils'
 
 import './_UniversalButton.scss'
 
-export default function UniversalButton({ text, children, name, className = 'universal-button', classNames, onClick }) {
+export default function UniversalButton({
+  text,
+  children,
+  name,
+  type,
+  className = 'universal-button',
+  classNames,
+  onClick,
+}) {
+  this.type = type
   this.self = createElement({
     tagName: 'button',
     name,
@@ -15,6 +24,7 @@ export default function UniversalButton({ text, children, name, className = 'uni
 }
 
 UniversalButton.prototype.render = function (parent) {
+  this.self.type = this.type
   if (this.children) {
     if (typeof this.children === 'string') {
       this.self.innerHTML += this.children
