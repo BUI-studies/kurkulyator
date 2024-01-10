@@ -104,7 +104,7 @@ UniversalTable.prototype.render = function (parent) {
     const closestButton = e.target.closest(`button.remove-transaction`)
     if ((e.target.tagName === 'BUTTON' && e.target.classList.contains('remove-transaction')) || closestButton) {
       const targetID = (closestButton || e.target).id
-      this.onDelete(e.target.id)
+      this.onDelete(targetID)
     }
 
     this.rowClickHandler(e)
