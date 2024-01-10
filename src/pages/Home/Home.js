@@ -1,5 +1,3 @@
-import { getDoc } from 'firebase/firestore'
-import { Router, ROUTES_NAMES } from '@/routes'
 import { getWallets, getTransactions, deleteTransaction } from '@/api'
 import { UniversalTable, TransactionForm, ModalWindow, UniversalButton } from '@/components'
 import { createElement } from '@/utils'
@@ -68,7 +66,7 @@ Home.prototype.render = async function (parent) {
   const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
   this.totalBalance.textContent = `${this.currency}${totalBalance}`
 
-  const transactions = await this.pullAllTransaction()
+  const transactions = await getTransactions()
 
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
@@ -99,7 +97,7 @@ Home.prototype.render = async function (parent) {
     onDelete: async (id) => {
       if (confirm('Are you sure you want to delete this transaction?')) {
         await deleteTransaction(id)
-        const transactions = await this.pullAllTransaction()
+        const transactions = await getTransactions()
         this.transactionsTable.updateTable(transactions)
         const wallets = await getWallets()
         this.walletsTable.updateTable(wallets)
@@ -142,7 +140,7 @@ Home.prototype.handleCreateForm = function (event) {
   const newTransactionForm = new TransactionForm({
     afterSubmit: async () => {
       this.modal.close()
-      const transactions = await this.pullAllTransaction()
+      const transactions = await getTransactions()
       this.transactionsTable.updateTable(transactions)
       const wallets = await getWallets()
       const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
@@ -152,21 +150,4 @@ Home.prototype.handleCreateForm = function (event) {
   })
 
   this.modal.render(document.getElementById('app'), newTransactionForm)
-}
-
-Home.prototype.pullAllTransaction = async function () {
-  const transactionsWithRefs = await getTransactions()
-
-  return Promise.all(
-    transactionsWithRefs.map(async (t) => {
-      return {
-        ...t,
-        to: t.to ? (await getDoc(t.to)).data().name : null,
-        from: t.from ? (await getDoc(t.from)).data().name : null,
-        category: t.category ? (await getDoc(t.category)).data().name : null,
-        date: t.date.toDate().toLocaleString(),
-        comment: !t.comment ? 'Empty' : t.comment,
-      }
-    })
-  )
 }
