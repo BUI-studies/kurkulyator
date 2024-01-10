@@ -19,7 +19,7 @@ export default function TransactionForm({ afterSubmit }) {
 
   this.elements = {
     owner: null,
-    self: createElement({ 
+    self: createElement({
       tagName: 'form',
       name: 'transaction-form',
       id: 't-form',

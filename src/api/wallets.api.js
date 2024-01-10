@@ -10,7 +10,7 @@ export const getWallets = async () => {
   const walletsCollectionByUserQuery = query(walletsCollectionRef, where('owner', '==', Router.getCurrentUser().uid))
   const responseSnapShot = await getDocs(walletsCollectionByUserQuery)
   const res = []
-  responseSnapShot.forEach((p) => res.push(p.data()))
+  responseSnapShot.forEach((p) => res.push({ ...p.data(), id: p.id }))
   return res
 }
 

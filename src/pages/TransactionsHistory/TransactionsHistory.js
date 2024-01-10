@@ -1,4 +1,4 @@
-import { getTransactions, getWallets } from '@/API'
+import { getTransactions, getWallets, getTransactionsByWallet } from '@/API'
 import { createElement, createSelect, makeOptions } from '@/utils'
 
 import { UniversalButton, UniversalTable } from '@/components'
@@ -38,7 +38,12 @@ export default function TransactionsHistory() {
   this.filterButton = new UniversalButton({
     text: 'Filter',
     className: 'filters__filter-btn',
-    onClick: (e) => this.handleFilter(e),
+    onClick: (e) => this.handleFilterByWallet(e),
+  })
+  this.resetButton = new UniversalButton({
+    text: 'Reset',
+    className: 'filters__reset-btn',
+    onClick: (e) => this.handleResetFilters(e),
   })
   this.transactionsTable = null
 }
@@ -46,13 +51,14 @@ export default function TransactionsHistory() {
 TransactionsHistory.prototype.render = async function (parent) {
   this.filterByWallet.innerHTML = []
   const wallets = await getWallets()
-  const walletsOptions = wallets.map((item) => item.name)
-  this.filterByWallet.innerHTML = makeOptions(walletsOptions, 'filters__wallet')
+  const walletsOptions = makeOptions(wallets, 'filter_wallets-options')
+  this.filterByWallet.innerHTML = walletsOptions
 
   this.filterByWalletLabel.append(this.filterByWallet)
 
   this.filtersWrapper.append(this.filtersHeader, this.filterByWalletLabel)
   this.filterButton.render(this.filtersWrapper)
+  this.resetButton.render(this.filtersWrapper)
 
   const transactions = await getTransactions()
 
@@ -93,4 +99,12 @@ TransactionsHistory.prototype.render = async function (parent) {
 
 TransactionsHistory.prototype.handleFilterByWallet = async function (e) {
   e.preventDefault()
+  const transactionsByWallet = await getTransactionsByWallet(this.filterByWallet.value)
+  this.transactionsTable.updateTable(transactionsByWallet)
+}
+
+TransactionsHistory.prototype.handleResetFilters = async function (e) {
+  e.preventDefault()
+  const transactions = await getTransactions()
+  this.transactionsTable.updateTable(transactions)
 }

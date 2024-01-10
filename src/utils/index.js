@@ -1,16 +1,26 @@
 /**
  * @function makeOptions
- * @param {{title: string, value: string}[]} optionsSet
+ * @param {string[] | {title: string, value: string}[]} optionsSet
  * @param {string} optionClass
  */
 export const makeOptions = (optionsSet, optionClass) => {
-  return optionsSet.reduce(
-    (accumulator, currentItem) =>
-      accumulator +
-      `<option value="${currentItem}" data-filter="${currentItem}" class="${optionClass}">${currentItem}</option>`,
+  if (optionsSet.every((element) => typeof element === 'string')) {
+    return optionsSet.reduce(
+      (accumulator, currentItem) =>
+        accumulator +
+        `<option value="${currentItem}" data-filter="${currentItem}" class="${optionClass}">${currentItem}</option>`,
 
-    `<option default selected disabled value="null" class="${optionClass}">--none--</option>`
-  )
+      `<option default selected disabled value="null" class="${optionClass}">--none--</option>`
+    )
+  } else {
+    return optionsSet.reduce(
+      (accumulator, currentItem) =>
+        accumulator +
+        `<option value="${currentItem.id}" data-filter="${currentItem.name}" class="${optionClass}">${currentItem.name}</option>`,
+
+      `<option default selected disabled value="null" class="${optionClass}">--none--</option>`
+    )
+  }
 }
 
 /**
