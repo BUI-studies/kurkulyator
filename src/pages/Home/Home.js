@@ -141,13 +141,13 @@ Home.prototype.handleCreateForm = function (event) {
   event.preventDefault()
   const newTransactionForm = new TransactionForm({
     afterSubmit: async () => {
-      this.modal.close()
       const transactions = await this.pullAllTransaction()
       this.transactionsTable.updateTable(transactions)
       const wallets = await getWallets()
       const totalBalance = wallets.reduce((acc, currWallet) => (acc += +currWallet.balance), 0)
       this.totalBalance.textContent = `${this.currency}${totalBalance}`
       this.walletsTable.updateTable(wallets)
+      this.modal.close()
     },
   })
 

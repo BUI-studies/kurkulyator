@@ -19,7 +19,7 @@ export default function TransactionForm({ afterSubmit }) {
 
   this.elements = {
     owner: null,
-    self: createElement({ 
+    self: createElement({
       tagName: 'form',
       name: 'transaction-form',
       id: 't-form',
@@ -96,6 +96,7 @@ export default function TransactionForm({ afterSubmit }) {
     }),
     button: new UniversalButton({
       text: 'Save',
+      type: 'submit',
       className: 'transactionForm__button',
       onClick: (event) => this.handleSubmit(event),
     }),
@@ -107,8 +108,12 @@ export default function TransactionForm({ afterSubmit }) {
  * @param {HTMLElement} parent
  */
 TransactionForm.prototype.render = async function (parent) {
+  this.elements.type.required = true
+  this.elements.amount.required = true
+  this.elements.category.required = true
   this.elements.type.addEventListener('change', (event) => {
     this.typeListener(event)
+    this.validateForm()
   })
 
   this.categories = await getCategories()
@@ -149,7 +154,9 @@ TransactionForm.prototype.handleSubmit = async function (e) {
     date: new Date(),
   })
 
-  this.afterSubmit?.(e, newTransactionData)
+  this.validateForm()
+
+  await this.afterSubmit?.(e, newTransactionData)
 }
 
 /**
@@ -170,12 +177,12 @@ TransactionForm.prototype.typeListener = function (e) {
   switch (selectedType) {
     case TRANSACTION_TYPE.INCOME:
       this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
-
       this.elements.category.innerHTML = makeOptions(
         this.categories.filter(({ type }) => type === TRANSACTION_TYPE.INCOME).map(({ name }) => name),
         'transactionForm__category-options'
       )
-
+      this.elements.wallets.to.required = true
+      this.elements.wallets.from.required = false
       this.elements.wallets.labelTo.insertAdjacentElement('afterend', this.elements.categoryLabel)
       break
     case TRANSACTION_TYPE.OUTCOME:
@@ -186,15 +193,22 @@ TransactionForm.prototype.typeListener = function (e) {
         'transactionForm__category-options'
       )
 
+      this.elements.wallets.to.required = false
+      this.elements.wallets.from.required = true
+
       this.elements.wallets.labelFrom.insertAdjacentElement('afterend', this.elements.categoryLabel)
       break
     case TRANSACTION_TYPE.TRANSFER:
       this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelFrom)
 
       this.elements.wallets.labelFrom.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
+      this.elements.wallets.to.required = true
+      this.elements.wallets.from.required = true
       break
     case TRANSACTION_TYPE.CORRECTION:
       this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
+      this.elements.wallets.to.required = true
+      this.elements.wallets.from.required = false
       break
   }
 }
@@ -207,4 +221,42 @@ TransactionForm.prototype.makeWalletsInput = async function (inputName) {
   walletsInput.classList.add('transactionForm__wallet')
   walletsInput.innerHTML = makeOptions(walletsOptions, 'transactionForm__wallet-option')
   return walletsInput
+}
+
+TransactionForm.prototype.validateForm = function () {
+  const errors = []
+  if (this.elements.type.required && this.elements.type.value === 'null') {
+    this.elements.type.style.border = '1px solid red'
+    errors.push('No type selected')
+  } else {
+    this.elements.type.style.border = null
+  }
+  if (this.elements.wallets.from.required && this.elements.wallets.from.value === 'null') {
+    this.elements.wallets.from.style.border = '1px solid red'
+    errors.push('No wallet found')
+  } else {
+    this.elements.wallets.from.style.border = null
+  }
+  if (this.elements.wallets.to.required && this.elements.wallets.to.value === 'null') {
+    this.elements.wallets.to.style.border = '1px solid red'
+    errors.push('No wallet found')
+  } else {
+    this.elements.wallets.to.style.border = null
+  }
+
+  if (this.elements.category.required && this.elements.category.value === 'null') {
+    this.elements.category.style.border = '1px solid red'
+    errors.push('No category found')
+  } else {
+    this.elements.category.style.border = null
+  }
+  if (this.elements.amount.required && this.elements.amount.value === '') {
+    this.elements.amount.style.border = '1px solid red'
+    errors.push('No amount specified')
+  } else {
+    this.elements.amount.style.border = null
+  }
+  if (errors.length) {
+    throw new Error(errors.join(';\n'))
+  }
 }
