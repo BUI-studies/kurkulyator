@@ -111,10 +111,10 @@ TransactionForm.prototype.render = async function (parent) {
   this.elements.type.required = true
   this.elements.amount.required = true
   this.elements.category.required = true
-  this.elements.type.addEventListener('change', (event) => {
+  this.elements.type.onchange = (event) => {
     this.typeListener(event)
     this.validateForm()
-  })
+  }
 
   this.categories = await getCategories()
 
@@ -141,9 +141,7 @@ TransactionForm.prototype.render = async function (parent) {
 TransactionForm.prototype.handleSubmit = async function (e) {
   e.preventDefault()
   this.validateForm()
-
   const formData = new FormData(this.elements.self)
-
   const newTransactionData = await saveTransaction({
     type: formData.get('type'),
     from: formData.get('walletFrom'),
@@ -199,7 +197,6 @@ TransactionForm.prototype.typeListener = function (e) {
       break
     case TRANSACTION_TYPE.TRANSFER:
       this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelFrom)
-
       this.elements.wallets.labelFrom.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
       this.elements.wallets.to.required = true
       this.elements.wallets.from.required = true
