@@ -26,7 +26,7 @@ export const getCategories = async () => {
   )
   const responseSnapShot = await getDocs(categoriesCollectionByUserQuery)
   const res = []
-  responseSnapShot.forEach((p) => res.push(p.data()))
+  responseSnapShot.forEach((p) => res.push({ ...p.data(), id: p.id }))
   return res
 }
 
@@ -47,4 +47,9 @@ export const getCategoriesByType = async (type = TRANSACTION_TYPE.INCOME) => {
 
 export const addNewCategory = async (collectionRefName, obj) => {
   await addDoc(collectionRefName, obj)
+}
+
+export const deleteCategory = async (id) => {
+  const categoryRef = doc(categoriesCollectionRef, id)
+  await deleteDoc(categoryRef)
 }

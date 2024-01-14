@@ -140,6 +140,7 @@ TransactionForm.prototype.render = async function (parent) {
  */
 TransactionForm.prototype.handleSubmit = async function (e) {
   e.preventDefault()
+  this.validateForm()
 
   const formData = new FormData(this.elements.self)
 
@@ -153,8 +154,6 @@ TransactionForm.prototype.handleSubmit = async function (e) {
     owner: Router.getCurrentUser().uid,
     date: new Date(),
   })
-
-  this.validateForm()
 
   await this.afterSubmit?.(e, newTransactionData)
 }
@@ -250,12 +249,22 @@ TransactionForm.prototype.validateForm = function () {
   } else {
     this.elements.category.style.border = null
   }
-  if (this.elements.amount.required && this.elements.amount.value === '') {
+
+  if (this.elements.amount.required && (this.elements.amount.value === '' || isNaN(this.elements.amount.value))) {
     this.elements.amount.style.border = '1px solid red'
     errors.push('No amount specified')
   } else {
     this.elements.amount.style.border = null
   }
+
+  if (this.elements.wallets.to.value === this.elements.wallets.from.value) {
+    this.elements.wallets.to.style.border = '1px solid red'
+    this.elements.wallets.from.style.border = '1px solid red'
+  } else {
+    this.elements.wallets.to.style.border = ''
+    this.elements.wallets.from.style.border = ''
+  }
+
   if (errors.length) {
     throw new Error(errors.join(';\n'))
   }

@@ -1,4 +1,4 @@
-import { getCategories } from '@/API'
+import { getCategories, deleteCategory } from '@/API'
 import { createElement } from '@/utils'
 
 import { UniversalButton, ModalWindow, CategoryForm, UniversalTable } from '@/components'
@@ -49,12 +49,19 @@ Categories.prototype.handleNewCategoryClick = function (e) {
 Categories.prototype.addTable = async function () {
   this.tableWrapper.replaceChildren()
   const table = await new UniversalTable(this.categories, {
+    deletable: true,
+    onDelete: async (id) => {
+      if (confirm('Are you sure, you want to delete a category?')) {
+        await deleteCategory(id)
+        const newCategories = await getCategories()
+        this.categories = newCategories
+        table.updateTable(newCategories)
+      }
+    },
     headers: [
-      { title: 'Name', name: 'name', sortBy: true, sort: (a, b) => a.name.localeCompare(b.name)},
+      { title: 'Name', name: 'name', sortBy: true, sort: (a, b) => a.name.localeCompare(b.name) },
       { title: 'Type', name: 'type' },
-
     ],
-
   })
   table.render(this.tableWrapper)
 }

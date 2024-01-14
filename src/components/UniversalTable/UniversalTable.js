@@ -48,12 +48,11 @@ export default function UniversalTable(collection, options) {
   }
   this.deletable = options.deletable
   this.onDelete = options.onDelete
+  this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort) // це просто хедер по якому буде все відсортовано на старті
 
-  this.sortingHeader = options.headers.find(({ sortBy, sort }) => sortBy && sort)
-
+  //коллекція буде відсортована по хедеру, який лежить у this.sortingHeader
   if (!this.sortingHeader) throw new TypeError('No header found matching sorting header criteria!')
-
-  // to every item in the resullting array, add detele property with a string value "pisun"
+  //(у цього хедера є функція сортування sort яку ми пофакту передамо аргументом нижче)
   this.collection = collection.sort(this.sortingHeader.sort)
 
   this.headers = this.deletable ? [...options.headers, { name: 'delete', title: 'Delete' }] : options.headers
@@ -102,9 +101,10 @@ UniversalTable.prototype.render = function (parent) {
 
   this.tableBody.onclick = (e) => {
     const closestButton = e.target.closest(`button.remove-transaction`)
+
     if ((e.target.tagName === 'BUTTON' && e.target.classList.contains('remove-transaction')) || closestButton) {
       const targetID = (closestButton || e.target).id
-      this.onDelete(e.target.id)
+      this.onDelete(targetID)
     }
 
     this.rowClickHandler(e)
@@ -126,9 +126,7 @@ UniversalTable.prototype.renderTableBody = function () {
   this.collection.forEach((row, index) => {
     const tableRow = document.createElement('li')
     tableRow.classList.add(this.classes.row)
-
     tableRow.dataset.ind = index
-    tableRow.classList.add(this.classes.row)
 
     tableRow.innerHTML = this.headers
       .map(({ name }) => `<span class="${this.classes.cell}">${row[name] || this.emptyCellValue}</span>`)

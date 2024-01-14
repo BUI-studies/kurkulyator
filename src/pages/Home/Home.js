@@ -69,7 +69,6 @@ Home.prototype.render = async function (parent) {
   this.totalBalance.textContent = `${this.currency}${totalBalance}`
 
   const transactions = await this.pullAllTransaction()
-
   this.transactionsTable = new UniversalTable(transactions, {
     headers: [
       {
