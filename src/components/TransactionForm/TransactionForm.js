@@ -113,13 +113,27 @@ TransactionForm.prototype.render = async function (parent) {
   this.elements.category.required = true
   this.elements.type.onchange = (event) => {
     this.typeListener(event)
-    this.validateForm()
   }
 
   this.categories = await getCategories()
 
   this.elements.wallets.from = await this.makeWalletsInput('walletFrom')
   this.elements.wallets.to = await this.makeWalletsInput('walletTo')
+
+  // this.elements.wallets.to.onchange = async (event) => {
+  //   debugger
+  //   event.preventDefault()
+  //   console.log(this.elements.wallets.to)
+
+  //   await this.makeSecondWalletInput('walletFrom', this.elements.wallets.to.value)
+  // }
+
+  // this.elements.wallets.from.onchange = async (event) => {
+  //   debugger
+  //   event.preventDefault()
+  //   console.log(this.elements.wallets.from.value)
+  //   await this.makeSecondWalletInput('walletTo', this.elements.wallets.from.value)
+  // }
 
   this.elements.typeLabel.append(this.elements.type)
   this.elements.categoryLabel.append(this.elements.category)
@@ -160,7 +174,7 @@ TransactionForm.prototype.handleSubmit = async function (e) {
  *
  * @param {Event} e
  */
-TransactionForm.prototype.typeListener = function (e) {
+TransactionForm.prototype.typeListener = async function (e) {
   e.preventDefault()
 
   this.elements.wallets.labelFrom?.remove()
@@ -200,11 +214,23 @@ TransactionForm.prototype.typeListener = function (e) {
       this.elements.wallets.labelFrom.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
       this.elements.wallets.to.required = true
       this.elements.wallets.from.required = true
+      this.elements.category.required = false
+
+      this.elements.wallets.to.onchange = (event) => {
+        event.preventDefault()
+        this.makeSecondWalletInput(this.elements.wallets.from, this.elements.wallets.to.value)
+      }
+
+      this.elements.wallets.from.onchange = (event) => {
+        event.preventDefault()
+        this.makeSecondWalletInput(this.elements.wallets.to, this.elements.wallets.from.value)
+      }
       break
     case TRANSACTION_TYPE.CORRECTION:
       this.elements.typeLabel.insertAdjacentElement('afterend', this.elements.wallets.labelTo)
       this.elements.wallets.to.required = true
       this.elements.wallets.from.required = false
+      this.elements.category.required = false
       break
   }
 }
@@ -217,6 +243,16 @@ TransactionForm.prototype.makeWalletsInput = async function (inputName) {
   walletsInput.classList.add('transactionForm__wallet')
   walletsInput.innerHTML = makeOptions(walletsOptions, 'transactionForm__wallet-option')
   return walletsInput
+}
+
+TransactionForm.prototype.makeSecondWalletInput = async function (secondWalletDOMElement, existingWalletDOMElementValue) {
+  const wallets = await getWallets()
+  const walletsOptions = wallets.map((item) => item.name)
+  console.log(walletsOptions)
+  console.log(existingWalletDOMElementValue)
+  walletsOptions.splice(walletsOptions.indexOf(existingWalletDOMElementValue), 1)
+  console.log(walletsOptions)
+  secondWalletDOMElement.innerHTML = makeOptions(walletsOptions, 'transactionForm__wallet-option')
 }
 
 TransactionForm.prototype.validateForm = function () {
